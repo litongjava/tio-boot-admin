@@ -3,6 +3,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.jfinal.aop.annotation.BeforeStartConfiguration;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.handler.SimpleHttpRoutes;
 
@@ -16,10 +17,12 @@ public class HttpServerRequestHanlderConfig {
     SimpleHttpRoutes simpleHttpRoutes = new SimpleHttpRoutes();
     // 创建controller
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
+    UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
 
     // 添加action
     simpleHttpRoutes.add("/api/login/account", apiLoginHandler::account);
     simpleHttpRoutes.add("/api/login/validateToken", apiLoginHandler::validateToken);
+    simpleHttpRoutes.add("/api/event/add", userEventHandler::add);
 
     // 将simpleHttpRoutes添加到TioBootServer
     TioBootServer.me().setHttpRoutes(simpleHttpRoutes);
