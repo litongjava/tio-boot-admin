@@ -7,6 +7,7 @@ import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.jfinal.plugin.activerecord.ActiveRecordPlugin;
 import com.litongjava.jfinal.plugin.activerecord.OrderedFieldContainerFactory;
+import com.litongjava.jfinal.plugin.activerecord.dialect.PostgreSqlDialect;
 import com.litongjava.jfinal.plugin.hikaricp.DsContainer;
 import com.litongjava.tio.boot.constatns.TioBootConfigKeys;
 import com.litongjava.tio.boot.server.TioBootServer;
@@ -59,6 +60,8 @@ public class TableToJsonConfig {
     if ("dev".equals(property)) {
       arp.setDevMode(true);
     }
+
+    arp.setDialect(new PostgreSqlDialect());
 
     // config engine
     Engine engine = arp.getEngine();
