@@ -5,6 +5,8 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.UserEventService;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
+import com.litongjava.tio.http.server.model.HttpCors;
+import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.json.Json;
 
@@ -13,15 +15,30 @@ import com.litongjava.tio.utils.json.Json;
  */
 public class UserEventHandler {
 
-  public HttpResponse add(HttpRequest request){
+  public HttpResponse add(HttpRequest request) {
+    HttpResponse httpResponse = new HttpResponse(request);
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return httpResponse;
+    }
     String bodyString = request.getBodyString();
     JSONObject jsonObject = FastJson2Utils.parseObject(bodyString);
     String eventName = jsonObject.getString("name");
     UserEventService userEventService = Aop.get(UserEventService.class);
 
-    JSONObject eventValue = jsonObject.getJSONObject("value");
-    userEventService.save(eventName,eventValue);
+    JSONObject eventValue = null;
+    try {
+      eventValue = jsonObject.getJSONObject("value");
+    } catch (Exception e) {
+      eventValue = new JSONObject();
+      eventValue.put("value", jsonObject.getString("value"));
+    }
 
-    return new HttpResponse(request);
+    userEventService.save(eventName, eventValue);
+
+
+    return httpResponse;
   }
 }
