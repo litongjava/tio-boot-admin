@@ -1,5 +1,6 @@
 package com.litongjava.tio.boot.admin.config;
 // 导入必要的类和注解
+
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.tio.boot.http.interceptor.HttpServerInterceptorModel;
@@ -18,6 +19,7 @@ public class InterceptorConfiguration {
     model.setInterceptor(saTokenInterceptor);
     model.addblockeUrl("/**"); // 拦截所有路由
     model.addAlloweUrls("/register/*", "/api/login/account"); // 设置例外路由
+    model.addAlloweUrls("/api/event/add");
 
     ServerInteceptorConfigure serverInteceptorConfigure = new ServerInteceptorConfigure();
     serverInteceptorConfigure.add(model);

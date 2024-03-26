@@ -1,5 +1,7 @@
 package com.litongjava.tio.boot.admin.handler;
 
+import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.tio.boot.admin.services.LoginService;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
 import com.litongjava.tio.boot.http.TioControllerContext;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -14,9 +16,12 @@ public class ApiLoginHandler {
   public HttpResponse account(HttpRequest request) {
     String bodyString = request.getBodyString();
     LoginAccountVo loginAccountVo = Json.getJson().parse(bodyString, LoginAccountVo.class);
-    
-    //登录
-    StpUtil.login(loginAccountVo.getUsername());
+
+    if(Aop.get(LoginService.class).getOne(loginAccountVo)){
+      //登录
+      StpUtil.login(loginAccountVo.getUsername());
+    }
+
 
     RespVo respVo = RespVo.ok(loginAccountVo);
     HttpResponse response = TioControllerContext.getResponse();
