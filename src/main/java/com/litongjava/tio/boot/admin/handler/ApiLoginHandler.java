@@ -28,6 +28,8 @@ public class ApiLoginHandler {
       Kv kv = new Kv();
       kv.set("token", tokenValue);
       kv.set("tokenTimeout", tokenTimeout);
+      kv.set("type", loginAccountVo.getType());
+      kv.set("status", "ok");
 
       respVo = RespVo.ok(kv);
     } else {

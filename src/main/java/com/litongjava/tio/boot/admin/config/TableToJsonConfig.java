@@ -1,4 +1,5 @@
 package com.litongjava.tio.boot.admin.config;
+
 import javax.sql.DataSource;
 
 import com.jfinal.template.Engine;
@@ -46,7 +47,6 @@ public class TableToJsonConfig {
    *
    * config ActiveRecordPlugin
    */
-
   @AInitialization
   public void activeRecordPlugin() throws Exception {
     // get dataSource
@@ -65,13 +65,18 @@ public class TableToJsonConfig {
 
     // config engine
     Engine engine = arp.getEngine();
+    //devMode下修改sql文件无需重启
+    engine.setDevMode(EnvironmentUtils.isDev());
+    //设置sql文件路径
     engine.setSourceFactory(new ClassPathSourceFactory());
+    //添加压缩
     engine.setCompressorOn(' ');
     engine.setCompressorOn('\n');
     // add sql file
-    arp.addSqlTemplate("/sql/all_sqls.sql");
+    arp.addSqlTemplate("/sql/all_sql.sql");
     // start
     arp.start();
+
     // add stop
     TioBootServer.me().addDestroyMethod(arp::stop);
   }
