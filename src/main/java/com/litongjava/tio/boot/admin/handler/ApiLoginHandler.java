@@ -1,5 +1,6 @@
 package com.litongjava.tio.boot.admin.handler;
 
+import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.LoginService;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
@@ -17,25 +18,23 @@ public class ApiLoginHandler {
     String bodyString = request.getBodyString();
     LoginAccountVo loginAccountVo = Json.getJson().parse(bodyString, LoginAccountVo.class);
 
-    if(Aop.get(LoginService.class).getOne(loginAccountVo)){
+    RespVo respVo;
+    Long userId = Aop.get(LoginService.class).getUserIdByUsernameAndPassword(loginAccountVo);
+    if (userId != null) {
       //登录
-      StpUtil.login(loginAccountVo.getUsername());
+      StpUtil.login(userId);
+      String tokenValue = StpUtil.getTokenValue();
+      long tokenTimeout = StpUtil.getTokenTimeout();
+      Kv kv = new Kv();
+      kv.set("token", tokenValue);
+      kv.set("tokenTimeout", tokenTimeout);
+
+      respVo = RespVo.ok(kv);
+    } else {
+      respVo = RespVo.fail();
     }
 
-
-    RespVo respVo = RespVo.ok(loginAccountVo);
     HttpResponse response = TioControllerContext.getResponse();
     return Resps.json(response, respVo);
-  }
-
-  public HttpResponse validateToken(HttpRequest request) {
-    RespVo respVo;
-    try {
-      StpUtil.checkActiveTimeout();
-      respVo = RespVo.ok();
-    } catch (Exception e) {
-      respVo = RespVo.fail(e.getMessage());
-    }
-    return Resps.json(request, respVo);
   }
 }

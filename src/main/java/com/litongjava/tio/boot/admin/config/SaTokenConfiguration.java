@@ -11,6 +11,7 @@ import cn.dev33.satoken.context.SaTokenContext;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
+import com.litongjava.tio.utils.environment.EnvironmentUtils;
 
 @AConfiguration
 public class SaTokenConfiguration {
@@ -40,11 +41,14 @@ public class SaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    SaManager.setSaTokenDao(null);
+    if (EnvironmentUtils.isDev()) {
+      SaManager.setSaTokenDao(null);
+    }
+
 
     //生成jwt token
     saTokenConfig.setJwtSecretKey("asdasdasifhueuiwyurfewbfjsdafjk");
-    saTokenConfig.setTokenPrefix("Bearer");
+    //saTokenConfig.setTokenPrefix("Bearer");
     StpLogicJwtForSimple stpLogicJwtForSimple = new StpLogicJwtForSimple();
     StpUtil.setStpLogic(stpLogicJwtForSimple);
   }
