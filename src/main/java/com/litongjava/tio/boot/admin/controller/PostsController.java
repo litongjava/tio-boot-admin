@@ -5,13 +5,13 @@ import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
 import com.litongjava.data.services.DbJsonService;
 import com.litongjava.data.utils.DbJsonBeanUtils;
+import com.litongjava.data.utils.EasyExcelResponseUtils;
 import com.litongjava.data.utils.KvUtils;
 import com.litongjava.data.utils.TioRequestParamUtils;
 import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.costants.TableNames;
-import com.litongjava.tio.boot.admin.utils.EasyExcelResponseUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.annotation.EnableCORS;
@@ -80,6 +80,11 @@ public class PostsController {
   public RespVo page(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    Object current = map.remove("current");
+    if(current!=null){
+      //add support for ant design pro table
+      map.put("pageNo",current);
+    }
     Kv kv = KvUtils.camelToUnderscore(map);
     // 过滤已经删除的信息
     kv.set("deleted", 0);

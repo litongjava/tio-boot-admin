@@ -11,12 +11,12 @@ import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
 import com.litongjava.data.services.DbJsonService;
 import com.litongjava.data.utils.DbJsonBeanUtils;
+import com.litongjava.data.utils.EasyExcelResponseUtils;
 import com.litongjava.data.utils.KvUtils;
 import com.litongjava.data.utils.TioRequestParamUtils;
 import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
-import com.litongjava.tio.boot.admin.utils.EasyExcelResponseUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.annotation.EnableCORS;
@@ -46,8 +46,7 @@ public class TableJsonController {
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
 
-    RespVo respVo = RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
-    return respVo;
+    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/list")
