@@ -156,3 +156,4 @@ vcpkg_installed/
 app.properties
 src/main/resources/app-prod.properties
 ping-base64.toml
+imaginix.json
