@@ -19,7 +19,7 @@ public class HttpServerRequestHanlderConfig {
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
     UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
     UserHandler userHandler = Aop.get(UserHandler.class);
-    SystemUploadHandler systemUploadHandler = Aop.get(SystemUploadHandler.class);
+    SystemFileHandler systemUploadHandler = Aop.get(SystemFileHandler.class);
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
@@ -27,7 +27,7 @@ public class HttpServerRequestHanlderConfig {
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     //upload
-    r.add("/api/system/upload", systemUploadHandler::upload);
+    r.add("/api/system/file/upload", systemUploadHandler::upload);
 
     // 将simpleHttpRoutes添加到TioBootServer
     TioBootServer.me().setHttpRoutes(r);
