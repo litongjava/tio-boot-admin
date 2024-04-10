@@ -55,4 +55,34 @@ public class ApiLoginHandler {
     HttpResponse response = TioControllerContext.getResponse();
     return Resps.json(response, respVo);
   }
+
+  public HttpResponse outLogin(HttpRequest request) {
+    HttpResponse httpResponse = new HttpResponse(request);
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return httpResponse;
+    }
+
+    StpUtil.logout();
+
+    HttpResponse response = TioControllerContext.getResponse();
+    return Resps.json(response, RespVo.ok());
+  }
+
+  public HttpResponse validateLogin(HttpRequest request) {
+    HttpResponse httpResponse = new HttpResponse(request);
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return httpResponse;
+    }
+
+    HttpResponse response = TioControllerContext.getResponse();
+    boolean login = StpUtil.isLogin();
+    return Resps.json(response, RespVo.ok(login));
+
+  }
 }

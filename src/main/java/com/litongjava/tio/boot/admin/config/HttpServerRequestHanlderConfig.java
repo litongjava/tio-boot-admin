@@ -23,6 +23,8 @@ public class HttpServerRequestHanlderConfig {
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
+    r.add("/api/login/outLogin", apiLoginHandler::outLogin);
+    r.add("/api/login/validateLogin", apiLoginHandler::validateLogin);
     r.add("/api/currentUser", userHandler::currentUser);
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);

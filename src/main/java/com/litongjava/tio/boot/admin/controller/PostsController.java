@@ -76,7 +76,7 @@ public class PostsController {
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
-  @RequestPath("/{f}/page")
+  @RequestPath("/page")
   public RespVo page(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
@@ -85,7 +85,7 @@ public class PostsController {
     kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Page<Record>> page = dbJsonService.page(f, kv);
+    DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
 
     DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
