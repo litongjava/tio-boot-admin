@@ -102,15 +102,25 @@
     </dependency>
 
     <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>table-to-json</artifactId>
-      <version>1.2.8</version>
-    </dependency>
-    <dependency>
       <groupId>com.alibaba</groupId>
       <artifactId>easyexcel</artifactId>
       <version>2.2.10</version>
     </dependency>
+
+    <!-- Jedis，Redis 的 Java 客户端 -->
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>3.6.3</version>
+    </dependency>
+
+    <!-- FST 序列化工具，用于对象和字节流间的转换 -->
+    <dependency>
+      <groupId>de.ruedigermoeller</groupId>
+      <artifactId>fst</artifactId>
+      <version>2.57</version> <!-- 注意：更高版本不支持 JDK 8 -->
+    </dependency>
+
 
   </dependencies>
   <profiles>

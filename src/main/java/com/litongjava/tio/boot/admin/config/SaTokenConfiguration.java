@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
+import com.litongjava.jfinal.plugin.satoken.SaTokenDaoRedis;
 import com.litongjava.tio.boot.satoken.SaTokenContextForTio;
 
 import cn.dev33.satoken.SaManager;
@@ -41,9 +42,7 @@ public class SaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    if (EnvironmentUtils.isDev()) {
-      SaManager.setSaTokenDao(null);
-    }
+    SaManager.setSaTokenDao(new SaTokenDaoRedis("main"));
 
 
     //生成jwt token
