@@ -2,8 +2,11 @@ package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
+import com.litongjava.data.model.DbPage;
 import com.litongjava.data.services.DbJsonService;
+import com.litongjava.data.utils.DbJsonBeanUtils;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.config.TableToJsonConfig;
 import com.litongjava.tio.boot.admin.costants.TableNames;
@@ -37,13 +40,6 @@ public class PostServiceTest {
     List<Record> list = dbJsonBean.getData();
     List<Map<String, Object>> listMap = list.stream().map(Record::toMap).collect(Collectors.toList());
 
-    listMap = list.stream()
-      .map(Record::toMap)
-      .peek(map -> { // Use peek to modify each map in the stream
-//        map.remove("images"); // Remove the images key
-//        map.remove("attached_images"); // Remove the attached_images key
-      })
-      .collect(Collectors.toList());
 
     String s = Json.getJson().toJson(listMap);
 //    String s = FastJson2Utils.toJson(listMap);
@@ -51,5 +47,17 @@ public class PostServiceTest {
 
 //    RespVo respVo = RespVo.ok(listMap).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
 //    System.out.println(respVo);
+  }
+
+  public void testPage() {
+    // 过滤已经删除的信息
+    Kv kv = Kv.create();
+    kv.set("deleted", 0);
+
+    DbJsonService dbJsonService = Aop.get(DbJsonService.class);
+
+    DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page,false);
+    System.out.println(dbJsonBean.getData().getList());
   }
 }

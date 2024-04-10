@@ -71,7 +71,7 @@ public class PostsController {
   public RespVo listAll(String f) {
     log.info("tableName:{}", f);
     DbJsonBean<List<Record>> listAll = dbJsonService.listAll(f);
-    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(listAll);
+    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(listAll,false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -92,7 +92,7 @@ public class PostsController {
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
 
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page,false);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -191,7 +191,7 @@ public class PostsController {
     kv.set("deleted", 1);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv));
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv),false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
