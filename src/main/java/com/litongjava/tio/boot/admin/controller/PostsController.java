@@ -10,6 +10,7 @@ import com.litongjava.data.utils.TioRequestParamUtils;
 import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.utils.EasyExcelResponseUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -23,8 +24,9 @@ import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-@RequestPath("/posts")
+@RequestPath("/api/posts")
 @Slf4j
 @EnableCORS
 public class PostsController {
@@ -49,18 +51,20 @@ public class PostsController {
     return respVo;
   }
 
-  @RequestPath("/{f}/list")
-  public RespVo list(String f, HttpRequest request) {
+  @RequestPath("/list")
+  public RespVo list(HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
     kv.set("deleted", 0);
 
-    log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<List<Record>> list = dbJsonService.list(f, kv);
-    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(list);
+    log.info("tableName:{},kv:{}", TableNames.posts, kv);
+    DbJsonBean<List<Record>> dbJsonBean = dbJsonService.list(TableNames.posts, kv);
+    List<Record> lists = dbJsonBean.getData();
+    //to map
+    List<Map<String, Object>> listMap = lists.stream().map(Record::toMap).collect(Collectors.toList());
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespVo.ok(listMap).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/listAll")
@@ -114,10 +118,11 @@ public class PostsController {
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
-  @RequestPath("/{f}/delete")
-  public RespVo delete(String f, String id) {
-    log.info("tableName:{},id:{}", f, id);
-    DbJsonBean<Boolean> dbJsonBean = dbJsonService.updateFlagById(f, id, "deleted", 1);
+  @RequestPath("/delete/{id}")
+  public RespVo delete(Long id) {
+    log.info("id:{}", id);
+    DbJsonBean<Boolean> dbJsonBean = dbJsonService.updateFlagById(TableNames.posts, id, "deleted", 1);
+//    DbJsonBean<Boolean> dbJsonBean = dbJsonService.delById(TableNames.posts, id);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 

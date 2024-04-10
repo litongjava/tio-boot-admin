@@ -5,4 +5,5 @@ package com.litongjava.tio.boot.admin.costants;
  */
 public interface TableNames {
   String tio_boot_admin_system_user_event = "tio_boot_admin_system_user_event";
+  String posts = "posts";
 }
