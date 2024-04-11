@@ -1,5 +1,6 @@
 package com.litongjava.tio.boot.admin.controller;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
@@ -39,16 +40,21 @@ public class PostsController {
     return "TableJsonController";
   }
 
-  @RequestPath("/{f}/create")
-  public RespVo create(String f, HttpRequest request) {
+  @RequestPath("/create")
+  public RespVo create(HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
+    log.info("tableName:{},kv:{}", TableNames.posts, kv);
 
-    RespVo respVo = RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
-    return respVo;
+    JSONArray attachedImages = kv.getAs("attached_images");
+    List<String> lists = attachedImages.toJavaList(String.class);
+    String[] strings = lists.toArray(new String[0]);
+
+    kv.set("attached_images", strings);
+    DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(TableNames.posts, kv);
+
+    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/list")
@@ -71,7 +77,7 @@ public class PostsController {
   public RespVo listAll(String f) {
     log.info("tableName:{}", f);
     DbJsonBean<List<Record>> listAll = dbJsonService.listAll(f);
-    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(listAll,false);
+    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(listAll, false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -81,9 +87,9 @@ public class PostsController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Object current = map.remove("current");
-    if(current!=null){
+    if (current != null) {
       //add support for ant design pro table
-      map.put("pageNo",current);
+      map.put("pageNo", current);
     }
     Kv kv = KvUtils.camelToUnderscore(map);
     // 过滤已经删除的信息
@@ -92,7 +98,7 @@ public class PostsController {
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
 
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page,false);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page, false);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -191,7 +197,7 @@ public class PostsController {
     kv.set("deleted", 1);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv),false);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv), false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }

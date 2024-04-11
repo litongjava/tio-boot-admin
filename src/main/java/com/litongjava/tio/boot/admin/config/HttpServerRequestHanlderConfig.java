@@ -30,6 +30,8 @@ public class HttpServerRequestHanlderConfig {
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     //upload
     r.add("/api/system/file/upload", systemUploadHandler::upload);
+    r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
+    r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
 
     // 将simpleHttpRoutes添加到TioBootServer
     TioBootServer.me().setHttpRoutes(r);

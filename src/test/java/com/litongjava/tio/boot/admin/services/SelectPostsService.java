@@ -55,7 +55,6 @@ public class SelectPostsService {
     String[] images = {"image1", "image2"};
     DbJsonService dbJsonService = Aop.get(DbJsonService.class);
     Kv kv = Kv.create();
-    kv.set("id", 100);
     kv.set("user_id", "8KncYW4B8Bhn8fn4A4z4AVLyoRs2");
     kv.set("title", "Java Title");
     kv.set("content", "Java Content");

@@ -5,7 +5,10 @@ CREATE TABLE tio_boot_admin_system_upload_file (
   file_size BIGINT NOT NULL,
   user_id VARCHAR(32),
   platform VARCHAR(64) NOT NULL,
+  region_name VARCHAR(32),
+  bucket_name VARCHAR(64) NOT NULL,
   file_id VARCHAR(64) NOT NULL,
+  target_name VARCHAR(64) NOT NULL,
   tags JSON,
   creator VARCHAR(64) DEFAULT '',
   create_time TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -23,7 +26,9 @@ INSERT INTO tio_boot_admin_system_upload_file (
   file_size,
   user_id,
   platform,
+  bucket_name,
   file_id,
+  target_name,
   tags,
   creator,
   create_time,
@@ -38,7 +43,9 @@ INSERT INTO tio_boot_admin_system_upload_file (
   1024, -- 文件大小，单位为字节
   'user123', -- 用户ID
   's3', -- 平台
-  'file123456789', -- 文件ID
+  'sd',--bucket_name
+  '367962274737995776', -- 文件ID
+  'public/images/367962274737995776.png', -- target-name
   '{"genre": "text", "language": "English"}', -- 标签，使用JSON格式
   'admin', -- 创建者
   CURRENT_TIMESTAMP, -- 创建时间，使用默认值
