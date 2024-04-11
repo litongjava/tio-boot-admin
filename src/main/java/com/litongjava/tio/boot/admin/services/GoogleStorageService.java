@@ -65,13 +65,13 @@ public class GoogleStorageService {
     DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_system_upload_file, kv);
 
     Kv kv1 = Kv.create();
-    kv1.set("id", save.getData().get("id"));
+    kv1.set("id", save.getData().get("id") + "");
     //返回RespVo
     return RespVo.ok(kv1);
   }
 
   private String replaceTargetName(String targetName) {
-    return targetName.replace("/","%2F");
+    return targetName.replace("/", "%2F");
   }
 
 

@@ -9,10 +9,12 @@ import com.litongjava.data.utils.DbJsonBeanUtils;
 import com.litongjava.data.utils.EasyExcelResponseUtils;
 import com.litongjava.data.utils.KvUtils;
 import com.litongjava.data.utils.TioRequestParamUtils;
+import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.services.PostsService;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.annotation.EnableCORS;
@@ -46,15 +48,8 @@ public class PostsController {
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", TableNames.posts, kv);
+    return Aop.get(PostsService.class).save(kv);
 
-    JSONArray attachedImages = kv.getAs("attached_images");
-    List<String> lists = attachedImages.toJavaList(String.class);
-    String[] strings = lists.toArray(new String[0]);
-
-    kv.set("attached_images", strings);
-    DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(TableNames.posts, kv);
-
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/list")
