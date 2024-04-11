@@ -26,6 +26,6 @@ public class UserHandler {
     }
     Object loginId = StpUtil.getLoginId();
     RespVo respVo = Aop.get(UserService.class).currentUser(loginId);
-    return Resps.json(request, respVo);
+    return Resps.json(httpResponse, respVo);
   }
 }
