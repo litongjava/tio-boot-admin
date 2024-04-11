@@ -8,6 +8,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.utils.resp.RespVo;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,6 +18,7 @@ public class PostsService {
   public RespVo save(Kv kv) {
     JSONArray attachedImages = kv.getAs("attached_images");
     List<String> list = attachedImages.toJavaList(String.class);
+    kv.set("created_at",new Date());
 
     String[] strings = list.toArray(new String[0]);
 //    String[] strings = new String[list.size()];
