@@ -1,5 +1,7 @@
 package com.litongjava.tio.boot.admin.handler;
 
+import com.jfinal.kit.Kv;
+import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
@@ -20,6 +22,17 @@ public class SystemFileHandler {
       File file = new File(uploadFile.getName());
       FileUtil.writeBytes(fileData, file);
     }
-    return Resps.json(request, RespVo.ok());
+    long threadId = Thread.currentThread().getId();
+    if (threadId > 31L) {
+      threadId %= 31L;
+    }
+
+    if (threadId < 0L) {
+      threadId = 0L;
+    }
+    String id = (new SnowflakeIdGenerator(threadId, 0L)).generateId() + "";
+    Kv kv = Kv.create();
+    kv.set("id", id);
+    return Resps.json(request, RespVo.ok(id));
   }
 }
