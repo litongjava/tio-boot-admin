@@ -12,7 +12,7 @@ processes = []
   memory_mb = 1024
 
 [http_service]
-  internal_port = 80
+  internal_port = 8100
   force_https = true
   auto_stop_machines = true
   auto_start_machines = true

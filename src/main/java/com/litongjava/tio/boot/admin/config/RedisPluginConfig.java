@@ -1,4 +1,3 @@
-// 导入必要的类和注解
 package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
@@ -20,14 +19,14 @@ public class RedisPluginConfig {
     String cacheName = EnvironmentUtils.get("redis.cacheName");
 
     // 创建并启动 Redis 插件
-    RedisPlugin bbsRedis = new RedisPlugin(cacheName, host, port, password);
-    bbsRedis.start();
+    RedisPlugin mainRedis = new RedisPlugin(cacheName, host, port, password);
+    mainRedis.start();
 
     // 测试连接
     Cache cache = Redis.use("main");
     cache.getJedis().connect();
 
-    TioBootServer.me().addDestroyMethod(bbsRedis::stop);
-    return bbsRedis;
+    TioBootServer.me().addDestroyMethod(mainRedis::stop);
+    return mainRedis;
   }
 }

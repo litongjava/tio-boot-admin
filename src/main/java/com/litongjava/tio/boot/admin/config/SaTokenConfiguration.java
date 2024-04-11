@@ -32,7 +32,7 @@ public class SaTokenConfiguration {
     saTokenConfig.setActiveTimeout(50 * 60); // 设置活动超时时间为 50 分钟
 
     saTokenConfig.setIsShare(false);
-    saTokenConfig.setTokenName("token"); // 设置 token 的名称
+    saTokenConfig.setTokenName("authorization"); // 设置 token 的名称
     saTokenConfig.setIsWriteHeader(true); // 将 token 写入响应头
     saTokenConfig.setIsReadHeader(true); // 从请求头中读取 token
 
@@ -47,7 +47,7 @@ public class SaTokenConfiguration {
 
     //生成jwt token
     saTokenConfig.setJwtSecretKey("asdasdasifhueuiwyurfewbfjsdafjk");
-    //saTokenConfig.setTokenPrefix("Bearer");
+    saTokenConfig.setTokenPrefix("Bearer");
     StpLogicJwtForSimple stpLogicJwtForSimple = new StpLogicJwtForSimple();
     StpUtil.setStpLogic(stpLogicJwtForSimple);
   }
