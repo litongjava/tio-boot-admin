@@ -48,7 +48,7 @@ public class SystemFileHandler {
     }
 
 
-    return Resps.json(request, RespVo.ok(kv));
+    return Resps.json(httpResponse, RespVo.ok(kv));
   }
 
   public HttpResponse uploadImageToGoogle(HttpRequest request) throws Exception {
@@ -64,10 +64,10 @@ public class SystemFileHandler {
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
     if (uploadFile != null) {
       RespVo respVo = googleStorageService.uploadImageToGoogle(uploadFile);
-      return Resps.json(request, respVo);
+      return Resps.json(httpResponse, respVo);
 
     }
-    return Resps.json(request, RespVo.ok("Fail"));
+    return Resps.json(httpResponse, RespVo.ok("Fail"));
   }
 
   public HttpResponse getGoogleFileUrl(HttpRequest request) {
@@ -82,6 +82,6 @@ public class SystemFileHandler {
     long fileId = Long.parseLong(request.getParam("id"));
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
     String url=googleStorageService.getUrlByFileId(fileId);
-    return Resps.json(request, RespVo.ok(url));
+    return Resps.json(httpResponse, RespVo.ok(url));
   }
 }
