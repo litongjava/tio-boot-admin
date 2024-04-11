@@ -3,6 +3,7 @@ package com.litongjava.tio.boot.admin.handler;
 import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.UserEventService;
+import com.litongjava.tio.boot.http.TioControllerContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -16,7 +17,7 @@ import com.litongjava.tio.utils.json.Json;
 public class UserEventHandler {
 
   public HttpResponse add(HttpRequest request) {
-    HttpResponse httpResponse = new HttpResponse(request);
+    HttpResponse httpResponse = TioControllerContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

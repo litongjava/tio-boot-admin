@@ -4,6 +4,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.GoogleStorageService;
+import com.litongjava.tio.boot.http.TioControllerContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
@@ -51,7 +52,7 @@ public class SystemFileHandler {
   }
 
   public HttpResponse uploadImageToGoogle(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = new HttpResponse(request);
+    HttpResponse httpResponse = TioControllerContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -70,7 +71,7 @@ public class SystemFileHandler {
   }
 
   public HttpResponse getGoogleFileUrl(HttpRequest request) {
-    HttpResponse httpResponse = new HttpResponse(request);
+    HttpResponse httpResponse = TioControllerContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
