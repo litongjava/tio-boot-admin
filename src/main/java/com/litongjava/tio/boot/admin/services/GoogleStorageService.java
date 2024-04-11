@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.services;
 
 import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.core.util.URLUtil;
 import cn.hutool.crypto.digest.MD5;
 import com.google.cloud.storage.*;
 import com.google.firebase.cloud.StorageClient;
@@ -16,10 +15,12 @@ import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.environment.EnvironmentUtils;
 import com.litongjava.tio.utils.resp.RespVo;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
+@Slf4j
 public class GoogleStorageService {
   String bucketName = EnvironmentUtils.getStr("BUCKET_NAME");
 
@@ -47,9 +48,8 @@ public class GoogleStorageService {
     BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + suffix).build();
     Storage storage = bucket.getStorage();
     Blob blob = storage.create(blobInfo, fileContent);
-    System.out.println(blob);
-    //下载地址
-    String downloadUrl = getUrl(bucket.getName(), targetName);
+    log.info("blob:{}", blob);
+
 
     //存入到数据库
     String md5 = MD5.create().digestHex(fileContent);
@@ -59,13 +59,17 @@ public class GoogleStorageService {
     kv.set("file_size", size);
     kv.set("platform", "google");
     kv.set("bucket_name", bucketName);
-    kv.set("target_name", replaceTargetName(targetName));
+    String replaceTargetName = replaceTargetName(targetName);
+    kv.set("target_name", replaceTargetName);
     kv.set("file_id", id);
 
     DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_system_upload_file, kv);
 
+    //下载地址
+    String downloadUrl = getUrl(bucketName, replaceTargetName);
     Kv kv1 = Kv.create();
     kv1.set("id", save.getData().get("id") + "");
+    kv1.set("url", downloadUrl);
     //返回RespVo
     return RespVo.ok(kv1);
   }

@@ -16,15 +16,16 @@ import java.util.List;
 public class PostsService {
   public RespVo save(Kv kv) {
     JSONArray attachedImages = kv.getAs("attached_images");
-    List<Long> list = attachedImages.toJavaList(Long.class);
+    List<String> list = attachedImages.toJavaList(String.class);
 
-    String[] strings = new String[list.size()];
+    String[] strings = list.toArray(new String[0]);
+//    String[] strings = new String[list.size()];
 
     //get attached urls
-    for (int i = 0; i < list.size(); i++) {
-      String url = Aop.get(GoogleStorageService.class).getUrlByFileId(list.get(i));
-      strings[i] = url;
-    }
+//    for (int i = 0; i < list.size(); i++) {
+//      String url = Aop.get(GoogleStorageService.class).getUrlByFileId(list.get(i));
+//      strings[i] = url;
+//    }
 
 
     kv.set("attached_images", strings);
