@@ -54,11 +54,5 @@ public class UploadFileTest {
     System.out.println(blobInfo);
     Blob blob = storage.create(blobInfo, fileContent);
     System.out.println(blob);
-    // 假设blob是上传后返回的Blob对象
-    String publicUrl = "https://storage.googleapis.com/" + bucket.getName() + "/" + blob.getName();
-    System.out.println("File URL: " + publicUrl);
-
-
-
   }
 }

@@ -78,7 +78,6 @@ public class GoogleStorageService {
     return targetName.replace("/", "%2F");
   }
 
-
   public String getUrlByFileId(long fileId) {
     String sql = "select bucket_name,target_name from " + TableNames.tio_boot_admin_system_upload_file + " where id=?";
     Record record = Db.findFirst(sql, fileId);
@@ -87,11 +86,6 @@ public class GoogleStorageService {
   }
 
 
-  /**
-   * @param name
-   * @param targetName
-   * @return https://firebasestorage.googleapis.com/v0/b/imaginix-eda2e.appspot.com/o/public/images/newFilename?alt=media
-   */
   public String getUrl(String name, String targetName) {
 
     String template = "https://firebasestorage.googleapis.com/v0/b/%s.appspot.com/o/%s?alt=media";

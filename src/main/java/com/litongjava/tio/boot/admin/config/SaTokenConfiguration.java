@@ -47,7 +47,7 @@ public class SaTokenConfiguration {
 
     //生成jwt token
     saTokenConfig.setJwtSecretKey("asdasdasifhueuiwyurfewbfjsdafjk");
-    saTokenConfig.setTokenPrefix("Bearer");
+    //saTokenConfig.setTokenPrefix("Bearer");
     StpLogicJwtForSimple stpLogicJwtForSimple = new StpLogicJwtForSimple();
     StpUtil.setStpLogic(stpLogicJwtForSimple);
   }
