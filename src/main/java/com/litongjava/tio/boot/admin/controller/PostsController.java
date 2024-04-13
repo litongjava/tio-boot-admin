@@ -1,6 +1,5 @@
 package com.litongjava.tio.boot.admin.controller;
 
-import com.alibaba.fastjson2.JSONArray;
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
@@ -57,7 +56,6 @@ public class PostsController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", TableNames.posts, kv);
     DbJsonBean<List<Record>> dbJsonBean = dbJsonService.list(TableNames.posts, kv);
@@ -87,8 +85,6 @@ public class PostsController {
       map.put("pageNo", current);
     }
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 过滤已经删除的信息
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
@@ -102,8 +98,6 @@ public class PostsController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 删除标记
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Record> jsonBean = dbJsonService.get(f, kv);
@@ -140,8 +134,6 @@ public class PostsController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    kv.set("deleted", 0);
-
     log.info("tableName:{},kv:{}", f, kv);
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
 
@@ -188,9 +180,6 @@ public class PostsController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 删除
-    kv.set("deleted", 1);
-
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv), false);
 
