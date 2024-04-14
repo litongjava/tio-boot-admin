@@ -7,7 +7,7 @@ CREATE TABLE tio_boot_admin_system_constants_config (
     create_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updater VARCHAR(64) DEFAULT '',
     update_time TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted SMALLINT NOT NULL DEFAULT 0,
+    deleted SMALLINT
     tenant_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE (key, update_time)
