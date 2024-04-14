@@ -76,6 +76,11 @@ public class TableJsonController {
   public RespVo page(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    Object current = map.remove("current");
+    if (current != null) {
+      //add support for ant design pro table
+      map.put("pageNo", current);
+    }
     Kv kv = KvUtils.camelToUnderscore(map);
     // 过滤已经删除的信息
     kv.set("deleted", 0);
@@ -114,7 +119,7 @@ public class TableJsonController {
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
-  @RequestPath("/{f}/delete")
+  @RequestPath("/{f}/delete/{id}")
   public RespVo delete(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
     DbJsonBean<Boolean> dbJsonBean = dbJsonService.updateFlagById(f, id, "deleted", 1);
