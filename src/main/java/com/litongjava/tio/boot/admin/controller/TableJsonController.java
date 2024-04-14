@@ -54,7 +54,6 @@ public class TableJsonController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<List<Record>> list = dbJsonService.list(f, kv);
@@ -82,8 +81,6 @@ public class TableJsonController {
       map.put("pageNo", current);
     }
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 过滤已经删除的信息
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Page<Record>> page = dbJsonService.page(f, kv);
@@ -97,8 +94,6 @@ public class TableJsonController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 删除标记
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Record> jsonBean = dbJsonService.get(f, kv);
@@ -134,7 +129,6 @@ public class TableJsonController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    kv.set("deleted", 0);
 
     log.info("tableName:{},kv:{}", f, kv);
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
@@ -182,8 +176,6 @@ public class TableJsonController {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
-    // 删除
-    kv.set("deleted", 1);
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv),false);

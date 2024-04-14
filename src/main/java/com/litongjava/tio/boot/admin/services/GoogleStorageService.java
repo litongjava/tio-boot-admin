@@ -1,8 +1,10 @@
 package com.litongjava.tio.boot.admin.services;
 
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.crypto.digest.MD5;
-import com.google.cloud.storage.*;
+import com.google.cloud.storage.Blob;
+import com.google.cloud.storage.BlobId;
+import com.google.cloud.storage.BlobInfo;
+import com.google.cloud.storage.Bucket;
+import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
@@ -14,7 +16,11 @@ import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.resp.RespVo;
+
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -29,7 +35,7 @@ public class GoogleStorageService {
     int size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
 
-    //上传文件
+    // 上传文件
     long threadId = Thread.currentThread().getId();
     if (threadId > 31L) {
       threadId %= 31L;
@@ -43,15 +49,26 @@ public class GoogleStorageService {
     String newFilename = id + "." + suffix;
 
     String targetName = "public/images/" + newFilename;
+
+    Kv kv1 = uploadBytesToGoogle(filename, id, targetName, fileContent, size, suffix);
+    // 返回RespVo
+    return RespVo.ok(kv1);
+  }
+
+  public Kv uploadBytesToGoogle(String filename, long id, String targetName, byte[] fileContent, int size,
+      String suffix) {
+
+    String contentType = ContentTypeUtils.getContentType(suffix);
+
     Bucket bucket = StorageClient.getInstance().bucket();
     BlobId blobId = BlobId.of(bucket.getName(), targetName);
-    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType("image/" + suffix).build();
+
+    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
     Storage storage = bucket.getStorage();
     Blob blob = storage.create(blobInfo, fileContent);
     log.info("blob:{}", blob);
 
-
-    //存入到数据库
+    // 存入到数据库
     String md5 = MD5.create().digestHex(fileContent);
     Kv kv = Kv.create();
     kv.set("md5", md5);
@@ -65,13 +82,12 @@ public class GoogleStorageService {
 
     DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_system_upload_file, kv);
 
-    //下载地址
+    // 下载地址
     String downloadUrl = getUrl(bucketName, replaceTargetName);
     Kv kv1 = Kv.create();
     kv1.set("id", save.getData().get("id") + "");
     kv1.set("url", downloadUrl);
-    //返回RespVo
-    return RespVo.ok(kv1);
+    return kv1;
   }
 
   private String replaceTargetName(String targetName) {
@@ -84,7 +100,6 @@ public class GoogleStorageService {
 
     return getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
   }
-
 
   public String getUrl(String name, String targetName) {
 
