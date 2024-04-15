@@ -59,9 +59,11 @@ public class TableToJsonConfig {
     arp.setContainerFactory(new OrderedFieldContainerFactory());
     if ("dev".equals(property)) {
       arp.setDevMode(true);
+      arp.setShowSql(true);
     }
 
     arp.setDialect(new PostgreSqlDialect());
+
 
     // config engine
     Engine engine = arp.getEngine();
