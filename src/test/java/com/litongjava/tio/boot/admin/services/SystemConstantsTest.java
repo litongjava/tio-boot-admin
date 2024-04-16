@@ -60,7 +60,5 @@ public class SystemConstantsTest {
 
     DbJsonBean<Kv> kvDbJsonBean = dbJsonService.batchUpdateByIds(tableName, kv);
     System.out.println(kvDbJsonBean);
-
-
   }
 }

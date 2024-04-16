@@ -8,7 +8,7 @@ import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.handler.SimpleHttpRoutes;
 
 @BeforeStartConfiguration
-public class HttpServerRequestHanlderConfig {
+public class HttpServerRequestHandlerConfig {
 
   @AInitialization
   public void httpRoutes() {
@@ -21,6 +21,8 @@ public class HttpServerRequestHanlderConfig {
     UserHandler userHandler = Aop.get(UserHandler.class);
     SystemFileHandler systemUploadHandler = Aop.get(SystemFileHandler.class);
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
+    GeographicHandler geographicHandler = Aop.get(GeographicHandler.class);
+    SystemHandler systemHandler = Aop.get(SystemHandler.class);
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
     r.add("/api/login/outLogin", apiLoginHandler::outLogin);
@@ -33,7 +35,8 @@ public class HttpServerRequestHanlderConfig {
     r.add("/api/system/file/upload", systemUploadHandler::upload);
     r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
     r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
-
+    r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
+    r.add("/api/geographic/province", geographicHandler::province);
     // 将simpleHttpRoutes添加到TioBootServer
     TioBootServer.me().setHttpRoutes(r);
   }
