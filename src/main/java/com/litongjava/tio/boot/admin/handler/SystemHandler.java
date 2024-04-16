@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public class SystemHandler {
 
-
   public HttpResponse changeUserPassword(HttpRequest request) {
     HttpResponse response = TioControllerContext.getResponse();
     HttpServerResponseUtils.enableCORS(response, new HttpCors());

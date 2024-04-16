@@ -4,7 +4,6 @@ import cn.hutool.crypto.digest.DigestUtil;
 import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.plugin.activerecord.Db;
 import com.litongjava.tio.boot.admin.costants.TableNames;
-import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.utils.resp.RespVo;
 
 import java.util.Map;

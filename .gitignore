@@ -155,6 +155,7 @@ vcpkg_installed/
 .env
 app.properties
 app-prod.properties
+app-dev.properties
 src/main/resources/app-prod.properties
 ping-base64.toml
 imaginix.json

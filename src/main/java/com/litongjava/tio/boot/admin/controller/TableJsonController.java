@@ -86,7 +86,7 @@ public class TableJsonController {
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Page<Record>> page = dbJsonService.page(f, kv);
 
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page,false);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page, false);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -116,7 +116,7 @@ public class TableJsonController {
   }
 
   @RequestPath("/{f}/batchUpdate")
-  public RespVo batchUpdate(String f, HttpRequest request){
+  public RespVo batchUpdate(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Kv kv = KvUtils.camelToUnderscore(map);
@@ -191,7 +191,7 @@ public class TableJsonController {
     Kv kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv),false);
+    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv), false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -214,6 +214,12 @@ public class TableJsonController {
   public RespVo fConfig(String f, String lang) {
     log.info("tableName:{}", f);
     DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.tableConfig(f, f, lang);
+    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+  }
+
+  @RequestPath("/{f}/proTableColumns")
+  public RespVo proTableColumns(String f) {
+    DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.proTableColumns(f);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 

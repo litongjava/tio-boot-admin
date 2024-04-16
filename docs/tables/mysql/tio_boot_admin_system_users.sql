@@ -1,24 +1,40 @@
-CREATE TABLE `tio_boot_admin_system_users` (
-  `id` bigint NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `username` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户账号',
-  `password` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '密码',
-  `nickname` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户昵称',
-  `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '备注',
-  `dept_id` bigint DEFAULT NULL COMMENT '部门ID',
-  `post_ids` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL COMMENT '岗位编号数组',
-  `email` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '用户邮箱',
-  `mobile` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '手机号码',
-  `sex` tinyint DEFAULT '0' COMMENT '用户性别',
-  `avatar` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '头像地址',
-  `status` tinyint NOT NULL DEFAULT '0' COMMENT '帐号状态（0正常 1停用）',
-  `login_ip` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '最后登录IP',
-  `login_date` datetime DEFAULT NULL COMMENT '最后登录时间',
-  `creator` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '创建者',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-  `updater` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '' COMMENT '更新者',
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-  `deleted` bit(1) NOT NULL DEFAULT b'0' COMMENT '是否删除',
-  `tenant_id` bigint NOT NULL DEFAULT '0' COMMENT '租户编号',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE KEY `idx_username` (`username`,`update_time`,`tenant_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=126 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='用户信息表';
+CREATE TABLE tio_boot_admin_system_users (
+    id BIGINT NOT NULL,
+    username VARCHAR(30) NOT NULL,
+    password VARCHAR(100) NOT NULL DEFAULT '',
+    nickname VARCHAR(30) NOT NULL,
+    signature VARCHAR(200),
+    title VARCHAR(50),
+    group_name VARCHAR(50),
+    tags JSON,
+    notify_count INT DEFAULT 0,
+    unread_count INT DEFAULT 0,
+    country VARCHAR(50),
+    access VARCHAR(20),
+    geographic JSON,
+    address VARCHAR(200),
+    remark VARCHAR(500),
+    dept_id BIGINT,
+    post_ids VARCHAR(255),
+    email VARCHAR(50) DEFAULT '',
+    phone VARCHAR(11) DEFAULT '',
+    sex SMALLINT DEFAULT 0,
+    avatar VARCHAR(512) DEFAULT '',
+    status SMALLINT NOT NULL DEFAULT 0,
+    login_ip VARCHAR(50) DEFAULT '',
+    login_date DATETIME,
+    creator VARCHAR(64) DEFAULT '',
+    create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updater VARCHAR(64) DEFAULT '',
+    update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted SMALLINT  NOT NULL DEFAULT 0,
+    tenant_id BIGINT NOT NULL DEFAULT 0,
+    PRIMARY KEY (id),
+    UNIQUE KEY `unique_username_updatetime` (username, update_time)
+);
+
+INSERT INTO tio_boot_admin_system_users (
+    id, username, password, nickname, signature, title, group_name, tags, notify_count, unread_count, country, access, geographic, address, remark, dept_id, post_ids, email, phone, sex, avatar, status, login_ip, login_date, creator, create_time, updater, update_time, deleted, tenant_id
+) VALUES (
+    1, 'admin', '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918', 'admin', 'This is a signature', 'Admin', 'Administrators', '{"tags": [{"key": "tag1", "label": "Tag 1"}, {"key": "tag2", "label": "Tag 2"}]}', 10, 5, 'United States', 'admin', '{"province": {"label": "California", "key": "CA"}, "city": {"label": "San Francisco", "key": "SF"}}', '123 Main St, San Francisco, CA 94122', '管理员', 103, '[1]', 'aoteman@126.com', '15612345678', 1, 'http://127.0.0.1:48080/admin-api/infra/file/4/get/37e56010ecbee472cdd821ac4b608e151e62a74d9633f15d085aee026eedeb60.png', 0, '127.0.0.1', '2023-11-30 09:16:00', 'admin', '2021-01-05 17:03:47', NULL, '2024-03-23 08:49:55', 0, 1
+);

@@ -61,8 +61,11 @@ public class TableToJsonConfig {
       arp.setDevMode(true);
       arp.setShowSql(true);
     }
+    String jdbcUrl = EnvironmentUtils.get("jdbc.url");
 
-    arp.setDialect(new PostgreSqlDialect());
+    if (jdbcUrl.contains("postgresql")) {
+      arp.setDialect(new PostgreSqlDialect());
+    }
 
 
     // config engine
