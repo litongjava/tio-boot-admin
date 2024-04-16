@@ -19,11 +19,14 @@ public class UserHandler {
   public HttpResponse currentUser(HttpRequest request) {
     HttpResponse httpResponse = TioControllerContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+    Object loginId = StpUtil.getLoginId();
+    RespVo respVo = Aop.get(UserService.class).currentUser(loginId);
+    return Resps.json(httpResponse, respVo);
+  }
 
-    String method = request.getMethod();
-    if ("OPTIONS".equals(method)) {
-      return httpResponse;
-    }
+  public HttpResponse accountSettingCurrentUser(HttpRequest request) {
+    HttpResponse httpResponse = TioControllerContext.getResponse();
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
     Object loginId = StpUtil.getLoginId();
     RespVo respVo = Aop.get(UserService.class).currentUser(loginId);
     return Resps.json(httpResponse, respVo);

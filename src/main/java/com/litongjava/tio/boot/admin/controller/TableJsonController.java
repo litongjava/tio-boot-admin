@@ -6,6 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.google.api.Http;
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
@@ -110,6 +111,18 @@ public class TableJsonController {
 
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
+
+    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+  }
+
+  @RequestPath("/{f}/batchUpdate")
+  public RespVo batchUpdate(String f, HttpRequest request){
+    Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
+    map.remove("f");
+    Kv kv = KvUtils.camelToUnderscore(map);
+
+    log.info("tableName:{},kv:{}", f, kv);
+    DbJsonBean<Kv> dbJsonBean = dbJsonService.batchUpdateByIds(f, kv);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }

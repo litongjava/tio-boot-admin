@@ -54,7 +54,7 @@
     	dept_id,
     	post_ids,
     	email,
-    	mobile,
+    	phone,
     	sex,
     	avatar,
     	status,

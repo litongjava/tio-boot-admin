@@ -26,6 +26,7 @@ public class HttpServerRequestHanlderConfig {
     r.add("/api/login/outLogin", apiLoginHandler::outLogin);
     r.add("/api/login/validateLogin", apiLoginHandler::validateLogin);
     r.add("/api/currentUser", userHandler::currentUser);
+    r.add("/api/accountSettingCurrentUser", userHandler::accountSettingCurrentUser);
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     //upload

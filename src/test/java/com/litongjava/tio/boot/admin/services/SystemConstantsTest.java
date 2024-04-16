@@ -38,8 +38,8 @@ public class SystemConstantsTest {
   public void findAll() {
     String tableName = "tio_boot_admin_system_constants_config";
     try {
-      String sql = "select * from " + tableName+" where key=?";
-      Record record = Db.findFirst(sql,"image");
+      String sql = "select * from " + tableName + " where key=?";
+      Record record = Db.findFirst(sql, "image");
       System.out.println(record.toMap());
       //attached_images 对应的数据类型是 text[],那么对应觉得java类型是什么呢?
       Object value = record.get("value");
@@ -47,5 +47,20 @@ public class SystemConstantsTest {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  @Test
+  public void batchUpdateByIds() {
+    String tableName = "tio_boot_admin_system_constants_config";
+    DbJsonService dbJsonService = Aop.get(DbJsonService.class);
+    Long[] ids = new Long[]{1L, 100L, 369029537511587840L};
+    Kv kv = Kv.create();
+    kv.set("ids", ids);
+    kv.set("deleted", 1);
+
+    DbJsonBean<Kv> kvDbJsonBean = dbJsonService.batchUpdateByIds(tableName, kv);
+    System.out.println(kvDbJsonBean);
+
+
   }
 }

@@ -19,7 +19,7 @@ public class InterceptorConfiguration {
     model.setInterceptor(saTokenInterceptor);
     model.addblockeUrl("/**"); // 拦截所有路由
     model.addAlloweUrls("/");
-    model.addAlloweUrls("/register/*", "/api/login/account"); // 设置例外路由
+    model.addAlloweUrls("/register/*", "/api/login/account","/api/login/outLogin"); // 设置例外路由
     model.addAlloweUrls("/api/event/add");
 
     ServerInteceptorConfigure serverInteceptorConfigure = new ServerInteceptorConfigure();
