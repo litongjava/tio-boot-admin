@@ -34,6 +34,7 @@ public class HttpServerRequestHandlerConfig {
     //upload
     r.add("/api/system/file/upload", systemUploadHandler::upload);
     r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
+    r.add("/api/system/file/uploadToTencentCos", systemUploadHandler::uploadToTencentCos);
     r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
