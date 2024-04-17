@@ -7,8 +7,6 @@ import com.litongjava.tio.boot.tesing.TioBootTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
