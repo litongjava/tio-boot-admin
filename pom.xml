@@ -125,6 +125,12 @@
       <version>2.57</version> <!-- 注意：更高版本不支持 JDK 8 -->
     </dependency>
 
+    <dependency>
+      <groupId>com.qcloud</groupId>
+      <artifactId>cos_api</artifactId>
+      <version>5.6.155</version>
+    </dependency>
+
 
   </dependencies>
   <profiles>

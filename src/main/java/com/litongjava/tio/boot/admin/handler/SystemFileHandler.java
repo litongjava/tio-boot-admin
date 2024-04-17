@@ -4,6 +4,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.GoogleStorageService;
+import com.litongjava.tio.boot.admin.services.TencentStorageService;
 import com.litongjava.tio.boot.http.TioControllerContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -83,5 +84,24 @@ public class SystemFileHandler {
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
     String url=googleStorageService.getUrlByFileId(fileId);
     return Resps.json(httpResponse, RespVo.ok(url));
+  }
+
+  public HttpResponse uploadToTencentCos(HttpRequest request) throws Exception {
+    HttpResponse httpResponse = TioControllerContext.getResponse();
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return httpResponse;
+    }
+
+    UploadFile uploadFile = request.getUploadFile("file");
+    TencentStorageService storageService = Aop.get(TencentStorageService.class);
+    if (uploadFile != null) {
+      RespVo respVo = storageService.upload(uploadFile);
+      return Resps.json(httpResponse, respVo);
+
+    }
+    return Resps.json(httpResponse, RespVo.ok("Fail"));
   }
 }

@@ -222,5 +222,4 @@ public class TableJsonController {
     DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.proTableColumns(f);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
-
 }
