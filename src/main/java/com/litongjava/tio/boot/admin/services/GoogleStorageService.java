@@ -32,8 +32,21 @@ public class GoogleStorageService {
 
   public RespVo uploadImageToGoogle(UploadFile uploadFile) {
     String filename = uploadFile.getName();
-    int size = uploadFile.getSize();
+    String suffix = FileNameUtil.getSuffix(filename);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+
     byte[] fileContent = uploadFile.getData();
+    //int size = uploadFile.getSize();
+
+    return uploadImageBytes(fileContent, filename, suffix, contentType);
+  }
+
+  public RespVo uploadImageBytes(byte[] fileContent, String filename, String suffix, String contentType) {
+    return uploadBytes(fileContent, filename, suffix, "public/images", contentType);
+  }
+
+  public RespVo uploadBytes(byte[] fileContent, String filename, String suffix, String folderName,
+                            String contentType) {
 
     // 上传文件
     long threadId = Thread.currentThread().getId();
@@ -45,35 +58,20 @@ public class GoogleStorageService {
       threadId = 0L;
     }
     long id = (new SnowflakeIdGenerator(threadId, 0L)).generateId();
-    String suffix = FileNameUtil.getSuffix(filename);
+
     String newFilename = id + "." + suffix;
 
-    String targetName = "public/images/" + newFilename;
+    String targetName = folderName + "/" + newFilename;
 
-    Kv kv1 = uploadBytesToGoogle(filename, id, targetName, fileContent, size, suffix);
-    // 返回RespVo
-    return RespVo.ok(kv1);
-  }
 
-  public Kv uploadBytesToGoogle(String filename, long id, String targetName, byte[] fileContent, int size,
-      String suffix) {
-
-    String contentType = ContentTypeUtils.getContentType(suffix);
-
-    Bucket bucket = StorageClient.getInstance().bucket();
-    BlobId blobId = BlobId.of(bucket.getName(), targetName);
-
-    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
-    Storage storage = bucket.getStorage();
-    Blob blob = storage.create(blobInfo, fileContent);
-    log.info("blob:{}", blob);
+    uploadBytesToGoogle(fileContent, targetName, contentType);
 
     // 存入到数据库
     String md5 = MD5.create().digestHex(fileContent);
     Kv kv = Kv.create();
     kv.set("md5", md5);
     kv.set("filename", filename);
-    kv.set("file_size", size);
+    kv.set("file_size", fileContent.length);
     kv.set("platform", "google");
     kv.set("bucket_name", bucketName);
     String replaceTargetName = replaceTargetName(targetName);
@@ -87,7 +85,21 @@ public class GoogleStorageService {
     Kv kv1 = Kv.create();
     kv1.set("id", save.getData().get("id") + "");
     kv1.set("url", downloadUrl);
-    return kv1;
+
+    // 返回RespVo
+    return RespVo.ok(kv1);
+  }
+
+  public Blob uploadBytesToGoogle(byte[] fileContent, String targetName, String contentType) {
+    Bucket bucket = StorageClient.getInstance().bucket();
+    BlobId blobId = BlobId.of(bucket.getName(), targetName);
+
+    BlobInfo blobInfo = BlobInfo.newBuilder(blobId).setContentType(contentType).build();
+    Storage storage = bucket.getStorage();
+    Blob blob = storage.create(blobInfo, fileContent);
+    log.info("blob:{}", blob);
+    return blob;
+
   }
 
   private String replaceTargetName(String targetName) {

@@ -23,6 +23,7 @@ public class HttpServerRequestHandlerConfig {
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
     GeographicHandler geographicHandler = Aop.get(GeographicHandler.class);
     SystemHandler systemHandler = Aop.get(SystemHandler.class);
+    StableDiffusionHandler stableDiffusionHandler = Aop.get(StableDiffusionHandler.class);
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
     r.add("/api/login/outLogin", apiLoginHandler::outLogin);
@@ -38,6 +39,8 @@ public class HttpServerRequestHandlerConfig {
     r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
+    r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
+
     // 将simpleHttpRoutes添加到TioBootServer
     TioBootServer.me().setHttpRoutes(r);
   }
