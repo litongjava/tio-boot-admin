@@ -67,8 +67,12 @@ public class StableDiffusionService {
       ThreadUtils.getFixedThreadPool().submit(() -> {
         try {
           // 上传文件
-          RespVo dstImage = Aop.get(GoogleStorageService.class).uploadImageToGoogle(uploadFile);
-          saveToDb(requestMap, finalRetval.getData(), dstImage.getData());
+          Object kv = null;
+          if (uploadFile != null) {
+            kv = Aop.get(GoogleStorageService.class).uploadImageToGoogle(uploadFile).getData();
+          }
+
+          saveToDb(requestMap, kv, finalRetval.getData());
         } catch (Exception e) {
           log.error("异步任务执行异常", e);
         }
@@ -78,16 +82,19 @@ public class StableDiffusionService {
   }
 
   public void saveToDb(Map<String, Object> requestMap, Object srcImage, Object dstImage) {
-    Object[] srcImages = new Object[] { srcImage };
-    Object[] dstImages = new Object[] { dstImage };
-
     Kv kv = Kv.create().set(requestMap);
-    kv.set("src_images", srcImages);
+    if (srcImage != null) {
+      Object[] srcImages = new Object[]{srcImage};
+      kv.set("src_images", srcImages);
+    }
+
+    Object[] dstImages = new Object[]{dstImage};
+
     kv.set("dst_images", dstImages);
 
-    String[] jsonFields = { "src_images", "dst_images" };
+    String[] jsonFields = {"src_images", "dst_images"};
     DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_sd_generated_history, kv,
-        jsonFields);
+      jsonFields);
     // DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_sd_generated_history, kv);
     log.info("save result:{}", save);
 
