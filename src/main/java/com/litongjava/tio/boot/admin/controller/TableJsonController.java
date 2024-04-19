@@ -6,7 +6,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.api.Http;
 import com.jfinal.kit.Kv;
 import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
@@ -78,7 +77,7 @@ public class TableJsonController {
     map.remove("f");
     Object current = map.remove("current");
     if (current != null) {
-      //add support for ant design pro table
+      // add support for ant design pro table
       map.put("pageNo", current);
     }
     Kv kv = KvUtils.camelToUnderscore(map);
@@ -141,6 +140,11 @@ public class TableJsonController {
   public HttpResponse exportExcel(String f, HttpRequest request) throws IOException {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    Object current = map.remove("current");
+    if (current != null) {
+      // add support for ant design pro table
+      map.put("pageNo", current);
+    }
     Kv kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);

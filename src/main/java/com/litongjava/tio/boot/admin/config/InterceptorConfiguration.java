@@ -21,6 +21,16 @@ public class InterceptorConfiguration {
     model.addAlloweUrls("/");
     model.addAlloweUrls("/register/*", "/api/login/account","/api/login/outLogin"); // 设置例外路由
     model.addAlloweUrls("/api/event/add");
+    String[] previewUrls= {
+        "/table/json/tio_boot_admin_system_article/get/*",
+        "/table/json/tio_boot_admin_system_docx/get/*",
+        "/table/json/tio_boot_admin_system_pdf/get/*"
+    };
+    model.addAlloweUrls(previewUrls);
+    
+    
+    
+    
 
     ServerInteceptorConfigure serverInteceptorConfigure = new ServerInteceptorConfigure();
     serverInteceptorConfigure.add(model);
@@ -28,4 +38,3 @@ public class InterceptorConfiguration {
     TioBootServer.me().setServerInteceptorConfigure(serverInteceptorConfigure);
   }
 }
-

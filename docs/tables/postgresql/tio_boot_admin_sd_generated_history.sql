@@ -5,7 +5,7 @@ CREATE TABLE tio_boot_admin_sd_generated_history (
 	prompt TEXT NOT NULL,
 	output_format VARCHAR ( 4 ),
 	negative_prompt TEXT,
-	seed VARCHAR ( 4 ),
+	seed VARCHAR ( 10 ),
 	aspect_ratio VARCHAR ( 4 ),
 	strength VARCHAR ( 4 ),
 	src_images json,
