@@ -5,7 +5,7 @@ import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.jfinal.aop.annotation.BeforeStartConfiguration;
 import com.litongjava.tio.boot.admin.handler.*;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.http.server.handler.SimpleHttpRoutes;
+import com.litongjava.tio.http.server.router.SimpleHttpRoutes;
 
 @BeforeStartConfiguration
 public class HttpServerRequestHandlerConfig {
