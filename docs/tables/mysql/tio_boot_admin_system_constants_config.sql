@@ -7,7 +7,7 @@ CREATE TABLE tio_boot_admin_system_constants_config (
     create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updater VARCHAR(64) DEFAULT '',
     update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    deleted SMALLINT,
+    deleted SMALLINT NOT NULL DEFAULT 0,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
     UNIQUE KEY `unique_key_update_time` (key_name, update_time)

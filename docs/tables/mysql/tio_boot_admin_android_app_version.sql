@@ -8,7 +8,7 @@ CREATE TABLE tio_boot_admin_android_app_version (
   create_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updater VARCHAR ( 64 ) DEFAULT '',
   update_time DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  deleted SMALLINT,
+  deleted SMALLINT NOT NULL DEFAULT 0,
   tenant_id BIGINT NOT NULL DEFAULT 0,
 PRIMARY KEY ( id ) 
 );
