@@ -84,9 +84,17 @@ public class MongodbJsonService {
 
     while (cursor.hasNext()) {
       Document document = cursor.next();
-      ObjectId objectId = document.getObjectId("_id");
+      Object idObject = document.get("_id");
+      String idValue = null;
+      if (idObject instanceof String) {
+        idValue = (String) idObject;
+      } else {
+        ObjectId objectId = document.getObjectId("_id");
+        idValue = objectId.toHexString();
+      }
+
       document.remove("_id");
-      document.put("id", objectId.toHexString());
+      document.put("id", idValue);
       lists.add(document);
     }
 

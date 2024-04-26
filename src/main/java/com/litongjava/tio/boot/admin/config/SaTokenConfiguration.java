@@ -42,7 +42,8 @@ public class SaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    SaManager.setSaTokenDao(new SaTokenDaoRedis("main"));
+    String cacheName = EnvironmentUtils.get("redis.cacheName");
+    SaManager.setSaTokenDao(new SaTokenDaoRedis(cacheName));
 
 
     //生成jwt token

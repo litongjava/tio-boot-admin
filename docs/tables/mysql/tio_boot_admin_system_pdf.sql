@@ -1,4 +1,4 @@
-CREATE TABLE tio_boot_admin_system_docx (
+CREATE TABLE tio_boot_admin_system_pdf (
   id BIGINT NOT NULL,
   name VARCHAR ( 256 ),
   version VARCHAR ( 32 ),
