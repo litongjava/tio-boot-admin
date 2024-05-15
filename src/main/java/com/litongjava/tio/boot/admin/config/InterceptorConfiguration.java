@@ -18,7 +18,9 @@ public class InterceptorConfiguration {
     HttpServerInterceptorModel model = new HttpServerInterceptorModel();
     model.setInterceptor(saTokenInterceptor);
     model.addblockeUrl("/**"); // 拦截所有路由
-    model.addAlloweUrls("/");
+    // index
+    model.addAlloweUrls("", "/");
+    //user
     model.addAlloweUrls("/register/*", "/api/login/account","/api/login/outLogin"); // 设置例外路由
     model.addAlloweUrls("/api/event/add");
     String[] previewUrls= {

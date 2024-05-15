@@ -12,7 +12,7 @@ import org.junit.Test;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.client.StableDiffusionClient;
 import com.litongjava.tio.http.common.UploadFile;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 import okhttp3.Response;
 
@@ -23,7 +23,7 @@ public class StableDiffusionClientTest {
 
   @Test
   public void generateSd3() {
-    EnvironmentUtils.load();
+    EnvUtils.load();
     Map<String, Object> requestMap = new HashMap<>();
     requestMap.put("mode", "image-to-image");
     requestMap.put("output_format", "jpeg");

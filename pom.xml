@@ -9,7 +9,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <graalvm.version>23.1.1</graalvm.version>
-    <tio.boot.version>1.4.2</tio.boot.version>
+    <tio.boot.version>1.4.3</tio.boot.version>
     <lombok-version>1.18.30</lombok-version>
     <table-to-json.version>1.2.9</table-to-json.version>
     <final.name>web-hello</final.name>
@@ -21,6 +21,13 @@
       <artifactId>logback-classic</artifactId>
       <version>1.2.3</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>jfinal-aop</artifactId>
+      <version>1.2.4</version>
+    </dependency>
+
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>tio-boot</artifactId>
@@ -36,7 +43,7 @@
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>hotswap-classloader</artifactId>
-      <version>1.2.2</version>
+      <version>1.2.3</version>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -49,17 +56,6 @@
       <groupId>com.alibaba.fastjson2</groupId>
       <artifactId>fastjson2</artifactId>
       <version>2.0.12</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>tio-utils</artifactId>
-      <version>3.7.3.v20240501-RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>tio-http-server</artifactId>
-      <version>3.7.3.v20240501-RELEASE</version>
     </dependency>
 
     <!-- Sa-Token 核心库 -->

@@ -1,20 +1,27 @@
 package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
-import com.litongjava.jfinal.aop.annotation.BeforeStartConfiguration;
-import com.litongjava.tio.boot.admin.handler.*;
+import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
+import com.litongjava.tio.boot.admin.handler.GeographicHandler;
+import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
+import com.litongjava.tio.boot.admin.handler.SystemFileHandler;
+import com.litongjava.tio.boot.admin.handler.SystemHandler;
+import com.litongjava.tio.boot.admin.handler.UserEventHandler;
+import com.litongjava.tio.boot.admin.handler.UserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.http.server.router.SimpleHttpRoutes;
+import com.litongjava.tio.http.server.router.HttpReqeustSimpleHandlerRoute;
 
-@BeforeStartConfiguration
-public class HttpServerRequestHandlerConfig {
+@AConfiguration
+public class HttpRequestHandlerConfig {
 
   @AInitialization
   public void httpRoutes() {
-
     // 创建simpleHttpRoutes
-    SimpleHttpRoutes r = new SimpleHttpRoutes();
+    HttpReqeustSimpleHandlerRoute r = TioBootServer.me().getHttpReqeustSimpleHandlerRoute();
+
     // 创建controller
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
     UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
@@ -40,8 +47,5 @@ public class HttpServerRequestHandlerConfig {
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
     r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
-
-    // 将simpleHttpRoutes添加到TioBootServer
-    TioBootServer.me().setHttpRoutes(r);
   }
 }

@@ -12,7 +12,7 @@ import cn.dev33.satoken.context.SaTokenContext;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 @AConfiguration
 public class SaTokenConfiguration {
@@ -42,7 +42,7 @@ public class SaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    String cacheName = EnvironmentUtils.get("redis.cacheName");
+    String cacheName = EnvUtils.get("redis.cacheName");
     SaManager.setSaTokenDao(new SaTokenDaoRedis(cacheName));
 
 

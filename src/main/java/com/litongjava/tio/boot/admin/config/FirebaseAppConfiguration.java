@@ -7,7 +7,7 @@ import com.litongjava.jfinal.aop.annotation.ABean;
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class FirebaseAppConfiguration {
   public void config() throws IOException {
     InputStream serviceAccount = ResourceUtil.getResourceAsStream("imaginix.json");
 
-    String bucketName = EnvironmentUtils.getStr("BUCKET_NAME");
+    String bucketName = EnvUtils.getStr("BUCKET_NAME");
 
     FirebaseOptions options = new FirebaseOptions.Builder()
       .setCredentials(GoogleCredentials.fromStream(serviceAccount))

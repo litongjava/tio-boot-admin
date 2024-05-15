@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 
 import okhttp3.Callback;
@@ -19,7 +19,7 @@ import okhttp3.Response;
 
 public class ClaudeClient {
   private static final String API_URL = "https://api.anthropic.com/v1/messages";
-  private static final String API_KEY = EnvironmentUtils.get("CLAUDE_API_KEY");
+  private static final String API_KEY = EnvUtils.get("CLAUDE_API_KEY");
   private static final String MODEL = "claude-3-opus-20240229";
   private static final int MAX_TOKEN = 256;
   private static final boolean STREAM = true;

@@ -6,22 +6,22 @@ import com.litongjava.jfinal.plugin.redis.Cache;
 import com.litongjava.jfinal.plugin.redis.Redis;
 import com.litongjava.jfinal.plugin.redis.RedisPlugin;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 @AConfiguration
 public class RedisPluginConfig {
 
   @AInitialization
   public RedisPlugin redisPlugin() {
-    String host = EnvironmentUtils.getStr("redis.host");
-    Integer port = EnvironmentUtils.getInt("redis.port");
-    String password = EnvironmentUtils.getStr("redis.password");
-    int redistimeout = EnvironmentUtils.getInt("redis.timeout", 60);
-    int redisDatabase = EnvironmentUtils.getInt("redis.database", 0);
-    String cacheName = EnvironmentUtils.get("redis.cacheName");
+    String host = EnvUtils.getStr("redis.host");
+    Integer port = EnvUtils.getInt("redis.port");
+    String password = EnvUtils.getStr("redis.password");
+    int redisTimeout = EnvUtils.getInt("redis.timeout", 60);
+    int redisDatabase = EnvUtils.getInt("redis.database", 0);
+    String cacheName = EnvUtils.get("redis.cacheName","main");
 
     // 创建并启动 Redis 插件
-    RedisPlugin mainRedis = new RedisPlugin(cacheName, host, port, redistimeout, password, redisDatabase);
+    RedisPlugin mainRedis = new RedisPlugin(cacheName, host, port, redisTimeout, password, redisDatabase);
     mainRedis.start();
 
     // 测试连接

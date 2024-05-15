@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.http.common.UploadFile;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -22,7 +22,7 @@ public class StableDiffusionClient {
   public static final String generateSd3ServerUrl = "https://api.stability.ai/v2beta/stable-image/generate/sd3";
 
   public Response generateSd3(UploadFile uploadFile, Map<String, Object> requestMap) {
-    String apiKey = EnvironmentUtils.get("SD_API_KEY");
+    String apiKey = EnvUtils.get("SD_API_KEY");
 
     OkHttpClient client = Aop.get(OkHttpClient.class);
 

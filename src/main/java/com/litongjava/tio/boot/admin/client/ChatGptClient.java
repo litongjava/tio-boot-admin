@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.client;
 import java.io.IOException;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.json.Json;
 
 import okhttp3.MediaType;
@@ -15,7 +15,7 @@ import okhttp3.Response;
 public class ChatGptClient {
 
   public Response completions(CompletionsModel model) {
-    String apiKey = EnvironmentUtils.get("OPENAI_API_KEY");
+    String apiKey = EnvUtils.get("OPENAI_API_KEY");
 
     OkHttpClient client = Aop.get(OkHttpClient.class);
 

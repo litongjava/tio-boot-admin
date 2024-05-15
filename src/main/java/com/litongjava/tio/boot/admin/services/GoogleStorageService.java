@@ -15,7 +15,7 @@ import com.litongjava.jfinal.plugin.activerecord.Db;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
-import com.litongjava.tio.utils.environment.EnvironmentUtils;
+import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.resp.RespVo;
 
@@ -28,7 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class GoogleStorageService {
-  String bucketName = EnvironmentUtils.getStr("BUCKET_NAME");
+  String bucketName = EnvUtils.getStr("BUCKET_NAME");
 
   public RespVo uploadImageToGoogle(UploadFile uploadFile) {
     String filename = uploadFile.getName();
