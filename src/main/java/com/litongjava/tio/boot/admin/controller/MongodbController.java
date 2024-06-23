@@ -12,18 +12,15 @@ import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.model.DbPage;
 import com.litongjava.data.utils.EasyExcelResponseUtils;
 import com.litongjava.data.utils.KvUtils;
-import com.litongjava.data.utils.TioRequestParamUtils;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.jfinal.plugin.activerecord.Record;
-import com.litongjava.jfinal.plugin.mongo.MongoDb;
 import com.litongjava.tio.boot.admin.services.MongodbJsonService;
+import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.annotation.EnableCORS;
 import com.litongjava.tio.http.server.annotation.RequestPath;
 import com.litongjava.tio.utils.resp.RespVo;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 
 import lombok.extern.slf4j.Slf4j;
 

@@ -1,23 +1,20 @@
 package com.litongjava.tio.boot.admin.handler;
 
-import com.litongjava.data.utils.TioRequestParamUtils;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.StableDiffusionService;
 import com.litongjava.tio.boot.http.TioControllerContext;
-import com.litongjava.tio.boot.http.handler.TioHttpHandlerUtil;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
 import com.litongjava.tio.utils.resp.RespVo;
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -31,9 +28,9 @@ public class StableDiffusionHandler {
     UploadFile uploadFile = request.getUploadFile("image");
 
     Map<String, Object> requestMap = new HashMap<>();
-    //值全部是String类型
+    // 值全部是String类型
     Map<String, Object[]> parameterMap = request.getParameterMap();
-    //remove image
+    // remove image
     parameterMap.remove("image");
     // Form data handling
 

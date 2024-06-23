@@ -39,10 +39,11 @@ public class HttpRequestHandlerConfig {
     r.add("/api/accountSettingCurrentUser", userHandler::accountSettingCurrentUser);
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
-    //upload
+    // upload
     r.add("/api/system/file/upload", systemUploadHandler::upload);
     r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
     r.add("/api/system/file/uploadToTencentCos", systemUploadHandler::uploadToTencentCos);
+    r.add("/api/system/file/upload/s3", systemUploadHandler::uploadToS3);
     r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);

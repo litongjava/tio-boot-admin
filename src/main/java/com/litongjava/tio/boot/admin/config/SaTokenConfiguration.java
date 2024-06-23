@@ -10,6 +10,7 @@ import cn.dev33.satoken.config.SaCookieConfig;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.context.SaTokenContext;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
+import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -45,11 +46,17 @@ public class SaTokenConfiguration {
     String cacheName = EnvUtils.get("redis.cacheName");
     SaManager.setSaTokenDao(new SaTokenDaoRedis(cacheName));
 
-
-    //生成jwt token
+    // 生成jwt token
     saTokenConfig.setJwtSecretKey("asdasdasifhueuiwyurfewbfjsdafjk");
-    //saTokenConfig.setTokenPrefix("Bearer");
+    // saTokenConfig.setTokenPrefix("Bearer");
     StpLogicJwtForSimple stpLogicJwtForSimple = new StpLogicJwtForSimple();
     StpUtil.setStpLogic(stpLogicJwtForSimple);
+
+    // 增加一个Api用户设置token永不过期,让外部系统通过这个token调用本系统
+    SaLoginModel loginModel = new SaLoginModel();
+    loginModel.setTimeout(-1);
+    loginModel.setToken("123456");
+    StpUtil.createLoginSession("1", loginModel);
+
   }
 }

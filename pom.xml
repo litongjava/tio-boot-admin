@@ -9,9 +9,9 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <graalvm.version>23.1.1</graalvm.version>
-    <tio.boot.version>1.4.3</tio.boot.version>
+    <tio.boot.version>1.4.5</tio.boot.version>
     <lombok-version>1.18.30</lombok-version>
-    <table-to-json.version>1.2.9</table-to-json.version>
+    <table-to-json.version>1.3.1</table-to-json.version>
     <final.name>web-hello</final.name>
     <main.class>com.litongjava.tio.boot.admin.AdminApp</main.class>
   </properties>
@@ -77,11 +77,6 @@
       <artifactId>table-to-json</artifactId>
       <version>${table-to-json.version}</version>
     </dependency>
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>jfinal-plugins</artifactId>
-      <version>1.0.9</version>
-    </dependency>
 
     <dependency>
       <groupId>mysql</groupId>
@@ -137,6 +132,12 @@
       <groupId>org.mongodb</groupId>
       <artifactId>mongo-java-driver</artifactId>
       <version>3.1.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>software.amazon.awssdk</groupId>
+      <artifactId>s3</artifactId>
+      <version>2.17.100</version> <!-- 请检查并使用最新版本 -->
     </dependency>
 
   </dependencies>

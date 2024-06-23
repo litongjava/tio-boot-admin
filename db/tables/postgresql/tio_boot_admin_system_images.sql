@@ -11,5 +11,4 @@ CREATE TABLE tio_boot_admin_system_images (
   deleted SMALLINT default 0,
   tenant_id BIGINT NOT NULL DEFAULT 0,
   PRIMARY KEY (id),
-  UNIQUE (update_time)
 );

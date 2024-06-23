@@ -1,8 +1,11 @@
 package com.litongjava.tio.boot.admin.handler;
 
+import java.io.File;
+
 import com.jfinal.kit.Kv;
 import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.tio.boot.admin.services.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.services.GoogleStorageService;
 import com.litongjava.tio.boot.admin.services.TencentStorageService;
 import com.litongjava.tio.boot.http.TioControllerContext;
@@ -14,8 +17,6 @@ import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
 import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.resp.RespVo;
-
-import java.io.File;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -47,7 +48,6 @@ public class SystemFileHandler {
       String id = (new SnowflakeIdGenerator(threadId, 0L)).generateId() + "";
       kv.set("id", id);
     }
-
 
     return Resps.json(httpResponse, RespVo.ok(kv));
   }
@@ -82,7 +82,7 @@ public class SystemFileHandler {
 
     long fileId = Long.parseLong(request.getParam("id"));
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
-    String url=googleStorageService.getUrlByFileId(fileId);
+    String url = googleStorageService.getUrlByFileId(fileId);
     return Resps.json(httpResponse, RespVo.ok(url));
   }
 
@@ -101,6 +101,26 @@ public class SystemFileHandler {
       RespVo respVo = storageService.upload(uploadFile);
       return Resps.json(httpResponse, respVo);
 
+    }
+    return Resps.json(httpResponse, RespVo.ok("Fail"));
+  }
+
+  public HttpResponse uploadToS3(HttpRequest request) throws Exception {
+    HttpResponse httpResponse = TioControllerContext.getResponse();
+    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+
+    String method = request.getMethod();
+    if ("OPTIONS".equals(method)) {
+      return httpResponse;
+    }
+
+    UploadFile uploadFile = request.getUploadFile("file");
+    String category = request.getParam("category");
+
+    AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+    if (uploadFile != null) {
+      RespVo respVo = storageService.upload(category, uploadFile);
+      return Resps.json(httpResponse, respVo);
     }
     return Resps.json(httpResponse, RespVo.ok("Fail"));
   }

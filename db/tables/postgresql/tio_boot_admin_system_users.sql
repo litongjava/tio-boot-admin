@@ -30,7 +30,7 @@ CREATE TABLE tio_boot_admin_system_users (
     deleted SMALLINT  NOT NULL DEFAULT 0,
     tenant_id BIGINT NOT NULL DEFAULT 0,
     PRIMARY KEY (id),
-    UNIQUE (username, update_time)
+    UNIQUE (username)
 );
 
 INSERT INTO tio_boot_admin_system_users (

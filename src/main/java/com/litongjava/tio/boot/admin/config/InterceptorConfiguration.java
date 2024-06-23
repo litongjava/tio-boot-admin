@@ -29,10 +29,6 @@ public class InterceptorConfiguration {
         "/table/json/tio_boot_admin_system_pdf/get/*"
     };
     model.addAlloweUrls(previewUrls);
-    
-    
-    
-    
 
     ServerInteceptorConfigure serverInteceptorConfigure = new ServerInteceptorConfigure();
     serverInteceptorConfigure.add(model);
