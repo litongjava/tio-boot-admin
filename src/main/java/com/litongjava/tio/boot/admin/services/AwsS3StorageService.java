@@ -65,9 +65,9 @@ public class AwsS3StorageService {
     log.info("Uploaded with ETag: {}", etag);
     String md5 = MD5.create().digestHex(fileContent);
 
-    Kv kv = Kv.create().set("md5", md5).set("filename", filename).set("file_size", size).set("platform", "tencent")
+    Kv kv = Kv.create().set("md5", md5).set("filename", filename).set("file_size", size)
         //
-        .set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
+        .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
