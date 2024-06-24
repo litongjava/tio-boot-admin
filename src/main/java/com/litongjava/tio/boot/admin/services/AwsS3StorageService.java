@@ -31,6 +31,15 @@ public class AwsS3StorageService {
     int size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
 
+    return upload(category, filename, size, fileContent);
+  }
+
+  public RespVo upload(String category, String filename, int size, byte[] fileContent) {
+    Kv kvResult = uploadReturnKv(category, filename, size, fileContent);
+    return RespVo.ok(kvResult);
+  }
+
+  public Kv uploadReturnKv(String category, String filename, int size, byte[] fileContent) {
     // 上传文件
     long threadId = Thread.currentThread().getId();
     if (threadId > 31L) {
@@ -46,10 +55,11 @@ public class AwsS3StorageService {
 
     String targetName = category + "/" + newFilename;
 
-    return uploadBytes(id, filename, targetName, fileContent, size, suffix);
+    Kv kvResult = uploadBytes(id, filename, targetName, fileContent, size, suffix);
+    return kvResult;
   }
 
-  public RespVo uploadBytes(long id, String filename, String targetName, byte[] fileContent, int size, String suffix) {
+  public Kv uploadBytes(long id, String filename, String targetName, byte[] fileContent, int size, String suffix) {
 
     String etag = null;
     // 示例使用upload方法
@@ -58,7 +68,7 @@ public class AwsS3StorageService {
       etag = response.eTag();
     } catch (Exception e) {
       log.error("Error uploading file to Tencent COS", e);
-      return RespVo.fail(e.getMessage());
+      throw new RuntimeException(e);
     }
 
     // Log and save to database
@@ -76,7 +86,7 @@ public class AwsS3StorageService {
 
     Kv kvResult = Kv.create().set("id", save.getData().get("id").toString()).set("url", downloadUrl);
 
-    return RespVo.ok(kvResult);
+    return kvResult;
 
   }
 

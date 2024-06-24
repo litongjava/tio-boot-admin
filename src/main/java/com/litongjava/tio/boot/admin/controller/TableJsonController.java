@@ -16,6 +16,7 @@ import com.litongjava.data.utils.KvUtils;
 import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.tio.boot.admin.services.TableJsonService;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -33,6 +34,9 @@ public class TableJsonController {
   @AAutowired
   private DbJsonService dbJsonService;
 
+  @AAutowired
+  private TableJsonService tableJsonService;
+
   @RequestPath("/index")
   public String index() {
     return "TableJsonController";
@@ -45,6 +49,7 @@ public class TableJsonController {
     Kv kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
+    tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
