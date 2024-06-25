@@ -20,11 +20,11 @@ public class CollegeDocumentUploadService {
     images.add(outputKv);
 
     Record record = new Record();
-    record.set("images", images);
+    record.set("files", images);
     Long longId = dbJsonBean.getData().getLong("id");
     record.set("id", longId);
 
-    String[] jsonFields = { "images" };
+    String[] jsonFields = { "files" };
     boolean update = Db.update(f, "id", record, jsonFields);
     log.info("update result:{},{},{}", f, longId, update);
   }

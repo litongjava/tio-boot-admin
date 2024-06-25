@@ -55,7 +55,7 @@ public class SaTokenConfiguration {
     // 增加一个Api用户设置token永不过期,让外部系统通过这个token调用本系统
     SaLoginModel loginModel = new SaLoginModel();
     loginModel.setTimeout(-1);
-    loginModel.setToken("123456");
+    loginModel.setToken("8186746460");
     StpUtil.createLoginSession("1", loginModel);
 
   }

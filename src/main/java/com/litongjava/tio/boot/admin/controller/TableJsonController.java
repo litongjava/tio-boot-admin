@@ -49,9 +49,13 @@ public class TableJsonController {
     Kv kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
     DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
-    tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
+    if (dbJsonBean.getCode() == 1) {
+      tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
+      return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    } else {
+      return RespVo.fail(dbJsonBean.getMsg()).code(dbJsonBean.getCode()).data(dbJsonBean.getData());
+    }
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/list")

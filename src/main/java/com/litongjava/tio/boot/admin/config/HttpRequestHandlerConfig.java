@@ -43,7 +43,10 @@ public class HttpRequestHandlerConfig {
     r.add("/api/system/file/upload", systemUploadHandler::upload);
     r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
     r.add("/api/system/file/uploadToTencentCos", systemUploadHandler::uploadToTencentCos);
-    r.add("/api/system/file/upload/s3", systemUploadHandler::uploadToS3);
+    r.add("/api/system/file/s3/upload", systemUploadHandler::uploadToS3);
+    r.add("/api/system/file/s3/md5", systemUploadHandler::getFromS3ByMd5);
+    r.add("/api/system/file/s3/url", systemUploadHandler::getUrlFromS3);
+
     r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);

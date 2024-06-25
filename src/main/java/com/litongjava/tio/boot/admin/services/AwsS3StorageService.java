@@ -6,6 +6,8 @@ import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.data.services.DbJsonService;
 import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.jfinal.plugin.activerecord.Db;
+import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.config.AwsS3Config;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
@@ -92,5 +94,33 @@ public class AwsS3StorageService {
 
   public String getUrl(String bucketName, String targetName) {
     return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
+  }
+
+  public Kv getUrlById(String id) {
+    String sql = "select md5,bucket_name,target_name from tio_boot_admin_system_upload_file where id=? and deleted=0";
+    Record record = Db.findFirst(sql, Long.parseLong(id));
+    if(record==null) {
+      return null;
+    }
+    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    Kv kv = record.toKv();
+    kv.remove("target_name");
+    kv.remove("bucket_name");
+    kv.set("url", url);
+    return kv;
+  }
+
+  public Kv getUrlByMd5(String md5) {
+    String sql = "select id,bucket_name,target_name from tio_boot_admin_system_upload_file where md5=? and deleted=0";
+    Record record = Db.findFirst(sql, md5);
+    if(record==null) {
+      return null;
+    }
+    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    Kv kv = record.toKv();
+    kv.remove("target_name");
+    kv.remove("bucket_name");
+    kv.set("url", url);
+    return kv;
   }
 }
