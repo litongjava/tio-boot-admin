@@ -7,6 +7,7 @@ import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
 import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
 import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
+import com.litongjava.tio.boot.admin.handler.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.SystemFileHandler;
 import com.litongjava.tio.boot.admin.handler.SystemFileS3Handler;
 import com.litongjava.tio.boot.admin.handler.SystemHandler;
@@ -43,13 +44,16 @@ public class HttpRequestHandlerConfig {
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     // upload
     r.add("/api/system/file/upload", systemUploadHandler::upload);
-    r.add("/api/system/file/uploadImageToGoogle", systemUploadHandler::uploadImageToGoogle);
+
     r.add("/api/system/file/uploadToTencentCos", systemUploadHandler::uploadToTencentCos);
     r.add("/api/system/file/s3/upload", systemFileS3Handler::upload);
     r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
     r.add("/api/system/file/s3/url", systemFileS3Handler::getUrl);
 
-    r.add("/api/system/file/getGoogleFileUrl", systemUploadHandler::getGoogleFileUrl);
+    SystemFileFirebaseHandler systemFileFirebaseHandler = Aop.get(SystemFileFirebaseHandler.class);
+    r.add("/api/system/file/uploadToGoogle", systemFileFirebaseHandler::upload);
+    r.add("/api/system/file/firebase/getUrl", systemFileFirebaseHandler::getUrl);
+
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
     r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
