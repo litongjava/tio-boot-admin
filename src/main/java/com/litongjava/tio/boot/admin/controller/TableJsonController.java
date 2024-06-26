@@ -17,6 +17,7 @@ import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.services.TableJsonService;
+import com.litongjava.tio.boot.http.utils.TioHttpHandlerUtil;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -169,12 +170,21 @@ public class TableJsonController {
    */
   @RequestPath("/{f}/export-table-excel")
   public HttpResponse exportAllExcel(String f, HttpRequest request) throws IOException, SQLException {
-    log.info("tableName:{}", f);
+    Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
+    map.remove("f");
+    map.remove("current");
+    map.remove("pageNo");
+    map.remove("pageSize");
+
+    Kv kv = KvUtils.camelToUnderscore(map);
+
+    log.info("tableName:{},kv:{}", f, kv);
+
     // 导出 Excel
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = dbJsonService.listAll(f).getData();
+    List<Record> records = dbJsonService.listAll(f, kv).getData();
 
     HttpResponse response = EasyExcelResponseUtils.exportRecords(request, filename, f, records);
     log.info("finished");
@@ -217,22 +227,22 @@ public class TableJsonController {
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
-  @RequestPath("/f-names")
+  @RequestPath("/names")
   public RespVo tableNames() throws IOException {
     String[] data = dbJsonService.tableNames().getData();
     return RespVo.ok(data);
   }
 
-  @RequestPath("/{f}/f-config")
+  @RequestPath("/{f}/config")
   public RespVo fConfig(String f, String lang) {
     log.info("tableName:{}", f);
     DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.tableConfig(f, f, lang);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
-  @RequestPath("/{f}/proTableColumns")
+  @RequestPath("/{f}/columns")
   public RespVo proTableColumns(String f) {
-    DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.proTableColumns(f);
+    DbJsonBean<List<Map<String, Object>>> dbJsonBean = dbJsonService.columns(f);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 }

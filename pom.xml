@@ -72,6 +72,7 @@
       <version>1.37.0</version>
     </dependency>
 
+
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>table-to-json</artifactId>
