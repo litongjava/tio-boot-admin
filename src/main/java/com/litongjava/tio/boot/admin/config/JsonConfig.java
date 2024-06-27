@@ -5,9 +5,6 @@ import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.tio.utils.json.FastJson2Factory;
 import com.litongjava.tio.utils.json.Json;
 
-/**
- * Created by Tong Li <https://github.com/litongjava>
- */
 @AConfiguration
 public class JsonConfig {
 
