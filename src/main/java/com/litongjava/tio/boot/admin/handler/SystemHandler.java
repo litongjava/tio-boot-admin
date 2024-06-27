@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.handler;
 import cn.dev33.satoken.stp.StpUtil;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.SystemUserService;
-import com.litongjava.tio.boot.http.TioControllerContext;
+import com.litongjava.tio.boot.http.TioHttpContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -19,7 +19,7 @@ import java.util.Map;
 public class SystemHandler {
 
   public HttpResponse changeUserPassword(HttpRequest request) {
-    HttpResponse response = TioControllerContext.getResponse();
+    HttpResponse response = TioHttpContext.getResponse();
     HttpServerResponseUtils.enableCORS(response, new HttpCors());
 
     Map<String, String> requestMap = Json.getJson().parseToMap(request.getBodyString(), String.class, String.class);

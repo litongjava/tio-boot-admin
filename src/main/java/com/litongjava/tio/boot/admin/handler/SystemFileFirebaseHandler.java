@@ -2,7 +2,7 @@ package com.litongjava.tio.boot.admin.handler;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.GoogleStorageService;
-import com.litongjava.tio.boot.http.TioControllerContext;
+import com.litongjava.tio.boot.http.TioHttpContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
@@ -14,7 +14,7 @@ import com.litongjava.tio.utils.resp.RespVo;
 public class SystemFileFirebaseHandler {
 
   public HttpResponse upload(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = TioControllerContext.getResponse();
+    HttpResponse httpResponse = TioHttpContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -33,7 +33,7 @@ public class SystemFileFirebaseHandler {
   }
 
   public HttpResponse getUrl(HttpRequest request) {
-    HttpResponse httpResponse = TioControllerContext.getResponse();
+    HttpResponse httpResponse = TioHttpContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

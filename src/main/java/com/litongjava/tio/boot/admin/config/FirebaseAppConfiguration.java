@@ -12,11 +12,8 @@ import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 
-/**
- * Created by Tong Li <https://github.com/litongjava>
- */
 @AConfiguration
-public class FirebaseAppConfiguration { 
+public class FirebaseAppConfiguration {
 
   @AInitialization
   public void config() throws IOException {
@@ -24,10 +21,8 @@ public class FirebaseAppConfiguration {
 
     String bucketName = EnvUtils.getStr("BUCKET_NAME");
 
-    FirebaseOptions options = new FirebaseOptions.Builder()
-      .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-      .setStorageBucket(bucketName + ".appspot.com")
-      .build();
+    FirebaseOptions options = new FirebaseOptions.Builder().setCredentials(GoogleCredentials.fromStream(serviceAccount))
+        .setStorageBucket(bucketName + ".appspot.com").build();
 
     FirebaseApp.initializeApp(options);
     TioBootServer.me().addDestroyMethod(() -> {

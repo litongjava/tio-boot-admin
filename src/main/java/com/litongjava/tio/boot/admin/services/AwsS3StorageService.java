@@ -106,8 +106,10 @@ public class AwsS3StorageService {
     Kv kv = record.toKv();
     kv.remove("target_name");
     kv.remove("bucket_name");
-    kv.set("url", url);
-    return kv;
+    
+    Kv retval = Kv.by("url", url);
+    retval.set("id",kv.get("id").toString());
+    return retval;
   }
 
   public Kv getUrlByMd5(String md5) {
@@ -118,9 +120,9 @@ public class AwsS3StorageService {
     }
     String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
     Kv kv = record.toKv();
-    kv.remove("target_name");
-    kv.remove("bucket_name");
-    kv.set("url", url);
-    return kv;
+    
+    Kv retval = Kv.by("url", url);
+    retval.set("id",kv.get("id").toString());
+    return retval;
   }
 }

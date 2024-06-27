@@ -17,7 +17,7 @@ import com.litongjava.jfinal.aop.annotation.AAutowired;
 import com.litongjava.jfinal.plugin.activerecord.Page;
 import com.litongjava.jfinal.plugin.activerecord.Record;
 import com.litongjava.tio.boot.admin.services.TableJsonService;
-import com.litongjava.tio.boot.http.utils.TioHttpHandlerUtil;
+import com.litongjava.tio.boot.http.TioHttpContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -202,9 +202,10 @@ public class TableJsonController {
       List<Record> records = dbJsonService.listAll(table).getData();
       allTableData.put(table, records);
     }
-    HttpResponse httpResponse = EasyExcelResponseUtils.exportAllTableRecords(request, filename, allTableData);
+    HttpResponse response = TioHttpContext.getResponse();
+    EasyExcelResponseUtils.exportAllTableRecords(response, filename, allTableData);
     log.info("finished");
-    return httpResponse;
+    return response;
   }
 
   @RequestPath("/{f}/pageDeleted")
