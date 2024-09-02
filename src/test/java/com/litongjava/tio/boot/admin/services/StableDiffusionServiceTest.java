@@ -2,7 +2,7 @@ package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.boot.admin.config.TableToJsonConfig;
+import com.litongjava.tio.boot.admin.config.DbConfig;
 import com.litongjava.tio.boot.tesing.TioBootTest;
 import com.litongjava.tio.utils.resp.RespVo;
 import org.junit.BeforeClass;
@@ -20,7 +20,7 @@ public class StableDiffusionServiceTest {
 
   @BeforeClass
   public static void beforeClass() {
-    TioBootTest.before(TableToJsonConfig.class);
+    TioBootTest.before(DbConfig.class);
   }
 
   @Test

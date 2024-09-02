@@ -4,15 +4,16 @@ import java.util.Map;
 
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.services.DbJsonService;
-import com.litongjava.data.utils.DbJsonBeanUtils;
-import com.litongjava.data.utils.KvUtils;
+import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
+import com.litongjava.table.utils.KvUtils;
+import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.services.AwsS3StorageService;
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -25,7 +26,7 @@ import com.litongjava.tio.utils.resp.RespVo;
 public class SystemFileS3Handler {
 
   public HttpResponse upload(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -45,7 +46,7 @@ public class SystemFileS3Handler {
   }
 
   public HttpResponse getUploadRecordByMd5(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -55,16 +56,17 @@ public class SystemFileS3Handler {
 
     // 调用DbJsonService查询数据
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
-    Kv kv = KvUtils.camelToUnderscore(map);
-    DbJsonBean<Record> jsonBean = Aop.get(DbJsonService.class).get(TableNames.tio_boot_admin_system_upload_file, kv);
-    DbJsonBean<Kv> dbJsonBean = DbJsonBeanUtils.recordToKv(jsonBean);
+    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableResult<Record> jsonBean = ApiTable.get(TableNames.tio_boot_admin_system_upload_file, kv);
+    
+    TableResult<Kv> dbJsonBean = TableResultUtils.recordToKv(jsonBean);
 
     return Resps.json(httpResponse,
         RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg()));
   }
 
   public HttpResponse getUrl(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

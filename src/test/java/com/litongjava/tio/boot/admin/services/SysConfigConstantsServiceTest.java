@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.boot.admin.config.TableToJsonConfig;
+import com.litongjava.tio.boot.admin.config.DbConfig;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.boot.tesing.TioBootTest;
 import org.junit.BeforeClass;
@@ -14,7 +14,7 @@ public class SysConfigConstantsServiceTest {
 
   @BeforeClass
   public static void beforeClass() {
-    TioBootTest.before(TableToJsonConfig.class);
+    TioBootTest.before(DbConfig.class);
   }
 
   @Test

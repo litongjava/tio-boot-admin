@@ -8,19 +8,19 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.model.DbPage;
-import com.litongjava.data.services.DbJsonService;
-import com.litongjava.data.utils.DbJsonBeanUtils;
-import com.litongjava.data.utils.EasyExcelResponseUtils;
-import com.litongjava.data.utils.KvUtils;
+import com.litongjava.db.activerecord.Page;
+import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.aop.annotation.AAutowired;
-import com.litongjava.jfinal.plugin.activerecord.Page;
-import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.table.model.DbPage;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
+import com.litongjava.table.utils.EasyExcelResponseUtils;
+import com.litongjava.table.utils.KvUtils;
+import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.services.PostsService;
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -35,9 +35,6 @@ import lombok.extern.slf4j.Slf4j;
 @EnableCORS
 public class PostsController {
 
-  @AAutowired
-  private DbJsonService dbJsonService;
-
   @RequestPath("/index")
   public String index() {
     return "TableJsonController";
@@ -47,7 +44,7 @@ public class PostsController {
   public RespVo create(HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", TableNames.posts, kv);
     return Aop.get(PostsService.class).save(kv);
 
@@ -57,10 +54,10 @@ public class PostsController {
   public RespVo list(HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", TableNames.posts, kv);
-    DbJsonBean<List<Record>> dbJsonBean = dbJsonService.list(TableNames.posts, kv);
+    TableResult<List<Record>> dbJsonBean = ApiTable.list(TableNames.posts, kv);
     List<Record> lists = dbJsonBean.getData();
     //to map
     List<Map<String, Object>> listMap = lists.stream().map(Record::toMap).collect(Collectors.toList());
@@ -71,8 +68,8 @@ public class PostsController {
   @RequestPath("/{f}/listAll")
   public RespVo listAll(String f) {
     log.info("tableName:{}", f);
-    DbJsonBean<List<Record>> listAll = dbJsonService.listAll(f);
-    DbJsonBean<List<Kv>> dbJsonBean = DbJsonBeanUtils.recordsToKv(listAll, false);
+    TableResult<List<Record>> listAll = ApiTable.listAll(f);
+    TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(listAll, false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -86,12 +83,12 @@ public class PostsController {
       //add support for ant design pro table
       map.put("pageNo", current);
     }
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Page<Record>> page = dbJsonService.page(TableNames.posts, kv);
+    TableResult<Page<Record>> page = ApiTable.page(TableNames.posts, kv);
 
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(page, false);
+    TableResult<DbPage<Kv>> dbJsonBean = TableResultUtils.pageToDbPage(page, false);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -99,11 +96,11 @@ public class PostsController {
   public RespVo get(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Record> jsonBean = dbJsonService.get(f, kv);
-    DbJsonBean<Kv> dbJsonBean = DbJsonBeanUtils.recordToKv(jsonBean);
+    TableResult<Record> jsonBean = ApiTable.get(f, kv);
+    TableResult<Kv> dbJsonBean = TableResultUtils.recordToKv(jsonBean);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -112,10 +109,10 @@ public class PostsController {
   public RespVo update(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(f, kv);
+    TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -123,8 +120,8 @@ public class PostsController {
   @RequestPath("/delete/{id}")
   public RespVo delete(Long id) {
     log.info("id:{}", id);
-    DbJsonBean<Boolean> dbJsonBean = dbJsonService.updateFlagById(TableNames.posts, id, "deleted", 1);
-//    DbJsonBean<Boolean> dbJsonBean = dbJsonService.delById(TableNames.posts, id);
+    TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(TableNames.posts, id, "deleted", 1);
+//    DbJsonBean<Boolean> dbJsonBean = ApiTable.delById(TableNames.posts, id);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -135,13 +132,14 @@ public class PostsController {
   public HttpResponse exportExcel(String f, HttpRequest request) throws IOException {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = dbJsonService.list(f, kv).getData();
-    return EasyExcelResponseUtils.exportRecords(request, filename, f, records);
+    List<Record> records = ApiTable.list(f, kv).getData();
+    HttpResponse response = TioRequestContext.getResponse();
+    return EasyExcelResponseUtils.exportRecords(response, filename, f, records);
   }
 
   /**
@@ -154,9 +152,10 @@ public class PostsController {
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = dbJsonService.listAll(f).getData();
+    List<Record> records = ApiTable.listAll(f).getData();
 
-    HttpResponse response = EasyExcelResponseUtils.exportRecords(request, filename, f, records);
+    HttpResponse response = TioRequestContext.getResponse();
+    EasyExcelResponseUtils.exportRecords(response, filename, f, records);
     log.info("finished");
     return response;
   }
@@ -164,15 +163,15 @@ public class PostsController {
   @RequestPath("/export-all-table-excel")
   public HttpResponse exportAllTableExcel(HttpRequest request) throws IOException {
     String filename = "all-table_" + System.currentTimeMillis() + ".xlsx";
-    String[] tables = dbJsonService.getAllTableNames();
+    String[] tables = ApiTable.getAllTableNames();
     LinkedHashMap<String, List<Record>> allTableData = new LinkedHashMap<>();
 
     for (String table : tables) {
       // 获取数据
-      List<Record> records = dbJsonService.listAll(table).getData();
+      List<Record> records = ApiTable.listAll(table).getData();
       allTableData.put(table, records);
     }
-    HttpResponse response = TioHttpContext.getResponse();
+    HttpResponse response = TioRequestContext.getResponse();
     EasyExcelResponseUtils.exportAllTableRecords(response, filename, allTableData);
     log.info("finished");
     return response;
@@ -182,9 +181,9 @@ public class PostsController {
   public RespVo pageDeleted(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<DbPage<Kv>> dbJsonBean = DbJsonBeanUtils.pageToDbPage(dbJsonService.page(f, kv), false);
+    TableResult<DbPage<Kv>> dbJsonBean = TableResultUtils.pageToDbPage(ApiTable.page(f, kv), false);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -192,21 +191,21 @@ public class PostsController {
   @RequestPath("/{f}/recover")
   public RespVo recover(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
-    DbJsonBean<Boolean> dbJsonBean = dbJsonService.updateFlagById(f, id, "deleted", 0);
+    TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(f, id, "deleted", 0);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/f-names")
   public RespVo tableNames() throws IOException {
-    String[] data = dbJsonService.tableNames().getData();
+    String[] data = ApiTable.tableNames().getData();
     return RespVo.ok(data);
   }
 
   @RequestPath("/{f}/f-config")
   public RespVo fConfig(String f, String lang) {
     log.info("tableName:{}", f);
-    DbJsonBean<Map<String, Object>> dbJsonBean = dbJsonService.tableConfig(f, f, lang);
+    TableResult<Map<String, Object>> dbJsonBean = ApiTable.tableConfig(f, f, lang);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 

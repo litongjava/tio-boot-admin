@@ -3,10 +3,9 @@ package com.litongjava.tio.boot.admin.handler;
 import java.io.File;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.TencentStorageService;
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
@@ -15,6 +14,7 @@ import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
 import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -43,15 +43,14 @@ public class SystemFileHandler {
       if (threadId < 0L) {
         threadId = 0L;
       }
-      String id = (new SnowflakeIdGenerator(threadId, 0L)).generateId() + "";
-      kv.set("id", id);
+      kv.set("id", SnowflakeIdUtils.id());
     }
 
     return Resps.json(httpResponse, RespVo.ok(kv));
   }
 
   public HttpResponse uploadToTencentCos(HttpRequest request) throws Exception {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

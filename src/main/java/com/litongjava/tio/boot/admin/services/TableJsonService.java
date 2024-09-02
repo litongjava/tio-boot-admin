@@ -1,13 +1,14 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
 
 //@Slf4j
 public class TableJsonService {
 
-  public void afterSaveOrUpdate(String f, Kv kv, DbJsonBean<Kv> dbJsonBean) {
+  public void afterSaveOrUpdate(String f, TableInput kv, TableResult<Kv> dbJsonBean) {
     if ("rumi_sjsu_documents".equals(f)) {
       Aop.get(CollegeDocumentUploadService.class).afterSaveOrUpdate(f, kv, dbJsonBean);
       

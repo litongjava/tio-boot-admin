@@ -7,8 +7,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.LoginService;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
-import com.litongjava.tio.boot.http.TioHttpContext;
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -21,7 +20,7 @@ import cn.dev33.satoken.stp.StpUtil;
 
 public class ApiLoginHandler {
   public HttpResponse account(HttpRequest request) {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -58,7 +57,7 @@ public class ApiLoginHandler {
   }
 
   public HttpResponse outLogin(HttpRequest request) {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();
@@ -72,7 +71,7 @@ public class ApiLoginHandler {
   }
 
   public HttpResponse validateLogin(HttpRequest request) {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

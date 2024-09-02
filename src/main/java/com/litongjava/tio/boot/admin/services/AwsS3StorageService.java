@@ -2,17 +2,17 @@ package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.services.DbJsonService;
-import com.litongjava.data.utils.SnowflakeIdGenerator;
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.plugin.activerecord.Db;
-import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.db.activerecord.Db;
+import com.litongjava.db.activerecord.Record;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.config.AwsS3Config;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -51,7 +51,7 @@ public class AwsS3StorageService {
     if (threadId < 0L) {
       threadId = 0L;
     }
-    long id = (new SnowflakeIdGenerator(threadId, 0L)).generateId();
+    long id = SnowflakeIdUtils.id();
     String suffix = FileNameUtil.getSuffix(filename);
     String newFilename = id + "." + suffix;
 
@@ -77,13 +77,13 @@ public class AwsS3StorageService {
     log.info("Uploaded with ETag: {}", etag);
     String md5 = MD5.create().digestHex(fileContent);
 
-    Kv kv = Kv.create().set("md5", md5).set("filename", filename).set("file_size", size)
+    TableInput kv = TableInput.create().set("md5", md5).set("filename", filename).set("file_size", size)
         //
         .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
-    DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
     Kv kvResult = Kv.create().set("id", save.getData().get("id").toString()).set("url", downloadUrl);
@@ -99,30 +99,30 @@ public class AwsS3StorageService {
   public Kv getUrlById(String id) {
     String sql = "select md5,bucket_name,target_name from tio_boot_admin_system_upload_file where id=? and deleted=0";
     Record record = Db.findFirst(sql, Long.parseLong(id));
-    if(record==null) {
+    if (record == null) {
       return null;
     }
     String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
     Kv kv = record.toKv();
     kv.remove("target_name");
     kv.remove("bucket_name");
-    
+
     Kv retval = Kv.by("url", url);
-    retval.set("id",kv.get("id").toString());
+    retval.set("id", kv.get("id").toString());
     return retval;
   }
 
   public Kv getUrlByMd5(String md5) {
     String sql = "select id,bucket_name,target_name from tio_boot_admin_system_upload_file where md5=? and deleted=0";
     Record record = Db.findFirst(sql, md5);
-    if(record==null) {
+    if (record == null) {
       return null;
     }
     String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
     Kv kv = record.toKv();
-    
+
     Kv retval = Kv.by("url", url);
-    retval.set("id",kv.get("id").toString());
+    retval.set("id", kv.get("id").toString());
     return retval;
   }
 }

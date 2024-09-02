@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.handler;
 
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -13,7 +13,7 @@ import com.litongjava.tio.utils.resp.RespVo;
 public class GeographicHandler {
 
   public HttpResponse province(HttpRequest httpRequest) {
-    HttpResponse response = TioHttpContext.getResponse();
+    HttpResponse response = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(response, new HttpCors());
 
     RespVo ok = RespVo.ok(new String[]{});

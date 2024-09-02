@@ -1,14 +1,17 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.litongjava.data.utils.SnowflakeIdGenerator;
-import com.litongjava.jfinal.plugin.activerecord.Db;
-import com.litongjava.jfinal.plugin.activerecord.Record;
-import com.litongjava.tio.boot.admin.costants.TableNames;
-import lombok.extern.slf4j.Slf4j;
+import java.sql.SQLException;
+
 import org.postgresql.util.PGobject;
 
-import java.sql.SQLException;
+import com.alibaba.fastjson2.JSONObject;
+import com.litongjava.db.activerecord.Db;
+import com.litongjava.db.activerecord.Record;
+import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by litonglinux@qq.com on 3/25/2024_7:26 PM
@@ -26,7 +29,7 @@ public class UserEventService {
     if (threadId < 0) {
       threadId = 0;
     }
-    long id = new SnowflakeIdGenerator(threadId, 0).generateId();
+    long id =SnowflakeIdUtils.id();
 
     try {
       pGobject.setValue(jsonString);

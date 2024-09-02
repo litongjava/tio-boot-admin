@@ -7,8 +7,9 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.jfinal.plugin.mongo.MongoDb;
+import com.litongjava.mongo.MongoDb;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -55,7 +56,7 @@ public class EmqxService {
     return "success";
   }
 
-  public DbJsonBean<Kv> getEmqxAuth(Object userId) {
+  public TableResult<Kv> getEmqxAuth(Object userId) {
     MongoDatabase database = MongoDb.getDatabase();
     MongoCollection<Document> collection = database.getCollection("mqtt_user");
 
@@ -66,9 +67,9 @@ public class EmqxService {
       String username = document.getString("username");
       String password = document.getString("password");
       Kv kv = Kv.by("username", username).set("password", password).set("userId", userId);
-      return DbJsonBean.ok(kv);
+      return TableResult.ok(kv);
     } else {
-      return DbJsonBean.fail("not found user:" + userId);
+      return TableResult.fail("not found user:" + userId);
     }
   }
 
@@ -127,14 +128,14 @@ public class EmqxService {
     collection.updateOne(filter, set);
   }
 
-  public DbJsonBean<Kv> saveOrUpdate(String tableName, Kv kv) {
+  public TableResult<Kv> saveOrUpdate(String tableName, TableInput kv) {
     Object idValue = kv.remove("id");
     if (idValue != null) {
       updateAuthUser(idValue, kv.getStr("user_id"), kv.getStr("username"), kv.getStr("password"));
-      return DbJsonBean.ok();
+      return TableResult.ok();
     } else {
       addAuthUser(kv.getStr("user_id"), kv.getStr("username"), kv.getStr("password"));
-      return DbJsonBean.ok();
+      return TableResult.ok();
     }
   }
 

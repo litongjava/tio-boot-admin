@@ -1,9 +1,9 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.jfinal.plugin.activerecord.Db;
-import com.litongjava.jfinal.plugin.activerecord.DbTemplate;
-import com.litongjava.jfinal.plugin.activerecord.Record;
-import com.litongjava.jfinal.plugin.activerecord.SqlPara;
+import com.litongjava.db.activerecord.Db;
+import com.litongjava.db.activerecord.DbTemplate;
+import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.SqlPara;
 import com.litongjava.tio.utils.resp.RespVo;
 
 /**

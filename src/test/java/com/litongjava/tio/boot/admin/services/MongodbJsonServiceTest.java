@@ -4,10 +4,10 @@ import org.bson.Document;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.model.DbPage;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.table.model.DbPage;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
 import com.litongjava.tio.boot.admin.config.MongoClientConfiguration;
 import com.litongjava.tio.boot.tesing.TioBootTest;
 import com.litongjava.tio.utils.json.FastJson2Utils;
@@ -24,9 +24,9 @@ public class MongodbJsonServiceTest {
 
   @Test
   public void test() {
-    Kv kv = Kv.create();
+    TableInput kv = TableInput.create();
     kv.set("username", "emqx");
-    DbJsonBean<DbPage<Document>> dbJsonBean = mongodbJsonService.page("mqtt_user", kv);
+    TableResult<DbPage<Document>> dbJsonBean = mongodbJsonService.page("mqtt_user", kv);
     RespVo respVo = RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
     System.out.println(FastJson2Utils.toJson(respVo));
   }

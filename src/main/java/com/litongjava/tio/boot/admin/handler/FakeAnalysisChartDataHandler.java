@@ -4,7 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.litongjava.tio.boot.http.TioHttpContext;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -21,7 +21,7 @@ import com.litongjava.tio.utils.resp.RespVo;
 public class FakeAnalysisChartDataHandler {
 
   public HttpResponse index(HttpRequest request) {
-    HttpResponse httpResponse = TioHttpContext.getResponse();
+    HttpResponse httpResponse = TioRequestContext.getResponse();
     HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
 
     String method = request.getMethod();

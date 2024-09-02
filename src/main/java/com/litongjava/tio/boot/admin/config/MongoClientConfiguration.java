@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
-import com.litongjava.jfinal.plugin.mongo.MongoDb;
+import com.litongjava.mongo.MongoDb;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.mongodb.MongoClient;

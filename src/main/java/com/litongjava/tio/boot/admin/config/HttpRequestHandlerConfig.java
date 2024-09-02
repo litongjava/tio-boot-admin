@@ -14,7 +14,7 @@ import com.litongjava.tio.boot.admin.handler.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.admin.handler.UserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.http.server.router.HttpReqeustSimpleHandlerRoute;
+import com.litongjava.tio.http.server.router.RequestRoute;
 
 @AConfiguration
 public class HttpRequestHandlerConfig {
@@ -22,7 +22,7 @@ public class HttpRequestHandlerConfig {
   @AInitialization
   public void httpRoutes() {
     // 创建simpleHttpRoutes
-    HttpReqeustSimpleHandlerRoute r = TioBootServer.me().getHttpReqeustSimpleHandlerRoute();
+    RequestRoute r = TioBootServer.me().getRequestRoute();
 
     // 创建controller
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);

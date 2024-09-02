@@ -12,14 +12,14 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DataPageRequest;
-import com.litongjava.data.model.DataQueryRequest;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.model.DbPage;
-import com.litongjava.data.utils.KvUtils;
+import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.plugin.activerecord.Record;
-import com.litongjava.jfinal.plugin.mongo.MongoDb;
+import com.litongjava.mongo.MongoDb;
+import com.litongjava.table.model.DataPageRequest;
+import com.litongjava.table.model.DataQueryRequest;
+import com.litongjava.table.model.DbPage;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -29,7 +29,7 @@ import com.mongodb.client.result.DeleteResult;
 
 public class MongodbJsonService {
 
-  public DbJsonBean<DbPage<Document>> page(String f, Kv kv) {
+  public TableResult<DbPage<Document>> page(String f, TableInput kv) {
     DataPageRequest dataPageRequest = new DataPageRequest(kv);
     Integer pageNo = dataPageRequest.getPageNo();
     Integer pageSize = dataPageRequest.getPageSize();
@@ -102,10 +102,10 @@ public class MongodbJsonService {
     pageData.setTotal((int) totalCount);
     pageData.setList(lists);
 
-    return DbJsonBean.ok(pageData);
+    return TableResult.ok(pageData);
   }
 
-  public DbJsonBean<List<Record>> list(String f, Kv kv) {
+  public TableResult<List<Record>> list(String f, TableInput kv) {
     new DataPageRequest(kv);
 
     DataQueryRequest queryRequest = new DataQueryRequest(kv);
@@ -165,11 +165,11 @@ public class MongodbJsonService {
       lists.add(record);
     }
 
-    return DbJsonBean.ok(lists);
+    return TableResult.ok(lists);
 
   }
 
-  public DbJsonBean<List<Record>> listAll(String f) {
+  public TableResult<List<Record>> listAll(String f) {
 
     MongoDatabase database = MongoDb.getDatabase();
     MongoCollection<Document> collection = database.getCollection(f);
@@ -192,16 +192,15 @@ public class MongodbJsonService {
       }
       lists.add(record);
     }
-    return DbJsonBean.ok(lists);
+    return TableResult.ok(lists);
   }
 
-  public DbJsonBean<Kv> saveOrUpdate(String tableName, Kv kv) {
+  public TableResult<Kv> saveOrUpdate(String tableName, TableInput kv) {
     String[] jsonFields = (String[]) kv.remove("json_fields");
     return this.saveOrUpdate(tableName, kv, jsonFields);
   }
 
-  public DbJsonBean<Kv> saveOrUpdate(String tableName, Kv kv, String[] jsonFields) {
-    KvUtils.removeEmptyValue(kv);
+  public TableResult<Kv> saveOrUpdate(String tableName, TableInput kv, String[] jsonFields) {
 
     if (tableName.equals("mqtt_user")) {
       return Aop.get(EmqxService.class).saveOrUpdate(tableName, kv);
@@ -210,16 +209,16 @@ public class MongodbJsonService {
     }
   }
 
-  public DbJsonBean<Boolean> deleteById(String f, String id) {
+  public TableResult<Boolean> deleteById(String f, String id) {
 
     MongoDatabase database = MongoDb.getDatabase();
     MongoCollection<Document> collection = database.getCollection(f);
     Bson filter = Filters.eq("_id", new ObjectId(id));
     DeleteResult result = collection.deleteOne(filter);
     if (result.getDeletedCount() > 0) {
-      return DbJsonBean.ok();
+      return TableResult.ok();
     } else {
-      return DbJsonBean.fail();
+      return TableResult.fail();
     }
 
   }

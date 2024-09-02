@@ -8,13 +8,15 @@ import java.util.Map;
 import org.bson.Document;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.model.DbPage;
-import com.litongjava.data.utils.EasyExcelResponseUtils;
-import com.litongjava.data.utils.KvUtils;
+import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.plugin.activerecord.Record;
+import com.litongjava.table.model.DbPage;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.utils.EasyExcelResponseUtils;
+import com.litongjava.table.utils.KvUtils;
 import com.litongjava.tio.boot.admin.services.MongodbJsonService;
+import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -40,11 +42,11 @@ public class MongodbController {
       // add support for ant design pro table
       map.put("pageNo", current);
     }
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
 
-    DbJsonBean<DbPage<Document>> dbJsonBean = mongodbJsonService.page(f, kv);
+    TableResult<DbPage<Document>> dbJsonBean = mongodbJsonService.page(f, kv);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
@@ -60,7 +62,7 @@ public class MongodbController {
       // add support for ant design pro table
       map.put("pageNo", current);
     }
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
@@ -68,7 +70,8 @@ public class MongodbController {
     // 获取数据
     List<Record> records = mongodbJsonService.list(f, kv).getData();
     log.info("records:{}", records);
-    return EasyExcelResponseUtils.exportRecords(request, filename, f, records);
+    HttpResponse response = TioRequestContext.getResponse();
+    return EasyExcelResponseUtils.exportRecords(response, filename, f, records);
   }
   
   /**
@@ -82,8 +85,8 @@ public class MongodbController {
 
     // 获取数据
     List<Record> records = mongodbJsonService.listAll(f).getData();
-
-    HttpResponse response = EasyExcelResponseUtils.exportRecords(request, filename, f, records);
+    HttpResponse response = TioRequestContext.getResponse();
+    EasyExcelResponseUtils.exportRecords(response, filename, f, records);
     log.info("finished");
     return response;
   }
@@ -92,9 +95,9 @@ public class MongodbController {
   public RespVo create(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    Kv kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = KvUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
-    DbJsonBean<Kv> dbJsonBean = mongodbJsonService.saveOrUpdate(f, kv);
+    TableResult<Kv> dbJsonBean = mongodbJsonService.saveOrUpdate(f, kv);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
@@ -103,7 +106,7 @@ public class MongodbController {
   @RequestPath("/{f}/delete/{id}")
   public RespVo delete(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
-    DbJsonBean<Boolean> dbJsonBean = mongodbJsonService.deleteById(f, id);
+    TableResult<Boolean> dbJsonBean = mongodbJsonService.deleteById(f, id);
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 

@@ -2,8 +2,9 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
-import com.litongjava.jfinal.plugin.satoken.SaTokenDaoRedis;
+import com.litongjava.satoken.SaTokenDaoRedis;
 import com.litongjava.tio.boot.satoken.SaTokenContextForTio;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.config.SaCookieConfig;
@@ -13,7 +14,6 @@ import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
-import com.litongjava.tio.utils.environment.EnvUtils;
 
 @AConfiguration
 public class SaTokenConfiguration {
@@ -31,6 +31,7 @@ public class SaTokenConfiguration {
     SaTokenConfig saTokenConfig = new SaTokenConfig();
     saTokenConfig.setTokenStyle(SaTokenConsts.TOKEN_STYLE_SIMPLE_UUID);
     saTokenConfig.setActiveTimeout(50 * 60); // 设置活动超时时间为 50 分钟
+    saTokenConfig.setIsPrint(false);
 
     saTokenConfig.setIsShare(false);
     saTokenConfig.setTokenName("authorization"); // 设置 token 的名称

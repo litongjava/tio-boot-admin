@@ -1,17 +1,18 @@
 package com.litongjava.tio.boot.admin.services;
 
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.crypto.digest.MD5;
+import java.io.ByteArrayInputStream;
+
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.services.DbJsonService;
-import com.litongjava.data.utils.SnowflakeIdGenerator;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -20,9 +21,10 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
-import lombok.extern.slf4j.Slf4j;
 
-import java.io.ByteArrayInputStream;
+import cn.hutool.core.io.file.FileNameUtil;
+import cn.hutool.crypto.digest.MD5;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -71,7 +73,7 @@ public class TencentStorageService {
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);
     String md5 = MD5.create().digestHex(fileContent);
-    Kv kv = Kv.create()
+    TableInput kv = TableInput.create()
       .set("md5", md5)
       .set("filename", filename)
       .set("file_size", size)
@@ -81,7 +83,7 @@ public class TencentStorageService {
       .set("target_name", targetName)
       .set("file_id", etag);
 
-    DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(bucketName, targetName);
 
     Kv kvResult = Kv.create()

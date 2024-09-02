@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.services.DbJsonService;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.client.StableDiffusionClient;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.resp.RespVo;
-import com.litongjava.tio.utils.thread.ThreadUtils;
+import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.Response;
@@ -64,7 +65,7 @@ public class StableDiffusionService {
     if (retval != null) {
       // 使用ExecutorService异步执行任务
       RespVo finalRetval = retval;
-      ThreadUtils.getFixedThreadPool().submit(() -> {
+      TioThreadUtils.getFixedThreadPool().submit(() -> {
         try {
           // 上传文件
           Object kv = null;
@@ -82,7 +83,7 @@ public class StableDiffusionService {
   }
 
   public void saveToDb(Map<String, Object> requestMap, Object srcImage, Object dstImage) {
-    Kv kv = Kv.create().set(requestMap);
+    TableInput kv =TableInput.create().set(requestMap);
     if (srcImage != null) {
       Object[] srcImages = new Object[]{srcImage};
       kv.set("src_images", srcImages);
@@ -93,9 +94,9 @@ public class StableDiffusionService {
     kv.set("dst_images", dstImages);
 
     String[] jsonFields = {"src_images", "dst_images"};
-    DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_sd_generated_history, kv,
+    TableResult<Kv> save =ApiTable.save(TableNames.tio_boot_admin_sd_generated_history, kv,
       jsonFields);
-    // DbJsonBean<Kv> save = Aop.get(DbJsonService.class).save(TableNames.tio_boot_admin_sd_generated_history, kv);
+    // DbJsonBean<Kv> save = DbJsonService.getInstance().save(TableNames.tio_boot_admin_sd_generated_history, kv);
     log.info("save result:{}", save);
 
   }

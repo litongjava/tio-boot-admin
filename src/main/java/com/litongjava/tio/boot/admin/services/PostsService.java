@@ -1,21 +1,21 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.jfinal.kit.Kv;
-import com.litongjava.data.model.DbJsonBean;
-import com.litongjava.data.services.DbJsonService;
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.boot.admin.costants.TableNames;
-import com.litongjava.tio.utils.resp.RespVo;
-
 import java.util.Date;
 import java.util.List;
+
+import com.alibaba.fastjson2.JSONArray;
+import com.jfinal.kit.Kv;
+import com.litongjava.table.model.TableInput;
+import com.litongjava.table.model.TableResult;
+import com.litongjava.table.services.ApiTable;
+import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.utils.resp.RespVo;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
 public class PostsService {
-  public RespVo save(Kv kv) {
+  public RespVo save(TableInput kv) {
     JSONArray attachedImages = kv.getAs("attached_images");
     List<String> list = attachedImages.toJavaList(String.class);
     kv.set("created_at",new Date());
@@ -32,9 +32,7 @@ public class PostsService {
 
     kv.set("attached_images", strings);
 
-    DbJsonService dbJsonService = Aop.get(DbJsonService.class);
-    //
-    DbJsonBean<Kv> dbJsonBean = dbJsonService.saveOrUpdate(TableNames.posts, kv);
+    TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(TableNames.posts, kv);
 
     return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
 

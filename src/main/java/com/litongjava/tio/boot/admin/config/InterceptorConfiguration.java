@@ -5,7 +5,7 @@ import com.litongjava.jfinal.aop.annotation.AConfiguration;
 import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.tio.boot.http.interceptor.HttpServerInterceptorModel;
 import com.litongjava.tio.boot.http.interceptor.ServerInteceptorConfigure;
-import com.litongjava.tio.boot.satoken.SaTokenInterceptor;
+import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
 
 @AConfiguration
@@ -14,9 +14,9 @@ public class InterceptorConfiguration {
   @AInitialization
   public void config() {
     // 创建 SaToken 拦截器实例
-    SaTokenInterceptor saTokenInterceptor = new SaTokenInterceptor();
+    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();
     HttpServerInterceptorModel model = new HttpServerInterceptorModel();
-    model.setInterceptor(saTokenInterceptor);
+    model.setInterceptor(authTokenInterceptor);
     model.addblockeUrl("/**"); // 拦截所有路由
     // index
     model.addAlloweUrls("", "/");
