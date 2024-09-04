@@ -8,7 +8,10 @@ import com.litongjava.redis.RedisPlugin;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 @AConfiguration
+@Slf4j
 public class RedisPluginConfig {
 
   @AInitialization(priority = 99)
@@ -26,7 +29,13 @@ public class RedisPluginConfig {
 
     // 测试连接
     RedisCache cache = Redis.use(cacheName);
-    cache.getJedis().connect();
+    try {
+      cache.getJedis().connect();
+    }catch (Exception e) {
+      log.error("failed to connected to {},{},{}",host,port,password);
+      e.printStackTrace();
+    }
+    
 
     TioBootServer.me().addDestroyMethod(mainRedis::stop);
     return mainRedis;

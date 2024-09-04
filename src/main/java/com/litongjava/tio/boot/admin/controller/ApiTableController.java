@@ -28,10 +28,10 @@ import com.litongjava.tio.utils.resp.RespVo;
 
 import lombok.extern.slf4j.Slf4j;
 
-@RequestPath("/table/json")
+@RequestPath("/api/table")
 @Slf4j
 @EnableCORS
-public class TableJsonController {
+public class ApiTableController {
 
   @AAutowired
   private TableJsonService tableJsonService;

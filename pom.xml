@@ -9,7 +9,7 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <graalvm.version>23.1.1</graalvm.version>
-    <tio.boot.version>1.5.0</tio.boot.version>
+    <tio.boot.version>1.5.1</tio.boot.version>
     <lombok-version>1.18.30</lombok-version>
     <api-table.version>1.4.0</api-table.version>
     <final.name>web-hello</final.name>
@@ -25,7 +25,7 @@
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>jfinal-aop</artifactId>
-      <version>1.2.6</version>
+      <version>1.2.7</version>
     </dependency>
 
     <dependency>
