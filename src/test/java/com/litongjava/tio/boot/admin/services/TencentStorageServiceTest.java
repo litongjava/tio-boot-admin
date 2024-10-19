@@ -1,21 +1,21 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.boot.admin.config.DbConfig;
-import com.litongjava.tio.boot.tesing.TioBootTest;
-import com.litongjava.tio.http.common.UploadFile;
-import com.litongjava.tio.utils.json.FastJson2Utils;
-import com.litongjava.tio.utils.resp.RespVo;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.*;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.tio.boot.admin.config.DbConfig;
+import com.litongjava.tio.boot.tesing.TioBootTest;
+import com.litongjava.tio.http.common.UploadFile;
+import com.litongjava.tio.utils.json.FastJson2Utils;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -24,7 +24,7 @@ public class TencentStorageServiceTest {
 
   @BeforeClass
   public static void beforeClass() {
-    TioBootTest.before(DbConfig.class);
+    TioBootTest.runWith(DbConfig.class);
   }
 
   @Test
@@ -47,7 +47,7 @@ public class TencentStorageServiceTest {
       uploadFile.setSize(fileData.length);
 
       // Get an instance of TencentStorageService and upload the file
-      RespVo uploadResponse = Aop.get(TencentStorageService.class).upload(uploadFile);
+      RespBodyVo uploadResponse = Aop.get(TencentStorageService.class).upload(uploadFile);
 
       // Print the result
       System.out.println(FastJson2Utils.toJson(uploadResponse));

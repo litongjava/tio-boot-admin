@@ -7,9 +7,9 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.mongo.MongoDb;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;

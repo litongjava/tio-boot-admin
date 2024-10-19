@@ -1,31 +1,31 @@
 package com.litongjava.tio.boot.admin.services;
 
+
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
-import com.litongjava.db.activerecord.Db;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
+import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.config.AwsS3Config;
 import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
+import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
-import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.tio.utils.crypto.Md5Utils;
+import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
-/**
- * Created by Tong Li <https://github.com/litongjava>
- */
 @Slf4j
 public class AwsS3StorageService {
-  public RespVo upload(String category, UploadFile uploadFile) {
+  public RespBodyVo upload(String category, UploadFile uploadFile) {
     if (StrKit.isBlank(category)) {
       category = "default";
     }
@@ -33,51 +33,59 @@ public class AwsS3StorageService {
     int size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
 
-    return upload(category, filename, size, fileContent);
+    return RespBodyVo.ok(uploadBytes(category, filename, size, fileContent));
   }
 
-  public RespVo upload(String category, String filename, int size, byte[] fileContent) {
-    Kv kvResult = uploadReturnKv(category, filename, size, fileContent);
-    return RespVo.ok(kvResult);
-  }
-
-  public Kv uploadReturnKv(String category, String filename, int size, byte[] fileContent) {
+  public UploadResultVo uploadBytes(String category, String originFilename, int size, byte[] fileContent) {
     // 上传文件
-    long threadId = Thread.currentThread().getId();
-    if (threadId > 31L) {
-      threadId %= 31L;
-    }
-
-    if (threadId < 0L) {
-      threadId = 0L;
-    }
     long id = SnowflakeIdUtils.id();
-    String suffix = FileNameUtil.getSuffix(filename);
+    String suffix = FilenameUtils.getSuffix(originFilename);
     String newFilename = id + "." + suffix;
 
     String targetName = category + "/" + newFilename;
 
-    Kv kvResult = uploadBytes(id, filename, targetName, fileContent, size, suffix);
-    return kvResult;
+    return uploadBytes(id, originFilename, targetName, fileContent, size, suffix);
   }
 
-  public Kv uploadBytes(long id, String filename, String targetName, byte[] fileContent, int size, String suffix) {
+  /**
+   * @param id
+   * @param originFilename
+   * @param targetName
+   * @param fileContent
+   * @param size
+   * @param suffix
+   * @return
+   */
+  public UploadResultVo uploadBytes(long id, String originFilename, String targetName, byte[] fileContent, int size, String suffix) {
+    String md5 = Md5Utils.digestHex(fileContent);
+    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
+    if (record != null) {
+      log.info("select table reuslt:{}", record.toMap());
+      id = record.getLong("id");
+      String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+      Kv kv = record.toKv();
+      kv.remove("target_name");
+      kv.remove("bucket_name");
+      kv.set("url", url);
+      kv.set("md5", md5);
+      return new UploadResultVo(id, originFilename, url, md5);
+    } else {
+      log.info("not found from cache table:{}", md5);
+    }
 
     String etag = null;
-    // 示例使用upload方法
     try (S3Client client = new AwsS3Config().buildClient();) {
       PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
-      log.error("Error uploading file to Tencent COS", e);
+      e.printStackTrace();
       throw new RuntimeException(e);
     }
 
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
-    String md5 = MD5.create().digestHex(fileContent);
 
-    TableInput kv = TableInput.create().set("md5", md5).set("filename", filename).set("file_size", size)
+    TableInput kv = TableInput.create().set("filename", originFilename).set("file_size", size).set("md5", md5)
         //
         .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
@@ -86,9 +94,7 @@ public class AwsS3StorageService {
     TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
-    Kv kvResult = Kv.create().set("id", save.getData().get("id").toString()).set("url", downloadUrl);
-
-    return kvResult;
+    return new UploadResultVo(save.getData().getLong("id"), originFilename, downloadUrl, md5);
 
   }
 
@@ -96,33 +102,32 @@ public class AwsS3StorageService {
     return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
   }
 
-  public Kv getUrlById(String id) {
-    String sql = "select md5,bucket_name,target_name from tio_boot_admin_system_upload_file where id=? and deleted=0";
-    Record record = Db.findFirst(sql, Long.parseLong(id));
-    if (record == null) {
-      return null;
-    }
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
-    Kv kv = record.toKv();
-    kv.remove("target_name");
-    kv.remove("bucket_name");
-
-    Kv retval = Kv.by("url", url);
-    retval.set("id", kv.get("id").toString());
-    return retval;
+  public UploadResultVo getUrlById(String id) {
+    return getUrlById(Long.parseLong(id));
   }
 
-  public Kv getUrlByMd5(String md5) {
-    String sql = "select id,bucket_name,target_name from tio_boot_admin_system_upload_file where md5=? and deleted=0";
-    Record record = Db.findFirst(sql, md5);
+  public UploadResultVo getUrlById(long id) {
+    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
       return null;
     }
     String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
-    Kv kv = record.toKv();
+    String originFilename = record.getStr("fielename");
+    String md5 = record.getStr("md5");
+    return new UploadResultVo(id, originFilename, url, md5);
+  }
 
-    Kv retval = Kv.by("url", url);
-    retval.set("id", kv.get("id").toString());
-    return retval;
+  public UploadResultVo getUrlByMd5(String md5) {
+    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
+    if (record == null) {
+      return null;
+    }
+    Long id = record.getLong("id");
+    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    Kv kv = record.toKv();
+    kv.set("url", url);
+    kv.set("md5", md5);
+    String originFilename = record.getStr("filename");
+    return new UploadResultVo(id, originFilename, url, md5);
   }
 }

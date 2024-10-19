@@ -3,14 +3,14 @@ package com.litongjava.tio.boot.admin.services;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.DbTemplate;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.db.activerecord.SqlPara;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.config.DbConfig;
 import com.litongjava.tio.boot.tesing.TioBootTest;
-import com.litongjava.tio.utils.resp.RespVo;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -19,7 +19,7 @@ public class UserServiceTest {
 
   @BeforeClass
   public static void beforeClass() {
-    TioBootTest.before(DbConfig.class);
+    TioBootTest.runWith(DbConfig.class);
   }
 
   @Test
@@ -43,7 +43,7 @@ public class UserServiceTest {
 
   @Test
   public void currentUser() {
-    RespVo respVo = Aop.get(UserService.class).currentUser(1L);
+    RespBodyVo respVo = Aop.get(UserService.class).currentUser(1L);
     System.out.println(respVo.getData());
   }
 }

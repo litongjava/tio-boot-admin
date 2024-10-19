@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
 import com.litongjava.satoken.SaTokenDaoRedis;
 import com.litongjava.tio.boot.satoken.SaTokenContextForTio;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -18,7 +18,7 @@ import cn.dev33.satoken.util.SaTokenConsts;
 @AConfiguration
 public class SaTokenConfiguration {
 
-  @AInitialization
+  @Initialization
   public void config() {
     // 初始化 Sa-Token 上下文
     SaTokenContext saTokenContext = new SaTokenContextForTio();

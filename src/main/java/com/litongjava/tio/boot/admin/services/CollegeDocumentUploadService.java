@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
 
 import lombok.extern.slf4j.Slf4j;
 

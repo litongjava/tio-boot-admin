@@ -6,12 +6,12 @@ import javax.sql.DataSource;
 
 import com.jfinal.template.Engine;
 import com.jfinal.template.source.ClassPathSourceFactory;
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
 import com.litongjava.db.activerecord.ActiveRecordPlugin;
 import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
 import com.litongjava.db.hikaricp.DsContainer;
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.openai.client.OpenAiClient;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.server.TioBootServer;
@@ -50,7 +50,7 @@ public class DbConfig {
    *
    * config ActiveRecordPlugin
    */
-  @AInitialization
+  @Initialization
   public void activeRecordPlugin(){
     // get dataSource
     DataSource dataSource = dataSource();

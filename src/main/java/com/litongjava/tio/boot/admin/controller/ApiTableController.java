@@ -7,24 +7,24 @@ import java.util.List;
 import java.util.Map;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.activerecord.Page;
+import com.litongjava.annotation.AAutowired;
+import com.litongjava.annotation.EnableCORS;
+import com.litongjava.annotation.RequestPath;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.jfinal.aop.annotation.AAutowired;
-import com.litongjava.table.model.DbPage;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
+import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.page.DbPage;
+import com.litongjava.model.page.Page;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.EasyExcelResponseUtils;
-import com.litongjava.table.utils.KvUtils;
+import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.services.TableJsonService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
-import com.litongjava.tio.http.server.annotation.EnableCORS;
-import com.litongjava.tio.http.server.annotation.RequestPath;
-import com.litongjava.tio.utils.resp.RespVo;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,48 +42,48 @@ public class ApiTableController {
   }
 
   @RequestPath("/{f}/create")
-  public RespVo create(String f, HttpRequest request) {
+  public RespBodyVo create(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
     if (dbJsonBean.getCode() == 1) {
       if(tableJsonService!=null) {
         tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
       }
-      return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+      return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
     } else {
-      return RespVo.fail(dbJsonBean.getMsg()).code(dbJsonBean.getCode()).data(dbJsonBean.getData());
+      return RespBodyVo.fail(dbJsonBean.getMsg()).code(dbJsonBean.getCode()).data(dbJsonBean.getData());
     }
 
   }
 
   @RequestPath("/{f}/list")
-  public RespVo list(String f, HttpRequest request) {
+  public RespBodyVo list(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<List<Record>> list = ApiTable.list(f, kv);
     
     TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(list, false);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/listAll")
-  public RespVo listAll(String f) {
+  public RespBodyVo listAll(String f) {
     log.info("tableName:{}", f);
     TableResult<List<Record>> listAll = ApiTable.listAll(f);
     TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(listAll, false);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/page")
-  public RespVo page(String f, HttpRequest request) {
+  public RespBodyVo page(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     Object current = map.remove("current");
@@ -91,57 +91,57 @@ public class ApiTableController {
       // add support for ant design pro table
       map.put("pageNo", current);
     }
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Page<Record>> page = ApiTable.page(f, kv);
 
     TableResult<DbPage<Kv>> dbJsonBean = TableResultUtils.pageToDbPage(page, false);
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/get")
-  public RespVo get(String f, HttpRequest request) {
+  public RespBodyVo get(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Record> jsonBean = ApiTable.get(f, kv);
     TableResult<Kv> dbJsonBean = TableResultUtils.recordToKv(jsonBean);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/update")
-  public RespVo update(String f, HttpRequest request) {
+  public RespBodyVo update(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/batchUpdate")
-  public RespVo batchUpdate(String f, HttpRequest request) {
+  public RespBodyVo batchUpdate(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.batchUpdateByIds(f, kv);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/delete/{id}")
-  public RespVo delete(String f, String id) {
+  public RespBodyVo delete(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
     TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(f, id, "deleted", 1);
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   /**
@@ -156,7 +156,7 @@ public class ApiTableController {
       // add support for ant design pro table
       map.put("pageNo", current);
     }
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
@@ -178,7 +178,7 @@ public class ApiTableController {
     map.remove("pageNo");
     map.remove("pageSize");
 
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
 
@@ -212,41 +212,41 @@ public class ApiTableController {
   }
 
   @RequestPath("/{f}/pageDeleted")
-  public RespVo pageDeleted(String f, HttpRequest request) {
+  public RespBodyVo pageDeleted(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
-    TableInput kv = KvUtils.camelToUnderscore(map);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<DbPage<Kv>> dbJsonBean = TableResultUtils.pageToDbPage(ApiTable.page(f, kv), false);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/recover")
-  public RespVo recover(String f, String id) {
+  public RespBodyVo recover(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
     TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(f, id, "deleted", 0);
 
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/names")
-  public RespVo tableNames() throws IOException {
+  public RespBodyVo tableNames() throws IOException {
     String[] data = ApiTable.tableNames().getData();
-    return RespVo.ok(data);
+    return RespBodyVo.ok(data);
   }
 
   @RequestPath("/{f}/config")
-  public RespVo fConfig(String f, String lang) {
+  public RespBodyVo fConfig(String f, String lang) {
     log.info("tableName:{}", f);
     TableResult<Map<String, Object>> dbJsonBean = ApiTable.tableConfig(f, f, lang);
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
   @RequestPath("/{f}/columns")
-  public RespVo proTableColumns(String f) {
+  public RespBodyVo proTableColumns(String f) {
     TableResult<List<Map<String, Object>>> dbJsonBean = ApiTable.columns(f);
-    return RespVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 }

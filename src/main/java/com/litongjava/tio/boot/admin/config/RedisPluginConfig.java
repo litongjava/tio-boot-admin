@@ -1,9 +1,9 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
 import com.litongjava.redis.Redis;
-import com.litongjava.redis.RedisCache;
+import com.litongjava.redis.RedisDb;
 import com.litongjava.redis.RedisPlugin;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class RedisPluginConfig {
 
-  @AInitialization(priority = 99)
+  @Initialization(priority = 99)
   public RedisPlugin redisPlugin() {
     String host = EnvUtils.getStr("redis.host");
     Integer port = EnvUtils.getInt("redis.port");
@@ -28,7 +28,7 @@ public class RedisPluginConfig {
     mainRedis.start();
 
     // 测试连接
-    RedisCache cache = Redis.use(cacheName);
+    RedisDb cache = Redis.use(cacheName);
     try {
       cache.getJedis().connect();
     }catch (Exception e) {

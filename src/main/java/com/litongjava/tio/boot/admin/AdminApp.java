@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin;
 
-import com.litongjava.jfinal.aop.annotation.AComponentScan;
+import com.litongjava.annotation.AComponentScan;
 import com.litongjava.tio.boot.TioApplication;
 
 @AComponentScan

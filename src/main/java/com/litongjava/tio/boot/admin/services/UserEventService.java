@@ -8,7 +8,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
 import com.litongjava.tio.boot.admin.costants.TableNames;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;

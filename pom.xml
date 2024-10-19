@@ -9,42 +9,81 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <graalvm.version>23.1.1</graalvm.version>
-    <tio.boot.version>1.5.1</tio.boot.version>
-    <lombok-version>1.18.30</lombok-version>
-    <api-table.version>1.4.0</api-table.version>
+    <java-model.version>1.1.3</java-model.version>
+    <tio-utils.version>3.7.3.v20241011-RELEASE</tio-utils.version>
+    <tio-boot.version>1.7.7</tio-boot.version>
+    <hotswap-classloader.version>1.2.6</hotswap-classloader.version>
+    <jfinal-aop.version>1.3.3</jfinal-aop.version>
+    <java-db.version>1.3.8</java-db.version>
+    <api-table.version>1.4.5</api-table.version>
+    <java.java-openai>1.1.1</java.java-openai>
+
     <final.name>web-hello</final.name>
     <main.class>com.litongjava.tio.boot.admin.AdminApp</main.class>
   </properties>
   <dependencies>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+      <groupId>com.litongjava</groupId>
+      <artifactId>java-model</artifactId>
+      <version>${java-model.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.litongjava</groupId>
-      <artifactId>jfinal-aop</artifactId>
-      <version>1.2.7</version>
+      <artifactId>tio-utils</artifactId>
+      <version>${tio-utils.version}</version>
     </dependency>
 
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>tio-boot</artifactId>
-      <version>${tio.boot.version}</version>
+      <version>${tio-boot.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>hotswap-classloader</artifactId>
+      <version>${hotswap-classloader.version}</version>
+    </dependency>
+
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>api-table</artifactId>
+      <version>${api-table.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>jfinal-aop</artifactId>
+      <version>${jfinal-aop.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>java-db</artifactId>
+      <version>${java-db.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.litongjava</groupId>
+      <artifactId>java-openai</artifactId>
+      <version>${java.java-openai}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>1.2.3</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
-      <version>${lombok-version}</version>
+      <version>1.18.30</version>
       <optional>true</optional>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>hotswap-classloader</artifactId>
-      <version>1.2.3</version>
-    </dependency>
+ 
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -70,19 +109,6 @@
       <groupId>cn.dev33</groupId>
       <artifactId>sa-token-jwt</artifactId>
       <version>1.37.0</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>api-table</artifactId>
-      <version>${api-table.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>java-db</artifactId>
-      <version>1.2.2</version>
     </dependency>
 
     <dependency>

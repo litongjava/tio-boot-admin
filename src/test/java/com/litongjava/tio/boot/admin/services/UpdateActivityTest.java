@@ -3,9 +3,9 @@ package com.litongjava.tio.boot.admin.services;
 import org.junit.Test;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.config.DbConfig;
 import com.litongjava.tio.utils.environment.EnvUtils;

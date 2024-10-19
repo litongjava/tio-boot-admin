@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.controller;
 
-import com.litongjava.tio.http.server.annotation.RequestPath;
-import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.annotation.RequestPath;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>

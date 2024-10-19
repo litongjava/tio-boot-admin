@@ -7,16 +7,16 @@ import com.google.cloud.storage.Bucket;
 import com.google.cloud.storage.Storage;
 import com.google.firebase.cloud.StorageClient;
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.resp.RespVo;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
 
 import cn.hutool.core.io.file.FileNameUtil;
@@ -30,7 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GoogleStorageService {
   String bucketName = EnvUtils.getStr("BUCKET_NAME");
 
-  public RespVo uploadImageToGoogle(UploadFile uploadFile) {
+  public RespBodyVo uploadImageToGoogle(UploadFile uploadFile) {
     String filename = uploadFile.getName();
     String suffix = FileNameUtil.getSuffix(filename);
     String contentType = ContentTypeUtils.getContentType(suffix);
@@ -41,11 +41,11 @@ public class GoogleStorageService {
     return uploadImageBytes(fileContent, filename, suffix, contentType);
   }
 
-  public RespVo uploadImageBytes(byte[] fileContent, String filename, String suffix, String contentType) {
+  public RespBodyVo uploadImageBytes(byte[] fileContent, String filename, String suffix, String contentType) {
     return uploadBytes(fileContent, filename, suffix, "public/images", contentType);
   }
 
-  public RespVo uploadBytes(byte[] fileContent, String filename, String suffix, String folderName, String contentType) {
+  public RespBodyVo uploadBytes(byte[] fileContent, String filename, String suffix, String folderName, String contentType) {
 
     // 上传文件
     long threadId = Thread.currentThread().getId();
@@ -85,7 +85,7 @@ public class GoogleStorageService {
     kv1.set("url", downloadUrl);
 
     // 返回RespVo
-    return RespVo.ok(kv1);
+    return RespBodyVo.ok(kv1);
   }
 
   public Blob uploadBytesToGoogle(byte[] fileContent, String targetName, String contentType) {

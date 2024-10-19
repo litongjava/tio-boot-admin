@@ -3,8 +3,8 @@ package com.litongjava.tio.boot.admin.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
 import com.litongjava.mongo.MongoDb;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -16,7 +16,7 @@ import com.mongodb.client.MongoDatabase;
 @AConfiguration
 public class MongoClientConfiguration {
 
-  @AInitialization
+  @Initialization
   public void config() {
 
     // String mongodbHost = "192.168.3.9";
@@ -42,8 +42,7 @@ public class MongoClientConfiguration {
     List<MongoCredential> credentials = new ArrayList<>();
 
     // MongoCredential.createScramSha1Credential()三个参数分别为 用户名 数据库名称 密码
-    MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(mongodbUsername, mongodbAuthSource,
-        mongodbPassword.toCharArray());
+    MongoCredential mongoCredential = MongoCredential.createScramSha1Credential(mongodbUsername, mongodbAuthSource, mongodbPassword.toCharArray());
     credentials.add(mongoCredential);
 
     // 通过连接认证获取MongoDB连接

@@ -3,15 +3,15 @@ package com.litongjava.tio.boot.admin.services;
 import java.io.ByteArrayInputStream;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.resp.RespVo;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class TencentStorageService {
-  public RespVo upload(UploadFile uploadFile) {
+  public RespBodyVo upload(UploadFile uploadFile) {
     String filename = uploadFile.getName();
     int size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
@@ -54,7 +54,7 @@ public class TencentStorageService {
     return uploadBytes(filename, id, targetName, fileContent, size, suffix);
   }
 
-  public RespVo uploadBytes(String filename, long id, String targetName, byte[] fileContent, int size, String suffix) {
+  public RespBodyVo uploadBytes(String filename, long id, String targetName, byte[] fileContent, int size, String suffix) {
     SystemTxCosConfigVo systemTxCosConfig = Aop.get(SysConfigConstantsService.class).getSystemTxCosConfig();
 
     COSClient cosClient = getCosClient(systemTxCosConfig);
@@ -65,7 +65,7 @@ public class TencentStorageService {
       etag = upload(cosClient, bucketName, targetName, fileContent, suffix);
     } catch (Exception e) {
       log.error("Error uploading file to Tencent COS", e);
-      return RespVo.fail(e.getMessage());
+      return RespBodyVo.fail(e.getMessage());
     } finally {
       cosClient.shutdown();
     }
@@ -90,7 +90,7 @@ public class TencentStorageService {
       .set("id", save.getData().get("id").toString())
       .set("url", downloadUrl);
 
-    return RespVo.ok(kvResult);
+    return RespBodyVo.ok(kvResult);
 
   }
 

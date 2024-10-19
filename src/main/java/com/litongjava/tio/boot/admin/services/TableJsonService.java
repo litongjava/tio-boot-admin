@@ -1,9 +1,9 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
 
 //@Slf4j
 public class TableJsonService {

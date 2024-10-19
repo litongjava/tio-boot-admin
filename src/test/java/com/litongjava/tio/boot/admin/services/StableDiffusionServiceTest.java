@@ -1,17 +1,15 @@
 package com.litongjava.tio.boot.admin.services;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.config.DbConfig;
 import com.litongjava.tio.boot.tesing.TioBootTest;
-import com.litongjava.tio.utils.resp.RespVo;
-import org.junit.BeforeClass;
-import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
@@ -20,7 +18,7 @@ public class StableDiffusionServiceTest {
 
   @BeforeClass
   public static void beforeClass() {
-    TioBootTest.before(DbConfig.class);
+    TioBootTest.runWith(DbConfig.class);
   }
 
   @Test

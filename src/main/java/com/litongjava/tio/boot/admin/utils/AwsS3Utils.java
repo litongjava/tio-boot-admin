@@ -14,12 +14,10 @@ public class AwsS3Utils {
   public static final String bucketName = EnvUtils.get("AWS_S3_BUCKET_NAME");
   public static final String regionName = EnvUtils.get("AWS_S3_REGION_NAME");
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
-      String suffix) {
+  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent, String suffix) {
     try {
       String contentType = ContentTypeUtils.getContentType(suffix);
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
-          .build();
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
 
       PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromBytes(fileContent));
       return putObject;
@@ -27,4 +25,9 @@ public class AwsS3Utils {
       throw new RuntimeException(e);
     }
   }
+
+  public static String getUrl(String targetName) {
+    return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
+  }
+
 }

@@ -7,7 +7,7 @@ import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
-import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
+import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 
 /**
@@ -17,9 +17,9 @@ public class UserEventHandler {
 
   public HttpResponse add(HttpRequest request) {
     HttpResponse httpResponse = TioRequestContext.getResponse();
-    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+    CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    String method = request.getMethod();
+    String method = request.getMethod().toString();
     if ("OPTIONS".equals(method)) {
       return httpResponse;
     }
@@ -37,7 +37,6 @@ public class UserEventHandler {
     }
 
     userEventService.save(eventName, eventValue);
-
 
     return httpResponse;
   }

@@ -4,16 +4,16 @@ import java.io.File;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.services.TencentStorageService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.http.server.model.HttpCors;
-import com.litongjava.tio.http.server.util.HttpServerResponseUtils;
+import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
-import com.litongjava.tio.utils.resp.RespVo;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 /**
@@ -22,9 +22,9 @@ import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 public class SystemFileHandler {
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = new HttpResponse(request);
-    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+    CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    String method = request.getMethod();
+    String method = request.getMethod().toString();
     if ("OPTIONS".equals(method)) {
       return httpResponse;
     }
@@ -46,14 +46,14 @@ public class SystemFileHandler {
       kv.set("id", SnowflakeIdUtils.id());
     }
 
-    return Resps.json(httpResponse, RespVo.ok(kv));
+    return Resps.json(httpResponse, RespBodyVo.ok(kv));
   }
 
   public HttpResponse uploadToTencentCos(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
-    HttpServerResponseUtils.enableCORS(httpResponse, new HttpCors());
+    CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    String method = request.getMethod();
+    String method = request.getMethod().toString();
     if ("OPTIONS".equals(method)) {
       return httpResponse;
     }
@@ -61,10 +61,10 @@ public class SystemFileHandler {
     UploadFile uploadFile = request.getUploadFile("file");
     TencentStorageService storageService = Aop.get(TencentStorageService.class);
     if (uploadFile != null) {
-      RespVo respVo = storageService.upload(uploadFile);
+      RespBodyVo respVo = storageService.upload(uploadFile);
       return Resps.json(httpResponse, respVo);
 
     }
-    return Resps.json(httpResponse, RespVo.ok("Fail"));
+    return Resps.json(httpResponse, RespBodyVo.ok("Fail"));
   }
 }

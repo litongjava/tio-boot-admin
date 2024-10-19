@@ -1,8 +1,8 @@
 package com.litongjava.tio.boot.admin.config;
 
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
 import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
@@ -14,15 +14,14 @@ import com.litongjava.tio.boot.admin.handler.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.admin.handler.UserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.http.server.router.RequestRoute;
+import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
 @AConfiguration
 public class HttpRequestHandlerConfig {
 
-  @AInitialization
+  @Initialization
   public void httpRoutes() {
-    // 创建simpleHttpRoutes
-    RequestRoute r = TioBootServer.me().getRequestRoute();
+    HttpRequestRouter r = TioBootServer.me().getRequestRouter();
 
     // 创建controller
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);

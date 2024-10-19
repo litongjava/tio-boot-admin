@@ -1,21 +1,21 @@
 package com.litongjava.tio.boot.admin.config;
 // 导入必要的类和注解
 
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
-import com.litongjava.jfinal.aop.annotation.AInitialization;
-import com.litongjava.tio.boot.http.interceptor.HttpServerInterceptorModel;
-import com.litongjava.tio.boot.http.interceptor.ServerInteceptorConfigure;
+import com.litongjava.annotation.AConfiguration;
+import com.litongjava.annotation.Initialization;
+import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
+import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
 
 @AConfiguration
 public class InterceptorConfiguration {
 
-  @AInitialization
+  @Initialization
   public void config() {
     // 创建 SaToken 拦截器实例
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();
-    HttpServerInterceptorModel model = new HttpServerInterceptorModel();
+    HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(authTokenInterceptor);
     model.addblockeUrl("/**"); // 拦截所有路由
     // index
@@ -30,9 +30,9 @@ public class InterceptorConfiguration {
     };
     model.addAlloweUrls(previewUrls);
 
-    ServerInteceptorConfigure serverInteceptorConfigure = new ServerInteceptorConfigure();
+    HttpInteceptorConfigure serverInteceptorConfigure = new HttpInteceptorConfigure();
     serverInteceptorConfigure.add(model);
     // 将拦截器配置添加到 Tio 服务器
-    TioBootServer.me().setServerInteceptorConfigure(serverInteceptorConfigure);
+    TioBootServer.me().setHttpInteceptorConfigure(serverInteceptorConfigure);
   }
 }

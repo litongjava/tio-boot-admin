@@ -2,11 +2,9 @@ package com.litongjava.tio.boot.admin.config;
 
 import java.util.concurrent.TimeUnit;
 
-import com.litongjava.jfinal.aop.Before;
-import com.litongjava.jfinal.aop.annotation.ABean;
-import com.litongjava.jfinal.aop.annotation.AConfiguration;
+import com.litongjava.annotation.ABean;
+import com.litongjava.annotation.BeforeStartConfiguration;
 
-import com.litongjava.jfinal.aop.annotation.BeforeStartConfiguration;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.OkHttpClient.Builder;

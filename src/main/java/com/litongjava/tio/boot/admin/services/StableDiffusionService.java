@@ -4,15 +4,15 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
+import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.client.StableDiffusionClient;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.json.Json;
-import com.litongjava.tio.utils.resp.RespVo;
 import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +23,8 @@ import okhttp3.Response;
  */
 @Slf4j
 public class StableDiffusionService {
-  public RespVo generateSd3(UploadFile uploadFile, Map<String, Object> requestMap) {
-    RespVo retval = null;
+  public RespBodyVo generateSd3(UploadFile uploadFile, Map<String, Object> requestMap) {
+    RespBodyVo retval = null;
     // 发送请求
     Response response = Aop.get(StableDiffusionClient.class).generateSd3(uploadFile, requestMap);
     if (response.isSuccessful()) {
@@ -43,7 +43,7 @@ public class StableDiffusionService {
         retval = Aop.get(GoogleStorageService.class).uploadImageBytes(bytes, fileName, suffix, contentType);
       } catch (IOException e) {
         e.printStackTrace();
-        return RespVo.fail(e.getMessage());
+        return RespBodyVo.fail(e.getMessage());
       }
     } else {
       String string = null;
@@ -51,12 +51,12 @@ public class StableDiffusionService {
         assert response.body() != null;
         string = response.body().string();
         Object parse = Json.getJson().parseObject(string);
-        RespVo fail = RespVo.fail("Fail");
+        RespBodyVo fail = RespBodyVo.fail("Fail");
         fail.setData(parse);
         return fail;
       } catch (IOException e) {
         e.printStackTrace();
-        return RespVo.fail(e.getMessage());
+        return RespBodyVo.fail(e.getMessage());
       }
 
     }
@@ -64,8 +64,8 @@ public class StableDiffusionService {
     // 记录数据库 异步
     if (retval != null) {
       // 使用ExecutorService异步执行任务
-      RespVo finalRetval = retval;
-      TioThreadUtils.getFixedThreadPool().submit(() -> {
+      RespBodyVo finalRetval = retval;
+      TioThreadUtils.submit(() -> {
         try {
           // 上传文件
           Object kv = null;

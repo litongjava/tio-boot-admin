@@ -12,14 +12,14 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.page.DbPage;
 import com.litongjava.mongo.MongoDb;
 import com.litongjava.table.model.DataPageRequest;
 import com.litongjava.table.model.DataQueryRequest;
-import com.litongjava.table.model.DbPage;
-import com.litongjava.table.model.TableInput;
-import com.litongjava.table.model.TableResult;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;

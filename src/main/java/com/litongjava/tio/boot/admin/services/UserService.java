@@ -1,16 +1,16 @@
 package com.litongjava.tio.boot.admin.services;
 
+import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.DbTemplate;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.db.activerecord.SqlPara;
-import com.litongjava.tio.utils.resp.RespVo;
+import com.litongjava.model.body.RespBodyVo;
 
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
 public class UserService {
-  public RespVo currentUser(Object loginId) {
+  public RespBodyVo currentUser(Object loginId) {
     //template
     DbTemplate template = Db.template("user.getUserById");
     //sqlPara 是一个包含了sql和para的对象
@@ -24,6 +24,6 @@ public class UserService {
     //执行查询
     Record first = Db.findFirst(sqlPara);
     //返回数据
-    return RespVo.ok(first.toKv());
+    return RespBodyVo.ok(first.toKv());
   }
 }
