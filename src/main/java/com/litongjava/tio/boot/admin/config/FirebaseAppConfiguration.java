@@ -17,7 +17,7 @@ public class FirebaseAppConfiguration {
 
   @Initialization
   public void config() throws IOException {
-    InputStream serviceAccount = ResourceUtil.getResourceAsStream("imaginix.json");
+    InputStream serviceAccount = ResourceUtil.getResourceAsStream("google_firebase.json");
 
     String bucketName = EnvUtils.getStr("BUCKET_NAME");
 

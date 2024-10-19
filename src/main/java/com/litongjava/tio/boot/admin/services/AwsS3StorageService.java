@@ -9,7 +9,6 @@ import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.config.AwsS3Config;
 import com.litongjava.tio.boot.admin.costants.TableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
@@ -74,7 +73,7 @@ public class AwsS3StorageService {
     }
 
     String etag = null;
-    try (S3Client client = new AwsS3Config().buildClient();) {
+    try (S3Client client = AwsS3Utils.buildClient();) {
       PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
