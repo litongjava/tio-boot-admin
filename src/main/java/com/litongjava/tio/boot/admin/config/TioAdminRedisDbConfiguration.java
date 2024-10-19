@@ -11,11 +11,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TioAdminRedisDbConfiguration {
 
-  public void redisPlugin() {
+  public void config() {
     String host = EnvUtils.getStr("redis.host");
     if (host == null) {
       return;
     }
+    log.info("host:{}", host);
     Integer port = EnvUtils.getInt("redis.port");
     String password = EnvUtils.getStr("redis.password");
     int redisTimeout = EnvUtils.getInt("redis.timeout", 60);

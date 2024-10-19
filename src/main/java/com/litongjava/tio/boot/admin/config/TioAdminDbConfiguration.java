@@ -13,6 +13,9 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class TioAdminDbConfiguration {
   public void config() {
     // get dataSource
@@ -20,6 +23,7 @@ public class TioAdminDbConfiguration {
     if (jdbcUrl == null) {
       return;
     }
+    log.info("jdbcUrl:{}", jdbcUrl);
     String jdbcUser = EnvUtils.get("jdbc.user");
 
     String jdbcPswd = EnvUtils.get("jdbc.pswd");
