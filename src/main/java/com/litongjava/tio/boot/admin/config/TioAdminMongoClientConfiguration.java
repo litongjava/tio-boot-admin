@@ -11,7 +11,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
-public class TioBootAdminAppMongoClientConfiguration {
+public class TioAdminMongoClientConfiguration {
 
   public void config() {
     String mongodbHost = EnvUtils.getStr("mongodb.host");

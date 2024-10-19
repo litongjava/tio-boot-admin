@@ -5,7 +5,7 @@ import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
 
-public class TioBootAdminAppInterceptorConfiguration {
+public class TioAdminInterceptorConfiguration {
 
   public void config() {
     // 创建 SaToken 拦截器实例

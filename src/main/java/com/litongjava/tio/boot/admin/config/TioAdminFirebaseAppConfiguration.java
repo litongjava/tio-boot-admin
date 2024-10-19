@@ -10,7 +10,7 @@ import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 
-public class TioBootAdminAppFirebaseAppConfiguration {
+public class TioAdminFirebaseAppConfiguration {
 
   public void config() throws IOException {
     InputStream serviceAccount = ResourceUtil.getResourceAsStream("google_firebase.json");

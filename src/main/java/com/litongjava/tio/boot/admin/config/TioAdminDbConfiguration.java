@@ -13,7 +13,7 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class TioBootAdminAppDbConfiguration {
+public class TioAdminDbConfiguration {
   public void config() {
     // get dataSource
     String jdbcUrl = EnvUtils.get("jdbc.url");

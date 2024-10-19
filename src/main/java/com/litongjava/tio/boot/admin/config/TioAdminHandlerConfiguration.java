@@ -14,7 +14,7 @@ import com.litongjava.tio.boot.admin.handler.UserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
-public class TioBootAdminAppHttpRequestHandlerConfiguration {
+public class TioAdminHandlerConfiguration {
 
   public void config() {
     HttpRequestRouter r = TioBootServer.me().getRequestRouter();

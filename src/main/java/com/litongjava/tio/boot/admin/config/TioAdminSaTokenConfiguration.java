@@ -12,7 +12,7 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
 
-public class TioBootAdminAppSaTokenConfiguration {
+public class TioAdminSaTokenConfiguration {
 
   public void config() {
     // 初始化 Sa-Token 上下文

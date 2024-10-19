@@ -9,7 +9,7 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class TioBootAdminAppRedisDbConfiguration {
+public class TioAdminRedisDbConfiguration {
 
   public void redisPlugin() {
     String host = EnvUtils.getStr("redis.host");
