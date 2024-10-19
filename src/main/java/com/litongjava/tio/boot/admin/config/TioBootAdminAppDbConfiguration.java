@@ -2,12 +2,6 @@ package com.litongjava.tio.boot.admin.config;
 
 import java.util.Arrays;
 
-import javax.sql.DataSource;
-
-import com.jfinal.template.Engine;
-import com.jfinal.template.source.ClassPathSourceFactory;
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.db.activerecord.ActiveRecordPlugin;
 import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
@@ -19,11 +13,13 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-@AConfiguration
-public class DbConfig {
-
-  public DataSource dataSource() {
+public class TioBootAdminAppDbConfiguration {
+  public void config() {
+    // get dataSource
     String jdbcUrl = EnvUtils.get("jdbc.url");
+    if (jdbcUrl == null) {
+      return;
+    }
     String jdbcUser = EnvUtils.get("jdbc.user");
 
     String jdbcPswd = EnvUtils.get("jdbc.pswd");
@@ -42,48 +38,23 @@ public class DbConfig {
     DsContainer.setDataSource(hikariDataSource);
     // add destroy
     TioBootServer.me().addDestroyMethod(hikariDataSource::close);
-    return hikariDataSource;
 
-  }
-
-  /*
-   *
-   * config ActiveRecordPlugin
-   */
-  @Initialization
-  public void activeRecordPlugin(){
-    // get dataSource
-    DataSource dataSource = dataSource();
     // create arp
-    ActiveRecordPlugin arp = new ActiveRecordPlugin(dataSource);
+    ActiveRecordPlugin arp = new ActiveRecordPlugin(hikariDataSource);
     arp.setContainerFactory(new OrderedFieldContainerFactory());
     if (EnvUtils.isDev()) {
       arp.setDevMode(true);
+      arp.setShowSql(true);
     }
-
-    arp.setShowSql(true);
-    String jdbcUrl = EnvUtils.get("jdbc.url");
-
     if (jdbcUrl.contains("postgresql")) {
       arp.setDialect(new PostgreSqlDialect());
     }
-
-    // config engine
-    Engine engine = arp.getEngine();
-    // devMode下修改sql文件无需重启
-    engine.setDevMode(EnvUtils.isDev());
-    // 设置sql文件路径
-    engine.setSourceFactory(new ClassPathSourceFactory());
-    // 添加压缩
-    engine.setCompressorOn(' ');
-    engine.setCompressorOn('\n');
     // add sql file
-    arp.addSqlTemplate("/sql/all_sql.sql");
     // start
     arp.start();
 
     ApiTable.setEmbeddingFun((string) -> {
-      Float[] embeddingArray = OpenAiClient.embeddingArray(string);
+      float[] embeddingArray = OpenAiClient.embeddingArray(string);
       return Arrays.toString(embeddingArray);
     });
 

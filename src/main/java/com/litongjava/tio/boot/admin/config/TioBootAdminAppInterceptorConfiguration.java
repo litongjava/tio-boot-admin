@@ -1,17 +1,12 @@
 package com.litongjava.tio.boot.admin.config;
-// 导入必要的类和注解
 
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
 
-@AConfiguration
-public class InterceptorConfiguration {
+public class TioBootAdminAppInterceptorConfiguration {
 
-  @Initialization
   public void config() {
     // 创建 SaToken 拦截器实例
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();

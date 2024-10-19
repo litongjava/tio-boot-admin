@@ -10,7 +10,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.client.StableDiffusionClient;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.thread.TioThreadUtils;
@@ -94,7 +94,7 @@ public class StableDiffusionService {
     kv.set("dst_images", dstImages);
 
     String[] jsonFields = {"src_images", "dst_images"};
-    TableResult<Kv> save =ApiTable.save(TableNames.tio_boot_admin_sd_generated_history, kv,
+    TableResult<Kv> save =ApiTable.save(TioBootAdminTableNames.tio_boot_admin_sd_generated_history, kv,
       jsonFields);
     // DbJsonBean<Kv> save = DbJsonService.getInstance().save(TableNames.tio_boot_admin_sd_generated_history, kv);
     log.info("save result:{}", save);

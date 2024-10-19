@@ -3,8 +3,6 @@ package com.litongjava.tio.boot.admin.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.mongo.MongoDb;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -13,18 +11,9 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
-@AConfiguration
-public class MongoClientConfiguration {
+public class TioBootAdminAppMongoClientConfiguration {
 
-  @Initialization
   public void config() {
-
-    // String mongodbHost = "192.168.3.9";
-    // int mongodbPort = 27017;
-    // String mongodbAuthSource = "admin";
-    // String mongodbUsername = "admin";
-    // String mongodbPassword = "Litong@123";
-
     String mongodbHost = EnvUtils.getStr("mongodb.host");
     if (mongodbHost == null) {
       return;

@@ -1,7 +1,5 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
 import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
@@ -16,11 +14,9 @@ import com.litongjava.tio.boot.admin.handler.UserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
-@AConfiguration
-public class HttpRequestHandlerConfig {
+public class TioBootAdminAppHttpRequestHandlerConfiguration {
 
-  @Initialization
-  public void httpRoutes() {
+  public void config() {
     HttpRequestRouter r = TioBootServer.me().getRequestRouter();
 
     // 创建controller
@@ -33,6 +29,7 @@ public class HttpRequestHandlerConfig {
     SystemHandler systemHandler = Aop.get(SystemHandler.class);
     StableDiffusionHandler stableDiffusionHandler = Aop.get(StableDiffusionHandler.class);
     SystemFileS3Handler systemFileS3Handler = Aop.get(SystemFileS3Handler.class);
+
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
     r.add("/api/login/outLogin", apiLoginHandler::outLogin);

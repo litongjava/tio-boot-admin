@@ -13,7 +13,7 @@ import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
@@ -76,7 +76,7 @@ public class GoogleStorageService {
     kv.set("target_name", replaceTargetName);
     kv.set("file_id", id);
 
-    TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
 
     // 下载地址
     String downloadUrl = getUrl(bucketName, replaceTargetName);
@@ -105,7 +105,7 @@ public class GoogleStorageService {
   }
 
   public String getUrlByFileId(long fileId) {
-    String sql = "select bucket_name,target_name from " + TableNames.tio_boot_admin_system_upload_file + " where id=?";
+    String sql = "select bucket_name,target_name from " + TioBootAdminTableNames.tio_boot_admin_system_upload_file + " where id=?";
     Record record = Db.findFirst(sql, fileId);
 
     return getUrl(record.getStr("bucket_name"), record.getStr("target_name"));

@@ -23,11 +23,6 @@ public class ApiLoginHandler {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    String method = request.getMethod().toString();
-    if ("OPTIONS".equals(method)) {
-      return httpResponse;
-    }
-
     String bodyString = request.getBodyString();
     LoginAccountVo loginAccountVo = Json.getJson().parse(bodyString, LoginAccountVo.class);
 
@@ -58,14 +53,7 @@ public class ApiLoginHandler {
   public HttpResponse outLogin(HttpRequest request) {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
-
-    String method = request.getMethod().toString();
-    if ("OPTIONS".equals(method)) {
-      return httpResponse;
-    }
-
     StpUtil.logout();
-
     return Resps.json(httpResponse, RespBodyVo.ok());
   }
 

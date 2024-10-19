@@ -9,7 +9,7 @@ import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
@@ -90,7 +90,7 @@ public class AwsS3StorageService {
         //
         .set("target_name", targetName).set("file_id", etag);
 
-    TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
     return new UploadResultVo(save.getData().getLong("id"), originFilename, downloadUrl, md5);

@@ -7,7 +7,7 @@ import org.postgresql.util.PGobject;
 import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +36,7 @@ public class UserEventService {
       record.set("name", eventName);
       record.set("value", pGobject);
       record.set("id", id);
-      boolean save = Db.save(TableNames.tio_boot_admin_system_user_event, record);
+      boolean save = Db.save(TioBootAdminTableNames.tio_boot_admin_system_user_event, record);
       log.info("save result:{}", save);
     } catch (SQLException e) {
       e.printStackTrace();

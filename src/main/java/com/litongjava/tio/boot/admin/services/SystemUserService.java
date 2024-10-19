@@ -5,7 +5,7 @@ import java.util.Map;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 
 import cn.hutool.crypto.digest.DigestUtil;
 
@@ -26,12 +26,12 @@ public class SystemUserService {
 
     String hashedPassword = DigestUtil.sha256Hex(oldPassword);
 
-    String sqlTemplate = "select count(1) from " + TableNames.tio_boot_admin_system_users + " where id=? and password=?";
+    String sqlTemplate = "select count(1) from " + TioBootAdminTableNames.tio_boot_admin_system_users + " where id=? and password=?";
     boolean exists = Db.existsBySql(sqlTemplate, userId, hashedPassword);
     if (!exists) {
       return RespBodyVo.fail("wrong password");
     }
-    sqlTemplate = "update " + TableNames.tio_boot_admin_system_users + " set password=? where id=?";
+    sqlTemplate = "update " + TioBootAdminTableNames.tio_boot_admin_system_users + " set password=? where id=?";
     int update = Db.updateBySql(sqlTemplate, DigestUtil.sha256Hex(newPassword), userId);
 
     if (update == 1) {

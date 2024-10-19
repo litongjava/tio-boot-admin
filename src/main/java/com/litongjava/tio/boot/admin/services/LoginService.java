@@ -6,7 +6,7 @@ import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
 import cn.hutool.crypto.digest.DigestUtil;
 
 /**
- * Created by litonglinux@qq.com on 3/25/2024_9:04 PM
+ * @author Tong Li
  */
 public class LoginService {
   public Long getUserIdByUsernameAndPassword(LoginAccountVo loginAccountVo) {

@@ -1,7 +1,5 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.redis.Redis;
 import com.litongjava.redis.RedisDb;
 import com.litongjava.redis.RedisPlugin;
@@ -10,13 +8,14 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
-@AConfiguration
 @Slf4j
-public class RedisPluginConfig {
+public class TioBootAdminAppRedisDbConfiguration {
 
-  @Initialization(priority = 99)
-  public RedisPlugin redisPlugin() {
+  public void redisPlugin() {
     String host = EnvUtils.getStr("redis.host");
+    if (host == null) {
+      return;
+    }
     Integer port = EnvUtils.getInt("redis.port");
     String password = EnvUtils.getStr("redis.password");
     int redisTimeout = EnvUtils.getInt("redis.timeout", 60);
@@ -31,13 +30,11 @@ public class RedisPluginConfig {
     RedisDb cache = Redis.use(cacheName);
     try {
       cache.getJedis().connect();
-    }catch (Exception e) {
-      log.error("failed to connected to {},{},{}",host,port,password);
+    } catch (Exception e) {
+      log.error("failed to connected to {},{},{}", host, port, password);
       e.printStackTrace();
     }
-    
 
     TioBootServer.me().addDestroyMethod(mainRedis::stop);
-    return mainRedis;
   }
 }

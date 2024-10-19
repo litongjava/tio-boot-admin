@@ -8,7 +8,7 @@ import com.litongjava.db.TableResult;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.costants.TableNames;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
@@ -83,7 +83,7 @@ public class TencentStorageService {
       .set("target_name", targetName)
       .set("file_id", etag);
 
-    TableResult<Kv> save = ApiTable.save(TableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(bucketName, targetName);
 
     Kv kvResult = Kv.create()
