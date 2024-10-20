@@ -8,7 +8,7 @@ import com.litongjava.tio.utils.json.Json;
 public class SysConfigConstantsService {
 
   public SystemTxCosConfigVo getSystemTxCosConfig() {
-    String sql = "select key_value from " + TioBootAdminTableNames.tio_boot_admin_system_constants_config + " where key_name=?";
+    String sql = String.format("select key_value from %s where key_name=?", TioBootAdminTableNames.tio_boot_admin_system_constants_config);
     String systemTxCosConfigString = Db.queryStr(sql, "systemTxCosConfig");
     return Json.getJson().parse(systemTxCosConfigString, SystemTxCosConfigVo.class);
   }
