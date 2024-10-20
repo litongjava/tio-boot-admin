@@ -25,9 +25,9 @@ public class TioAdminInterceptorConfiguration {
     };
     model.addAlloweUrls(previewUrls);
 
-    HttpInteceptorConfigure serverInteceptorConfigure = new HttpInteceptorConfigure();
-    serverInteceptorConfigure.add(model);
+    HttpInteceptorConfigure inteceptorConfigure = new HttpInteceptorConfigure();
+    inteceptorConfigure.add(model);
     // 将拦截器配置添加到 Tio 服务器
-    TioBootServer.me().setHttpInteceptorConfigure(serverInteceptorConfigure);
+    TioBootServer.me().setHttpInteceptorConfigure(inteceptorConfigure);
   }
 }

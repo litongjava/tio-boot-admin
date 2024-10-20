@@ -18,7 +18,9 @@ public class TioAdminHandlerConfiguration {
 
   public void config() {
     HttpRequestRouter r = TioBootServer.me().getRequestRouter();
-
+    if (r == null) {
+      return;
+    }
     // 创建controller
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
     UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
