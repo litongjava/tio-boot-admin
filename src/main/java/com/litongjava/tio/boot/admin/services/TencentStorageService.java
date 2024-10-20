@@ -5,11 +5,14 @@ import java.io.ByteArrayInputStream;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
+import com.litongjava.db.activerecord.Record;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
+import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
@@ -30,7 +33,7 @@ import lombok.extern.slf4j.Slf4j;
  * Created by Tong Li <https://github.com/litongjava>
  */
 @Slf4j
-public class TencentStorageService {
+public class TencentStorageService implements StorageService {
   public RespBodyVo upload(UploadFile uploadFile) {
     String filename = uploadFile.getName();
     int size = uploadFile.getSize();
@@ -73,22 +76,13 @@ public class TencentStorageService {
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);
     String md5 = MD5.create().digestHex(fileContent);
-    TableInput kv = TableInput.create()
-      .set("md5", md5)
-      .set("filename", filename)
-      .set("file_size", size)
-      .set("platform", "tencent")
-      .set("region_name", systemTxCosConfig.getRegion())
-      .set("bucket_name", bucketName)
-      .set("target_name", targetName)
-      .set("file_id", etag);
+    TableInput kv = TableInput.create().set("md5", md5).set("filename", filename).set("file_size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+        .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
 
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(bucketName, targetName);
 
-    Kv kvResult = Kv.create()
-      .set("id", save.getData().get("id").toString())
-      .set("url", downloadUrl);
+    Kv kvResult = Kv.create().set("id", save.getData().get("id").toString()).set("url", downloadUrl);
 
     return RespBodyVo.ok(kvResult);
 
@@ -130,4 +124,50 @@ public class TencentStorageService {
     String domain = "https://" + bucketName + ".cos." + region + ".myqcloud.com";
     return domain + "/" + targetName;
   }
+
+  public UploadResultVo getUrlById(String id) {
+    return getUrlById(Long.parseLong(id));
+  }
+
+  public UploadResultVo getUrlById(long id) {
+    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
+    if (record == null) {
+      return null;
+    }
+    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    String originFilename = record.getStr("fielename");
+    String md5 = record.getStr("md5");
+    return new UploadResultVo(id, originFilename, url, md5);
+  }
+
+  public UploadResultVo getUrlByMd5(String md5) {
+    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
+    if (record == null) {
+      return null;
+    }
+    Long id = record.getLong("id");
+    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    Kv kv = record.toKv();
+    kv.set("url", url);
+    kv.set("md5", md5);
+    String originFilename = record.getStr("filename");
+    return new UploadResultVo(id, originFilename, url, md5);
+  }
+
+  @Override
+  public RespBodyVo upload(String category, UploadFile uploadFile) {
+    return null;
+  }
+
+  @Override
+  public UploadResultVo uploadBytes(String category, String originFilename, int size, byte[] fileContent) {
+    return null;
+  }
+
+  @Override
+  public UploadResultVo uploadBytes(long id, String originFilename, String targetName, byte[] fileContent, int size, String suffix) {
+    return null;
+  }
+
+  
 }

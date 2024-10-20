@@ -23,7 +23,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
-public class AwsS3StorageService {
+public class AwsS3StorageService implements StorageService{
   public RespBodyVo upload(String category, UploadFile uploadFile) {
     if (StrKit.isBlank(category)) {
       category = "default";

@@ -49,7 +49,7 @@ public class ApiTableController {
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
     if (dbJsonBean.getCode() == 1) {
-      if(tableJsonService!=null) {
+      if (tableJsonService != null) {
         tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
       }
       return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
@@ -67,7 +67,7 @@ public class ApiTableController {
 
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<List<Record>> list = ApiTable.list(f, kv);
-    
+
     TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(list, false);
 
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
@@ -137,10 +137,17 @@ public class ApiTableController {
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 
+  @RequestPath("/{f}/remove/{id}")
+  public RespBodyVo remove(String f, String id) {
+    log.info("tableName:{},id:{}", f, id);
+    TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(f, id, "deleted", 1);
+    return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+  }
+
   @RequestPath("/{f}/delete/{id}")
   public RespBodyVo delete(String f, String id) {
     log.info("tableName:{},id:{}", f, id);
-    TableResult<Boolean> dbJsonBean = ApiTable.updateFlagById(f, id, "deleted", 1);
+    TableResult<Boolean> dbJsonBean = ApiTable.delById(f, id);
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
   }
 

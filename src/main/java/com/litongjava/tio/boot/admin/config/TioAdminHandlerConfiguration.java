@@ -6,8 +6,7 @@ import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
 import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
 import com.litongjava.tio.boot.admin.handler.SystemFileFirebaseHandler;
-import com.litongjava.tio.boot.admin.handler.SystemFileHandler;
-import com.litongjava.tio.boot.admin.handler.SystemFileS3Handler;
+import com.litongjava.tio.boot.admin.handler.SystemFileAwsS3Handler;
 import com.litongjava.tio.boot.admin.handler.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.admin.handler.UserHandler;
@@ -25,12 +24,12 @@ public class TioAdminHandlerConfiguration {
     ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
     UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
     UserHandler userHandler = Aop.get(UserHandler.class);
-    SystemFileHandler systemUploadHandler = Aop.get(SystemFileHandler.class);
+
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
     GeographicHandler geographicHandler = Aop.get(GeographicHandler.class);
     SystemHandler systemHandler = Aop.get(SystemHandler.class);
     StableDiffusionHandler stableDiffusionHandler = Aop.get(StableDiffusionHandler.class);
-    SystemFileS3Handler systemFileS3Handler = Aop.get(SystemFileS3Handler.class);
+    SystemFileAwsS3Handler systemFileS3Handler = Aop.get(SystemFileAwsS3Handler.class);
 
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
@@ -41,9 +40,9 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     // upload
-    r.add("/api/system/file/upload", systemUploadHandler::upload);
+    //r.add("/api/system/file/upload", systemUploadHandler::upload);
+    //r.add("/api/system/file/url", systemUploadHandler::getUrl);
 
-    r.add("/api/system/file/uploadToTencentCos", systemUploadHandler::uploadToTencentCos);
     r.add("/api/system/file/s3/upload", systemFileS3Handler::upload);
     r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
     r.add("/api/system/file/s3/url", systemFileS3Handler::getUrl);
