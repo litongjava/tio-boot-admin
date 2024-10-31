@@ -39,7 +39,7 @@ public class TioAdminSaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    String cacheName = EnvUtils.get("redis.cacheName");
+    String cacheName = EnvUtils.get("redis.cacheName", "main");
     SaManager.setSaTokenDao(new SaTokenDaoRedis(cacheName));
 
     String saAdminToken = EnvUtils.get("sa.admin.token");

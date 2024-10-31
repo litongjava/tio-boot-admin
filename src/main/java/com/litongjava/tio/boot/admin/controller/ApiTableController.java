@@ -7,11 +7,11 @@ import java.util.List;
 import java.util.Map;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.annotation.AAutowired;
 import com.litongjava.annotation.EnableCORS;
 import com.litongjava.annotation.RequestPath;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
+import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Record;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.DbPage;
@@ -20,7 +20,6 @@ import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.EasyExcelResponseUtils;
 import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
-import com.litongjava.tio.boot.admin.services.TableJsonService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -32,9 +31,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @EnableCORS
 public class ApiTableController {
-
-  @AAutowired
-  private TableJsonService tableJsonService;
 
   @RequestPath("/index")
   public String index() {
@@ -49,9 +45,6 @@ public class ApiTableController {
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
     if (dbJsonBean.getCode() == 1) {
-      if (tableJsonService != null) {
-        tableJsonService.afterSaveOrUpdate(f, kv, dbJsonBean);
-      }
       return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
     } else {
       return RespBodyVo.fail(dbJsonBean.getMsg()).code(dbJsonBean.getCode()).data(dbJsonBean.getData());
@@ -149,6 +142,13 @@ public class ApiTableController {
     log.info("tableName:{},id:{}", f, id);
     TableResult<Boolean> dbJsonBean = ApiTable.delById(f, id);
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
+  }
+
+  @RequestPath("/{f}/total")
+  public RespBodyVo total(String f) {
+    log.info("tableName:{},id:{}", f);
+    Long count = Db.count(f);
+    return RespBodyVo.ok(count);
   }
 
   /**

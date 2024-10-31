@@ -7,6 +7,21 @@ import com.litongjava.tio.boot.server.TioBootServer;
 
 public class TioAdminInterceptorConfiguration {
 
+  private String[] permitUrls;
+  private boolean alloweStaticFile;
+
+  public TioAdminInterceptorConfiguration() {
+  }
+
+  public TioAdminInterceptorConfiguration(String[] permitUrls) {
+    this.permitUrls = permitUrls;
+  }
+
+  public TioAdminInterceptorConfiguration(String[] permitUrls, boolean b) {
+    this.permitUrls = permitUrls;
+    this.alloweStaticFile = b;
+  }
+
   public void config() {
     // 创建 SaToken 拦截器实例
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();
@@ -16,14 +31,16 @@ public class TioAdminInterceptorConfiguration {
     // index
     model.addAlloweUrls("", "/");
     //user
-    model.addAlloweUrls("/register/*", "/api/login/account","/api/login/outLogin"); // 设置例外路由
+    model.addAlloweUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
     model.addAlloweUrls("/api/event/add");
-    String[] previewUrls= {
-        "/table/json/tio_boot_admin_system_article/get/*",
-        "/table/json/tio_boot_admin_system_docx/get/*",
-        "/table/json/tio_boot_admin_system_pdf/get/*"
-    };
+
+    String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*", "/table/json/tio_boot_admin_system_docx/get/*", "/table/json/tio_boot_admin_system_pdf/get/*" };
+
     model.addAlloweUrls(previewUrls);
+    if (permitUrls != null) {
+      model.addAlloweUrls(permitUrls);
+    }
+    model.setAlloweStaticFile(alloweStaticFile);
 
     HttpInteceptorConfigure inteceptorConfigure = new HttpInteceptorConfigure();
     inteceptorConfigure.add(model);

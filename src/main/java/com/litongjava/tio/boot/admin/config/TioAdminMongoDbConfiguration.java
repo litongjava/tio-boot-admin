@@ -11,6 +11,9 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class TioAdminMongoDbConfiguration {
 
   public void config() {
@@ -19,10 +22,13 @@ public class TioAdminMongoDbConfiguration {
       return;
     }
     int mongodbPort = EnvUtils.getInt("mongodb.port");
+
     String mongodbAuthSource = EnvUtils.get("mongodb.authSource");
     String mongodbUsername = EnvUtils.get("mongodb.username");
     String mongodbPassword = EnvUtils.get("mongodb.password");
     String mongodbDatabase = EnvUtils.get("mongodb.database");
+
+    log.info("mongo:{}:{},{}", mongodbHost, mongodbPort, mongodbDatabase);
 
     List<ServerAddress> adds = new ArrayList<>();
     // ServerAddress()两个参数分别为 服务器地址 和 端口
