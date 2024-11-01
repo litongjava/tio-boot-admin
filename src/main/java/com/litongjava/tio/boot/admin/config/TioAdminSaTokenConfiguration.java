@@ -8,6 +8,7 @@ import cn.dev33.satoken.SaManager;
 import cn.dev33.satoken.config.SaCookieConfig;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.context.SaTokenContext;
+import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaTokenConsts;
@@ -46,9 +47,9 @@ public class TioAdminSaTokenConfiguration {
     if (saAdminToken != null) {
       //增加一个Api用户设置token永不过期,让外部系统通过这个token调用本系统
       SaLoginModel loginModel = new SaLoginModel();
-      loginModel.setTimeout(-1);
+      loginModel.setTimeout(SaTokenDao.NEVER_EXPIRE);
       loginModel.setToken(saAdminToken);
-      StpUtil.createLoginSession("1", loginModel);
+      StpUtil.createLoginSession("0", loginModel);
     }
 
   }
