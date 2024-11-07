@@ -29,6 +29,7 @@ public class TioAdminSaTokenConfiguration {
     saTokenConfig.setActiveTimeout(50 * 60); // 设置活动超时时间为 50 分钟
     saTokenConfig.setIsPrint(false);
 
+    saTokenConfig.setDynamicActiveTimeout(true);
     saTokenConfig.setIsShare(false);
     saTokenConfig.setTokenName("authorization"); // 设置 token 的名称
     saTokenConfig.setIsWriteHeader(true); // 将 token 写入响应头
@@ -48,6 +49,7 @@ public class TioAdminSaTokenConfiguration {
       //增加一个Api用户设置token永不过期,让外部系统通过这个token调用本系统
       SaLoginModel loginModel = new SaLoginModel();
       loginModel.setTimeout(SaTokenDao.NEVER_EXPIRE);
+      loginModel.setActiveTimeout(SaTokenDao.NEVER_EXPIRE);
       loginModel.setToken(saAdminToken);
       StpUtil.createLoginSession("0", loginModel);
     }
