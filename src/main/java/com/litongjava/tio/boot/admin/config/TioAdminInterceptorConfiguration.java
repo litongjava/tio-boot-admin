@@ -27,18 +27,18 @@ public class TioAdminInterceptorConfiguration {
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();
     HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(authTokenInterceptor);
-    model.addblockeUrl("/**"); // 拦截所有路由
+    model.addBlockUrl("/**"); // 拦截所有路由
     // index
-    model.addAlloweUrls("", "/");
+    model.addAllowUrls("", "/");
     //user
-    model.addAlloweUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
-    model.addAlloweUrls("/api/event/add");
+    model.addAllowUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
+    model.addAllowUrls("/api/event/add");
 
     String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*", "/table/json/tio_boot_admin_system_docx/get/*", "/table/json/tio_boot_admin_system_pdf/get/*" };
 
-    model.addAlloweUrls(previewUrls);
+    model.addAllowUrls(previewUrls);
     if (permitUrls != null) {
-      model.addAlloweUrls(permitUrls);
+      model.addAllowUrls(permitUrls);
     }
     model.setAlloweStaticFile(alloweStaticFile);
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.litongjava.tio.boot.admin.controller.ApiTableController;
-import com.litongjava.tio.boot.http.router.TioBootHttpControllerRouter;
+import com.litongjava.tio.boot.http.handler.controller.TioBootHttpControllerRouter;
 import com.litongjava.tio.boot.server.TioBootServer;
 
 public class TioAdminControllerConfiguration {
