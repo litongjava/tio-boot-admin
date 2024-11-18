@@ -1,9 +1,12 @@
 package com.litongjava.tio.boot.admin.config;
 
+import java.util.function.Predicate;
+
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
+import com.litongjava.tio.utils.environment.EnvUtils;
 
 public class TioAdminInterceptorConfiguration {
 
@@ -24,7 +27,14 @@ public class TioAdminInterceptorConfiguration {
 
   public void config() {
     // 创建 SaToken 拦截器实例
-    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor();
+    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(new Predicate<String>() {
+
+      @Override
+      public boolean test(String t) {
+        String saAdminToken = EnvUtils.get("sa.admin.token");
+        return saAdminToken.equals(t);
+      }
+    });
     HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(authTokenInterceptor);
     model.addBlockUrl("/**"); // 拦截所有路由

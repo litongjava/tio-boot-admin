@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.satoken.SaTokenDaoRedis;
+import com.litongjava.tio.boot.admin.dao.SaTokenDbDao;
 import com.litongjava.tio.boot.satoken.SaTokenContextForTio;
 import com.litongjava.tio.utils.environment.EnvUtils;
 
@@ -41,8 +41,7 @@ public class TioAdminSaTokenConfiguration {
     SaManager.setConfig(saTokenConfig);
     SaManager.setSaTokenContext(saTokenContext);
 
-    String cacheName = EnvUtils.get("redis.cacheName", "main");
-    SaManager.setSaTokenDao(new SaTokenDaoRedis(cacheName));
+    SaManager.setSaTokenDao(new SaTokenDbDao());
 
     String saAdminToken = EnvUtils.get("sa.admin.token");
     if (saAdminToken != null) {
