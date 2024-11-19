@@ -83,7 +83,7 @@ public class AwsS3StorageService implements StorageService {
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
 
-    TableInput kv = TableInput.create().set("filename", originFilename).set("file_size", size).set("md5", md5)
+    TableInput kv = TableInput.create().set("name", originFilename).set("size", size).set("md5", md5)
         //
         .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
