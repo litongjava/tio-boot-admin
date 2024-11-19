@@ -137,21 +137,12 @@ public class TencentStorageService implements StorageService {
     String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
-    return new UploadResultVo(id, originFilename, url, md5);
+    Long size = record.getLong("size");
+    return new UploadResultVo(id, originFilename, size, url, md5);
   }
 
   public UploadResultVo getUrlByMd5(String md5) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
-    if (record == null) {
-      return null;
-    }
-    Long id = record.getLong("id");
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
-    Kv kv = record.toKv();
-    kv.set("url", url);
-    kv.set("md5", md5);
-    String originFilename = record.getStr("filename");
-    return new UploadResultVo(id, originFilename, url, md5);
+    return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 
   @Override
@@ -169,5 +160,4 @@ public class TencentStorageService implements StorageService {
     return null;
   }
 
-  
 }

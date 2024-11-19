@@ -1,6 +1,5 @@
 package com.litongjava.tio.boot.admin.services;
 
-
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
@@ -23,7 +22,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
-public class AwsS3StorageService implements StorageService{
+public class AwsS3StorageService implements StorageService {
   public RespBodyVo upload(String category, UploadFile uploadFile) {
     if (StrKit.isBlank(category)) {
       category = "default";
@@ -67,7 +66,7 @@ public class AwsS3StorageService implements StorageService{
       kv.remove("bucket_name");
       kv.set("url", url);
       kv.set("md5", md5);
-      return new UploadResultVo(id, originFilename, url, md5);
+      return new UploadResultVo(id, originFilename, Long.valueOf(size), url, md5);
     } else {
       log.info("not found from cache table:{}", md5);
     }
@@ -93,40 +92,27 @@ public class AwsS3StorageService implements StorageService{
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
-    return new UploadResultVo(save.getData().getLong("id"), originFilename, downloadUrl, md5);
+    return new UploadResultVo(save.getData().getLong("id"), originFilename, Long.valueOf(size), downloadUrl, md5);
 
   }
 
+  @Override
   public String getUrl(String bucketName, String targetName) {
-    return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
+    return Aop.get(SystemUploadFileService.class).getUrl(bucketName, targetName);
   }
 
+  @Override
   public UploadResultVo getUrlById(String id) {
-    return getUrlById(Long.parseLong(id));
+    return Aop.get(SystemUploadFileService.class).getUrlById(id);
   }
 
+  @Override
   public UploadResultVo getUrlById(long id) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
-    if (record == null) {
-      return null;
-    }
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
-    String originFilename = record.getStr("fielename");
-    String md5 = record.getStr("md5");
-    return new UploadResultVo(id, originFilename, url, md5);
+    return Aop.get(SystemUploadFileService.class).getUrlById(id);
   }
 
+  @Override
   public UploadResultVo getUrlByMd5(String md5) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
-    if (record == null) {
-      return null;
-    }
-    Long id = record.getLong("id");
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
-    Kv kv = record.toKv();
-    kv.set("url", url);
-    kv.set("md5", md5);
-    String originFilename = record.getStr("filename");
-    return new UploadResultVo(id, originFilename, url, md5);
+    return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 }

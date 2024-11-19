@@ -41,6 +41,7 @@ public class ApiTableController {
   public RespBodyVo create(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
     log.info("tableName:{},kv:{}", f, kv);
     TableResult<Kv> dbJsonBean = ApiTable.saveOrUpdate(f, kv);
@@ -56,6 +57,7 @@ public class ApiTableController {
   public RespBodyVo list(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
@@ -84,6 +86,9 @@ public class ApiTableController {
       // add support for ant design pro table
       map.put("pageNo", current);
     }
+
+    ApiTable.transformType(f, map);
+
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
@@ -97,6 +102,7 @@ public class ApiTableController {
   public RespBodyVo get(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
@@ -110,6 +116,7 @@ public class ApiTableController {
   public RespBodyVo update(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
@@ -122,6 +129,7 @@ public class ApiTableController {
   public RespBodyVo batchUpdate(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
@@ -158,6 +166,7 @@ public class ApiTableController {
   public HttpResponse exportExcel(String f, HttpRequest request) throws IOException {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     Object current = map.remove("current");
     if (current != null) {
       // add support for ant design pro table
@@ -184,6 +193,7 @@ public class ApiTableController {
     map.remove("current");
     map.remove("pageNo");
     map.remove("pageSize");
+    ApiTable.transformType(f, map);
 
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
@@ -222,6 +232,7 @@ public class ApiTableController {
   public RespBodyVo pageDeleted(String f, HttpRequest request) {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
+    ApiTable.transformType(f, map);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
