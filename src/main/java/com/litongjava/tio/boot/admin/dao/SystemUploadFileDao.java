@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.dao;
 
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 
 public class SystemUploadFileDao {
   public static final String tableName = "tio_boot_admin_system_upload_file";
@@ -13,18 +13,18 @@ public class SystemUploadFileDao {
       //
       "select md5,name,size,bucket_name,target_name from %s where id=? and deleted=0", tableName);
 
-  public Record getFileBasicInfoByMd5(String md5) {
+  public Row getFileBasicInfoByMd5(String md5) {
     return Db.findFirst(getFileBasicInfoByMd5Sql, md5);
   }
 
-  public Record getFileBasicInfoById(long id) {
+  public Row getFileBasicInfoById(long id) {
     return Db.findFirst(getFileBasicInfoByIdSql, id);
   }
 
   public boolean save(long id, String md5, String originname, int fileSize, String platform, String bucketName,
       //
       String targetName) {
-    Record record = Record.by("id", id)
+    Row record = Row.by("id", id)
         //
         .set("md5", md5).set("name", originname).set("size", fileSize)
         //

@@ -7,7 +7,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class CollegeDocumentUploadService {
     List<Kv> images = new ArrayList<>();
     images.add(outputKv);
 
-    Record record = new Record();
+    Row record = new Row();
     record.set("files", images);
     Long longId = dbJsonBean.getData().getLong("id");
     record.set("id", longId);

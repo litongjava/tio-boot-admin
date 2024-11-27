@@ -10,7 +10,7 @@ import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
@@ -106,7 +106,7 @@ public class GoogleStorageService {
 
   public String getUrlByFileId(long fileId) {
     String sql = "select bucket_name,target_name from " + TioBootAdminTableNames.tio_boot_admin_system_upload_file + " where id=?";
-    Record record = Db.findFirst(sql, fileId);
+    Row record = Db.findFirst(sql, fileId);
 
     return getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
   }

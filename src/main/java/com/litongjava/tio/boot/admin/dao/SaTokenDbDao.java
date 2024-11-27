@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.dao;
 import java.util.List;
 
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.satoken.SaJdkSerializer;
 
 import cn.dev33.satoken.dao.SaTokenDao;
@@ -23,7 +23,7 @@ public class SaTokenDbDao implements SaTokenDao {
 
   @Override
   public void set(String key, String value, long timeout) {
-    Record record = Record.by("id", key).set("value", value).set("timeout", timeout);
+    Row record = Row.by("id", key).set("value", value).set("timeout", timeout);
     if (Db.exists(tableName, "id", key)) {
       Db.update(tableName, record);
     } else {
@@ -33,7 +33,7 @@ public class SaTokenDbDao implements SaTokenDao {
 
   @Override
   public void update(String key, String value) {
-    Record record = Record.by("id", key).set("value", value);
+    Row record = Row.by("id", key).set("value", value);
     Db.update(tableName, record);
   }
 
@@ -49,7 +49,7 @@ public class SaTokenDbDao implements SaTokenDao {
 
   @Override
   public void updateTimeout(String key, long timeout) {
-    Record record = Record.by("id", key).set("timeout", timeout);
+    Row record = Row.by("id", key).set("timeout", timeout);
     Db.update(tableName, "id", record);
   }
 
@@ -63,7 +63,7 @@ public class SaTokenDbDao implements SaTokenDao {
   @Override
   public void setObject(String key, Object object, long timeout) {
     byte[] valueToBytes = SaJdkSerializer.me.valueToBytes(object);
-    Record record = Record.by("id", key).set("ob", valueToBytes).set("ob_timeout", timeout);
+    Row record = Row.by("id", key).set("ob", valueToBytes).set("ob_timeout", timeout);
     if (Db.exists(tableName, "id", key)) {
       Db.update(tableName, record);
     } else {
@@ -75,7 +75,7 @@ public class SaTokenDbDao implements SaTokenDao {
   @Override
   public void updateObject(String key, Object object) {
     byte[] valueToBytes = SaJdkSerializer.me.valueToBytes(object);
-    Record record = Record.by("id", key).set("ob", valueToBytes);
+    Row record = Row.by("id", key).set("ob", valueToBytes);
     Db.update(tableName, "id", record);
   }
 
@@ -91,7 +91,7 @@ public class SaTokenDbDao implements SaTokenDao {
 
   @Override
   public void updateObjectTimeout(String key, long timeout) {
-    Record record = Record.by("id", key).set("ob_timeout", timeout);
+    Row record = Row.by("id", key).set("ob_timeout", timeout);
     Db.update(tableName, "id", record);
   }
 

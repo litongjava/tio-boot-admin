@@ -4,7 +4,7 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
@@ -56,7 +56,7 @@ public class AwsS3StorageService implements StorageService {
    */
   public UploadResultVo uploadBytes(long id, String originFilename, String targetName, byte[] fileContent, int size, String suffix) {
     String md5 = Md5Utils.digestHex(fileContent);
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
+    Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record != null) {
       log.info("select table reuslt:{}", record.toMap());
       id = record.getLong("id");

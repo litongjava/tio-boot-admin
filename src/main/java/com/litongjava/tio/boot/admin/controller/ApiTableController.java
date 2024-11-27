@@ -12,7 +12,7 @@ import com.litongjava.annotation.RequestPath;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.DbPage;
 import com.litongjava.model.page.Page;
@@ -61,7 +61,7 @@ public class ApiTableController {
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    TableResult<List<Record>> list = ApiTable.list(f, kv);
+    TableResult<List<Row>> list = ApiTable.list(f, kv);
 
     TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(list, false);
 
@@ -71,7 +71,7 @@ public class ApiTableController {
   @RequestPath("/{f}/listAll")
   public RespBodyVo listAll(String f) {
     log.info("tableName:{}", f);
-    TableResult<List<Record>> listAll = ApiTable.listAll(f);
+    TableResult<List<Row>> listAll = ApiTable.listAll(f);
     TableResult<List<Kv>> dbJsonBean = TableResultUtils.recordsToKv(listAll, false);
 
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
@@ -92,7 +92,7 @@ public class ApiTableController {
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    TableResult<Page<Record>> page = ApiTable.page(f, kv);
+    TableResult<Page<Row>> page = ApiTable.page(f, kv);
 
     TableResult<DbPage<Kv>> dbJsonBean = TableResultUtils.pageToDbPage(page, false);
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
@@ -106,7 +106,7 @@ public class ApiTableController {
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    TableResult<Record> jsonBean = ApiTable.get(f, kv);
+    TableResult<Row> jsonBean = ApiTable.get(f, kv);
     TableResult<Kv> dbJsonBean = TableResultUtils.recordToKv(jsonBean);
 
     return RespBodyVo.ok(dbJsonBean.getData()).code(dbJsonBean.getCode()).msg(dbJsonBean.getMsg());
@@ -178,7 +178,7 @@ public class ApiTableController {
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = ApiTable.list(f, kv).getData();
+    List<Row> records = ApiTable.list(f, kv).getData();
     HttpResponse response = TioRequestContext.getResponse();
     return EasyExcelResponseUtils.exportRecords(response, filename, f, records);
   }
@@ -203,7 +203,7 @@ public class ApiTableController {
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = ApiTable.listAll(f, kv).getData();
+    List<Row> records = ApiTable.listAll(f, kv).getData();
 
     HttpResponse response = TioRequestContext.getResponse();
     EasyExcelResponseUtils.exportRecords(response, filename, f, records);
@@ -215,11 +215,11 @@ public class ApiTableController {
   public HttpResponse exportAllTableExcel(HttpRequest request) throws IOException {
     String filename = "all-table_" + System.currentTimeMillis() + ".xlsx";
     String[] tables = ApiTable.getAllTableNames();
-    LinkedHashMap<String, List<Record>> allTableData = new LinkedHashMap<>();
+    LinkedHashMap<String, List<Row>> allTableData = new LinkedHashMap<>();
 
     for (String table : tables) {
       // 获取数据
-      List<Record> records = ApiTable.listAll(table).getData();
+      List<Row> records = ApiTable.listAll(table).getData();
       allTableData.put(table, records);
     }
     HttpResponse response = TioRequestContext.getResponse();

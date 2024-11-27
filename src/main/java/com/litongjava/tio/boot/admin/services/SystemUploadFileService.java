@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
@@ -13,7 +13,7 @@ public class SystemUploadFileService {
   }
 
   public UploadResultVo getUrlById(long id) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
+    Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
       return null;
     }
@@ -25,7 +25,7 @@ public class SystemUploadFileService {
   }
 
   public UploadResultVo getUrlByMd5(String md5) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
+    Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record == null) {
       return null;
     }

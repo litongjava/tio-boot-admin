@@ -14,7 +14,7 @@ import org.bson.types.ObjectId;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.page.DbPage;
 import com.litongjava.mongo.MongoDb;
@@ -105,7 +105,7 @@ public class MongodbJsonService {
     return TableResult.ok(pageData);
   }
 
-  public TableResult<List<Record>> list(String f, TableInput kv) {
+  public TableResult<List<Row>> list(String f, TableInput kv) {
     new DataPageRequest(kv);
 
     DataQueryRequest queryRequest = new DataQueryRequest(kv);
@@ -146,7 +146,7 @@ public class MongodbJsonService {
       iterable = collection.find(queryDocument);
     }
 
-    List<Record> lists = new ArrayList<>();
+    List<Row> lists = new ArrayList<>();
 
     MongoCursor<Document> cursor = iterable.iterator();
 
@@ -156,7 +156,7 @@ public class MongodbJsonService {
       String hexString = objectId.toHexString();
       document.remove("_id");
 
-      Record record = new Record();
+      Row record = new Row();
       record.set("id", hexString);
       Set<Entry<String, Object>> entrySet = document.entrySet();
       for (Entry<String, Object> e : entrySet) {
@@ -169,13 +169,13 @@ public class MongodbJsonService {
 
   }
 
-  public TableResult<List<Record>> listAll(String f) {
+  public TableResult<List<Row>> listAll(String f) {
 
     MongoDatabase database = MongoDb.getDatabase();
     MongoCollection<Document> collection = database.getCollection(f);
 
     FindIterable<Document> iterable = collection.find();
-    List<Record> lists = new ArrayList<>();
+    List<Row> lists = new ArrayList<>();
 
     MongoCursor<Document> cursor = iterable.iterator();
 
@@ -184,7 +184,7 @@ public class MongodbJsonService {
       ObjectId objectId = document.getObjectId("_id");
       String hexString = objectId.toHexString();
       document.remove("_id");
-      Record record = new Record();
+      Row record = new Row();
       record.set("id", hexString);
       Set<Entry<String, Object>> entrySet = document.entrySet();
       for (Entry<String, Object> e : entrySet) {

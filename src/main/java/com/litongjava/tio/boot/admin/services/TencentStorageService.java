@@ -5,7 +5,7 @@ import java.io.ByteArrayInputStream;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
@@ -130,7 +130,7 @@ public class TencentStorageService implements StorageService {
   }
 
   public UploadResultVo getUrlById(long id) {
-    Record record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
+    Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
       return null;
     }

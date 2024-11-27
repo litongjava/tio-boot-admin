@@ -2,7 +2,7 @@ package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.db.SqlPara;
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminSql;
 
@@ -20,7 +20,7 @@ public class UserService {
     }
 
     //执行查询
-    Record first = Db.findFirst(sqlPara);
+    Row first = Db.findFirst(sqlPara);
     //返回数据
     return RespBodyVo.ok(first.toKv());
   }

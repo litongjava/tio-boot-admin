@@ -6,7 +6,7 @@ import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
@@ -47,7 +47,7 @@ public class SystemFileAwsS3Handler {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     TableInput kv = TableInputUtils.camelToUnderscore(map);
     // 调用ApiTable查询数据
-    TableResult<Record> jsonBean = ApiTable.get(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Row> jsonBean = ApiTable.get(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     TableResult<Kv> TableResult = TableResultUtils.recordToKv(jsonBean);
 
     return Resps.json(httpResponse, RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));

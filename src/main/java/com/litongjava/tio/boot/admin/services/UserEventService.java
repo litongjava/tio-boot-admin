@@ -6,7 +6,7 @@ import org.postgresql.util.PGobject;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
@@ -32,7 +32,7 @@ public class UserEventService {
 
     try {
       pGobject.setValue(jsonString);
-      Record record = new Record();
+      Row record = new Row();
       record.set("name", eventName);
       record.set("value", pGobject);
       record.set("id", id);

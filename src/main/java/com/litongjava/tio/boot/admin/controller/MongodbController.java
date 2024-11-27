@@ -12,7 +12,7 @@ import com.litongjava.annotation.EnableCORS;
 import com.litongjava.annotation.RequestPath;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.TableResult;
-import com.litongjava.db.activerecord.Record;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.page.DbPage;
@@ -68,7 +68,7 @@ public class MongodbController {
     String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = mongodbJsonService.list(f, kv).getData();
+    List<Row> records = mongodbJsonService.list(f, kv).getData();
     log.info("records:{}", records);
     HttpResponse response = TioRequestContext.getResponse();
     return EasyExcelResponseUtils.exportRecords(response, filename, f, records);
@@ -84,7 +84,7 @@ public class MongodbController {
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Record> records = mongodbJsonService.listAll(f).getData();
+    List<Row> records = mongodbJsonService.listAll(f).getData();
     HttpResponse response = TioRequestContext.getResponse();
     EasyExcelResponseUtils.exportRecords(response, filename, f, records);
     log.info("finished");
