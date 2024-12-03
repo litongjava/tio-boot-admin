@@ -26,7 +26,6 @@ public class TioAdminRedisDbConfiguration {
     // 创建并启动 Redis 插件
     RedisPlugin mainRedis = new RedisPlugin(cacheName, host, port, redisTimeout, password, redisDatabase);
     mainRedis.start();
-
     // 测试连接
     RedisDb cache = Redis.use(cacheName);
     try {
