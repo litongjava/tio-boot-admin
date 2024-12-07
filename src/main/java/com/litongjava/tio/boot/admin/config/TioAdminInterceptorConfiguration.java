@@ -12,12 +12,18 @@ public class TioAdminInterceptorConfiguration {
 
   private String[] permitUrls;
   private boolean alloweStaticFile;
+  private Predicate<String> validateTokenLogic;
 
   public TioAdminInterceptorConfiguration() {
   }
 
   public TioAdminInterceptorConfiguration(String[] permitUrls) {
     this.permitUrls = permitUrls;
+  }
+
+  public TioAdminInterceptorConfiguration(String[] permitUrls, Predicate<String> validateTokenLogic) {
+    this.permitUrls = permitUrls;
+    this.validateTokenLogic = validateTokenLogic;
   }
 
   public TioAdminInterceptorConfiguration(String[] permitUrls, boolean b) {
@@ -27,14 +33,19 @@ public class TioAdminInterceptorConfiguration {
 
   public void config() {
     // 创建 SaToken 拦截器实例
-    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(new Predicate<String>() {
+    if (validateTokenLogic == null) {
+      validateTokenLogic = new Predicate<String>() {
 
-      @Override
-      public boolean test(String t) {
-        String saAdminToken = EnvUtils.get("sa.admin.token");
-        return saAdminToken.equals(t);
-      }
-    });
+        @Override
+        public boolean test(String t) {
+          String saAdminToken = EnvUtils.get("sa.admin.token");
+          return saAdminToken.equals(t);
+        }
+      };
+    };
+    
+
+    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(validateTokenLogic);
     HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(authTokenInterceptor);
     model.addBlockUrl("/**"); // 拦截所有路由
