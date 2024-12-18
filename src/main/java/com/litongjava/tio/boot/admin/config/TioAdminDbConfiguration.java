@@ -46,9 +46,10 @@ public class TioAdminDbConfiguration {
     // create arp
     ActiveRecordPlugin arp = new ActiveRecordPlugin(hikariDataSource);
     arp.setContainerFactory(new OrderedFieldContainerFactory());
+    boolean showSql = EnvUtils.getBoolean("jdbc.showSql", false);
+    arp.setShowSql(showSql);
     if (EnvUtils.isDev()) {
       arp.setDevMode(true);
-      arp.setShowSql(true);
     }
     if (jdbcUrl.contains("postgresql")) {
       arp.setDialect(new PostgreSqlDialect());
