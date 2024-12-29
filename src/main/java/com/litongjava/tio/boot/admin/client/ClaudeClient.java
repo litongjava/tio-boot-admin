@@ -1,14 +1,12 @@
 package com.litongjava.tio.boot.admin.client;
 
-
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.json.FastJson2Utils;
+import com.litongjava.tio.utils.json.JsonUtils;
 
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -33,8 +31,9 @@ public class ClaudeClient {
     reqMap.put("max_tokens", MAX_TOKEN);
     reqMap.put("stream", STREAM);
 
-    String requestJsonString = FastJson2Utils.toJson(reqMap);
+    String requestJsonString = JsonUtils.toJson(reqMap);
 
+    @SuppressWarnings("deprecation")
     RequestBody body = RequestBody.create(MediaType.parse("application/json"), requestJsonString);
 
     Request request = new Request.Builder().url(API_URL)//
@@ -56,8 +55,9 @@ public class ClaudeClient {
 
     reqMap.put("max_tokens", MAX_TOKEN);
 
-    String requestJsonString = FastJson2Utils.toJson(reqMap);
+    String requestJsonString = JsonUtils.toJson(reqMap);
 
+    @SuppressWarnings("deprecation")
     RequestBody body = RequestBody.create(MediaType.parse("application/json"), requestJsonString);
 
     Request request = new Request.Builder().url(API_URL)//

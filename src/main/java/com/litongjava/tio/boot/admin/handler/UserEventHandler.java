@@ -19,10 +19,6 @@ public class UserEventHandler {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    String method = request.getMethod().toString();
-    if ("OPTIONS".equals(method)) {
-      return httpResponse;
-    }
     String bodyString = request.getBodyString();
     JSONObject jsonObject = FastJson2Utils.parseObject(bodyString);
     String eventName = jsonObject.getString("name");
