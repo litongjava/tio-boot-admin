@@ -76,7 +76,7 @@ public class TencentStorageService implements StorageService {
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);
     String md5 = MD5.create().digestHex(fileContent);
-    TableInput kv = TableInput.create().set("md5", md5).set("filename", filename).set("file_size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+    TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
         .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
 
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
