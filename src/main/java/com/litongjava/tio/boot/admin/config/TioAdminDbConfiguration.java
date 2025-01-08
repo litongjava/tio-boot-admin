@@ -6,6 +6,7 @@ import com.litongjava.db.activerecord.ActiveRecordPlugin;
 import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
 import com.litongjava.db.hikaricp.DsContainer;
+import com.litongjava.hook.HookCan;
 import com.litongjava.openai.client.OpenAiClient;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.server.TioBootServer;
@@ -41,7 +42,7 @@ public class TioAdminDbConfiguration {
     // set datasource
     DsContainer.setDataSource(hikariDataSource);
     // add destroy
-    TioBootServer.me().addDestroyMethod(hikariDataSource::close);
+    HookCan.me().addDestroyMethod(hikariDataSource::close);
 
     // create arp
     ActiveRecordPlugin arp = new ActiveRecordPlugin(hikariDataSource);
@@ -64,6 +65,6 @@ public class TioAdminDbConfiguration {
     });
 
     // add stop
-    TioBootServer.me().addDestroyMethod(arp::stop);
+    HookCan.me().addDestroyMethod(arp::stop);
   }
 }

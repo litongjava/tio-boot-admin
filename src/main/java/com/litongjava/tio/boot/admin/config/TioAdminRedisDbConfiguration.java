@@ -1,9 +1,9 @@
 package com.litongjava.tio.boot.admin.config;
 
+import com.litongjava.hook.HookCan;
 import com.litongjava.redis.Redis;
 import com.litongjava.redis.RedisDb;
 import com.litongjava.redis.RedisPlugin;
-import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +35,6 @@ public class TioAdminRedisDbConfiguration {
       e.printStackTrace();
     }
 
-    TioBootServer.me().addDestroyMethod(mainRedis::stop);
+    HookCan.me().addDestroyMethod(mainRedis::stop);
   }
 }

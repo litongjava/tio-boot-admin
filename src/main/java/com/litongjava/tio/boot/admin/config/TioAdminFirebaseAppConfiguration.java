@@ -6,7 +6,7 @@ import java.io.InputStream;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.litongjava.tio.boot.server.TioBootServer;
+import com.litongjava.hook.HookCan;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.hutool.ResourceUtil;
 
@@ -24,7 +24,7 @@ public class TioAdminFirebaseAppConfiguration {
         GoogleCredentials.fromStream(serviceAccount)).setStorageBucket(bucketName + ".appspot.com").build();
 
     FirebaseApp.initializeApp(options);
-    TioBootServer.me().addDestroyMethod(() -> {
+    HookCan.me().addDestroyMethod(() -> {
       FirebaseApp.getInstance().delete();
     });
   }

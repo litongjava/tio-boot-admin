@@ -3,8 +3,8 @@ package com.litongjava.tio.boot.admin.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.litongjava.hook.HookCan;
 import com.litongjava.mongo.MongoDb;
-import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -51,7 +51,7 @@ public class TioAdminMongoDbConfiguration {
     MongoDb.setDatabase(mongoDatabase);
 
     // 添加addDestroyMethod
-    TioBootServer.me().addDestroyMethod(mongoClient::close);
+    HookCan.me().addDestroyMethod(mongoClient::close);
 
   }
 }
