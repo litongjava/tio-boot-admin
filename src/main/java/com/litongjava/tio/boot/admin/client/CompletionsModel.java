@@ -2,6 +2,8 @@ package com.litongjava.tio.boot.admin.client;
 
 import java.util.List;
 
+import com.litongjava.openai.chat.ChatMessage;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,5 +13,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class CompletionsModel {
   private String model;
-  private List<ChatgptMessage> messages;
+  private List<ChatMessage> messages;
 }
