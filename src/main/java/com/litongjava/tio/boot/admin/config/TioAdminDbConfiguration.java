@@ -9,7 +9,6 @@ import com.litongjava.db.hikaricp.DsContainer;
 import com.litongjava.hook.HookCan;
 import com.litongjava.openai.client.OpenAiClient;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

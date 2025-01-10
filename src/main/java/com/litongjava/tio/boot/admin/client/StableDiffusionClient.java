@@ -33,7 +33,7 @@ public class StableDiffusionClient {
     }
     String strMode = (String) requestMap.get("mode");
     if ("image-to-image".equals(strMode)) {
-      RequestBody fileBody = RequestBody.create(MediaType.parse("image/png"), uploadFile.getData());
+      RequestBody fileBody = RequestBody.create(uploadFile.getData(),MediaType.parse("image/png"));
       String filename = uploadFile.getName();
       builder.addFormDataPart("image", filename, fileBody);
     }
