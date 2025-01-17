@@ -19,5 +19,5 @@ public class RssChannelItem {
   private Date pubDate;
   private String link;
   private String author;
-  private List<String> categores;
+  private List<String> categories;
 }
