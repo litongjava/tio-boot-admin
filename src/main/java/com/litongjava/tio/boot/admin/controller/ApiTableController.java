@@ -203,7 +203,8 @@ public class ApiTableController {
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Row> records = ApiTable.listAll(f, kv).getData();
+    TableResult<Page<Row>> tableResult = ApiTable.page(f, kv);
+    List<Row> records = tableResult.getData().getList();
 
     HttpResponse response = TioRequestContext.getResponse();
     EasyExcelResponseUtils.exportRecords(response, filename, f, records);
