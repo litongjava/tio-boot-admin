@@ -1,6 +1,5 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.vo.AccessLogVo;
 import com.litongjava.tio.http.common.HttpMethod;
 import com.litongjava.tio.http.common.HttpRequest;
