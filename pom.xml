@@ -18,7 +18,7 @@
     <jfinal-aop.version>1.3.5</jfinal-aop.version>
     <java-db.version>1.4.9</java-db.version>
     <api-table.version>1.5.2</api-table.version>
-    <java.java-openai>1.1.4</java.java-openai>
+    <java.java-openai>1.1.5</java.java-openai>
   </properties>
   <dependencies>
 
