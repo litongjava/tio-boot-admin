@@ -8,6 +8,7 @@ import com.litongjava.db.TableInput;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.utils.PDDocumentUtils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
+import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.HttpDownloadUtils;
 
 public class DocumentService {
@@ -25,7 +26,8 @@ public class DocumentService {
     long currentTimeMillis = System.currentTimeMillis();
 
     String filename = currentTimeMillis + ".png";
-    UploadResultVo resultVo = Aop.get(AwsS3StorageService.class).uploadBytes(category, filename, imageBytes.length, imageBytes);
+    UploadFile uploadFile = new UploadFile(filename, imageBytes);
+    UploadResultVo resultVo = Aop.get(AwsS3StorageService.class).uploadBytes(category, uploadFile);
 
     Kv resultKv = Kv.create()
         //

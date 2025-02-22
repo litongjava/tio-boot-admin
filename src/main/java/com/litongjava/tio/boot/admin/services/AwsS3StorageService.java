@@ -10,6 +10,8 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
+import com.litongjava.tio.boot.admin.services.StorageService;
+import com.litongjava.tio.boot.admin.services.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
@@ -27,22 +29,20 @@ public class AwsS3StorageService implements StorageService {
     if (StrKit.isBlank(category)) {
       category = "default";
     }
-    String filename = uploadFile.getName();
-    int size = uploadFile.getSize();
-    byte[] fileContent = uploadFile.getData();
+    UploadResultVo uploadResultVo = uploadBytes(category, uploadFile);
 
-    return RespBodyVo.ok(uploadBytes(category, filename, size, fileContent));
+    return RespBodyVo.ok(uploadResultVo);
   }
 
-  public UploadResultVo uploadBytes(String category, String originFilename, int size, byte[] fileContent) {
+  public UploadResultVo uploadBytes(String category, UploadFile uploadFile) {
     // 上传文件
     long id = SnowflakeIdUtils.id();
-    String suffix = FilenameUtils.getSuffix(originFilename);
+    String suffix = FilenameUtils.getSuffix(uploadFile.getName());
     String newFilename = id + "." + suffix;
 
     String targetName = category + "/" + newFilename;
 
-    return uploadBytes(id, originFilename, targetName, fileContent, size, suffix);
+    return uploadBytes(id, targetName, uploadFile, suffix);
   }
 
   /**
@@ -54,7 +54,11 @@ public class AwsS3StorageService implements StorageService {
    * @param suffix
    * @return
    */
-  public UploadResultVo uploadBytes(long id, String originFilename, String targetName, byte[] fileContent, int size, String suffix) {
+  public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix) {
+    String originFilename = uploadFile.getName();
+    long size = uploadFile.getSize();
+
+    byte[] fileContent = uploadFile.getData();
     String md5 = Md5Utils.digestHex(fileContent);
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record != null) {
@@ -66,7 +70,7 @@ public class AwsS3StorageService implements StorageService {
       kv.remove("bucket_name");
       kv.set("url", url);
       kv.set("md5", md5);
-      return new UploadResultVo(id, originFilename, Long.valueOf(size), url, md5);
+      return new UploadResultVo(id, uploadFile.getName(), uploadFile.getSize(), url, md5);
     } else {
       log.info("not found from cache table:{}", md5);
     }

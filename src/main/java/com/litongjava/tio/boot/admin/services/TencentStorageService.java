@@ -2,9 +2,7 @@ package com.litongjava.tio.boot.admin.services;
 
 import java.io.ByteArrayInputStream;
 
-import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
-import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
@@ -36,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TencentStorageService implements StorageService {
   public RespBodyVo upload(UploadFile uploadFile) {
     String filename = uploadFile.getName();
-    int size = uploadFile.getSize();
+    Long size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
 
     // 上传文件
@@ -55,38 +53,8 @@ public class TencentStorageService implements StorageService {
 
     String targetName = "public/" + newFilename;
 
-    return uploadBytes(filename, id, targetName, fileContent, size, suffix);
-  }
-
-  public RespBodyVo uploadBytes(String filename, long id, String targetName, byte[] fileContent, int size, String suffix) {
-    SystemTxCosConfigVo systemTxCosConfig = Aop.get(SysConfigConstantsService.class).getSystemTxCosConfig();
-
-    COSClient cosClient = getCosClient(systemTxCosConfig);
-    String bucketName = systemTxCosConfig.getBucketName();
-
-    String etag = null;
-    try {
-      etag = upload(cosClient, bucketName, targetName, fileContent, suffix);
-    } catch (Exception e) {
-      log.error("Error uploading file to Tencent COS", e);
-      return RespBodyVo.fail(e.getMessage());
-    } finally {
-      cosClient.shutdown();
-    }
-
-    // Log and save to database
-    log.info("Uploaded to COS with ETag: {}", etag);
-    String md5 = MD5.create().digestHex(fileContent);
-    TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
-        .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
-
-    TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
-    String downloadUrl = getUrl(bucketName, targetName);
-
-    Kv kvResult = Kv.create().set("id", save.getData().get("id").toString()).set("url", downloadUrl);
-
-    return RespBodyVo.ok(kvResult);
-
+    UploadResultVo vo = uploadBytes(id, targetName, uploadFile, suffix);
+    return RespBodyVo.ok(vo);
   }
 
   /**
@@ -152,13 +120,44 @@ public class TencentStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo uploadBytes(String category, String originFilename, int size, byte[] fileContent) {
+  public UploadResultVo uploadBytes(String category, UploadFile uploadFile) {
     return null;
   }
 
   @Override
-  public UploadResultVo uploadBytes(long id, String originFilename, String targetName, byte[] fileContent, int size, String suffix) {
-    return null;
+  public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix) {
+    byte[] fileContent = uploadFile.getData();
+    String filename = uploadFile.getName();
+    long size = uploadFile.getSize();
+    SystemTxCosConfigVo systemTxCosConfig = Aop.get(SysConfigConstantsService.class).getSystemTxCosConfig();
+
+    COSClient cosClient = getCosClient(systemTxCosConfig);
+    String bucketName = systemTxCosConfig.getBucketName();
+
+    String etag = null;
+    try {
+      etag = upload(cosClient, bucketName, targetName, fileContent, suffix);
+    } catch (Exception e) {
+      log.error("Error uploading file to Tencent COS", e);
+      throw new RuntimeException(e);
+    } finally {
+      cosClient.shutdown();
+    }
+
+    // Log and save to database
+    log.info("Uploaded to COS with ETag: {}", etag);
+    String md5 = MD5.create().digestHex(fileContent);
+    TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+        .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
+
+    ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
+    String downloadUrl = getUrl(bucketName, targetName);
+
+    UploadResultVo uploadResultVo = new UploadResultVo();
+    uploadResultVo.setId(id).setUrl(downloadUrl).setSize(size);
+    uploadResultVo.setMd5(md5).setTargetName(targetName);
+
+    return uploadResultVo;
   }
 
 }
