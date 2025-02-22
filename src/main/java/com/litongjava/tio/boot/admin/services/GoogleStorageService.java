@@ -17,7 +17,7 @@ import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import cn.hutool.core.io.file.FileNameUtil;
 import cn.hutool.crypto.digest.MD5;
@@ -56,7 +56,7 @@ public class GoogleStorageService {
     if (threadId < 0L) {
       threadId = 0L;
     }
-    long id = (new SnowflakeIdGenerator(threadId, 0L)).generateId();
+    long id = SnowflakeIdUtils.id();
 
     String newFilename = id + "." + suffix;
 

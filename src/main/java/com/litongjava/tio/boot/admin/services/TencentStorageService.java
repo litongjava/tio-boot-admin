@@ -15,7 +15,7 @@ import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdGenerator;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -48,7 +48,8 @@ public class TencentStorageService implements StorageService {
     if (threadId < 0L) {
       threadId = 0L;
     }
-    long id = (new SnowflakeIdGenerator(threadId, 0L)).generateId();
+
+    long id = SnowflakeIdUtils.id();
     String suffix = FileNameUtil.getSuffix(filename);
     String newFilename = id + "." + suffix;
 
