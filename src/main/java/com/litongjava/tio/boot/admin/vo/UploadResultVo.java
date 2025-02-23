@@ -13,6 +13,7 @@ public class UploadResultVo {
   private Long id;
   private Long size;
   private String name, targetName, url, md5;
+  private String content;
 
   public UploadResultVo(long id, String filename, Long size, String url, String md5) {
     this.id = id;

@@ -10,8 +10,6 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
-import com.litongjava.tio.boot.admin.services.StorageService;
-import com.litongjava.tio.boot.admin.services.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
