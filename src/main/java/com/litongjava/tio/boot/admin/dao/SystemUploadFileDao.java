@@ -1,5 +1,9 @@
 package com.litongjava.tio.boot.admin.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 
@@ -21,6 +25,22 @@ public class SystemUploadFileDao {
     return Db.findFirst(getFileBasicInfoByIdSql, id);
   }
 
+  public List<Row> getFileBasicInfoByIds(List<Long> file_ids) {
+
+    if (file_ids == null || file_ids.isEmpty()) {
+      return new ArrayList<>();
+    }
+
+    // Create a comma-separated string of placeholders "?, ?, ...".
+    String placeholders = file_ids.stream().map(id -> "?").collect(Collectors.joining(","));
+
+    // Build the SQL statement using the placeholders.
+    String sql = String.format("select id,md5,name,size,bucket_name,target_name from %s where id in (%s) and deleted=0", tableName, placeholders);
+
+    // Execute the query and return the results.
+    return Db.find(sql, file_ids.toArray());
+  }
+
   public boolean save(long id, String md5, String originname, int fileSize, String platform, String bucketName,
       //
       String targetName) {
@@ -34,4 +54,5 @@ public class SystemUploadFileDao {
 
     return Db.save(tableName, record);
   }
+
 }

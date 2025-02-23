@@ -42,4 +42,6 @@ public class SystemUploadFileService {
   public String getUrl(String bucketName, String targetName) {
     return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
   }
+
+
 }
