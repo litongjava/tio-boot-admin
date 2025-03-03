@@ -12,7 +12,9 @@ import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
+import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
+import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
@@ -23,8 +25,6 @@ import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -34,8 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 public class TencentStorageService implements StorageService {
   public RespBodyVo upload(UploadFile uploadFile) {
     String filename = uploadFile.getName();
-    Long size = uploadFile.getSize();
-    byte[] fileContent = uploadFile.getData();
 
     // 上传文件
     long threadId = Thread.currentThread().getId();
@@ -48,7 +46,7 @@ public class TencentStorageService implements StorageService {
     }
 
     long id = SnowflakeIdUtils.id();
-    String suffix = FileNameUtil.getSuffix(filename);
+    String suffix = FilenameUtils.getSuffix(filename);
     String newFilename = id + "." + suffix;
 
     String targetName = "public/" + newFilename;
@@ -146,8 +144,11 @@ public class TencentStorageService implements StorageService {
 
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);
-    String md5 = MD5.create().digestHex(fileContent);
-    TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size).set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+    String md5 = Md5Utils.digestHex(fileContent);
+    TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size)
+        //
+        .set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+        //
         .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
 
     ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);

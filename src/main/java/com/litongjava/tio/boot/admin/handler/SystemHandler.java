@@ -12,8 +12,6 @@ import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.utils.json.Json;
 
-import cn.dev33.satoken.stp.StpUtil;
-
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
@@ -24,8 +22,8 @@ public class SystemHandler {
     CORSUtils.enableCORS(response, new HttpCors());
 
     Map<String, String> requestMap = Json.getJson().parseToMap(request.getBodyString(), String.class, String.class);
-    Object userId = StpUtil.getLoginId();
-    RespBodyVo respVo = Aop.get(SystemUserService.class).changePassword(Long.parseLong((String) userId), requestMap);
+    Long userId = TioRequestContext.getUserIdLong();
+    RespBodyVo respVo = Aop.get(SystemUserService.class).changePassword(userId, requestMap);
     response.setJson(respVo);
 
     return response;

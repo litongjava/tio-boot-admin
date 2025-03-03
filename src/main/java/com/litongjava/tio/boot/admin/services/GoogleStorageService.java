@@ -15,12 +15,12 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.http.common.UploadFile;
+import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
+import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
-import cn.hutool.core.io.file.FileNameUtil;
-import cn.hutool.crypto.digest.MD5;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -32,7 +32,7 @@ public class GoogleStorageService {
 
   public RespBodyVo uploadImageToGoogle(UploadFile uploadFile) {
     String filename = uploadFile.getName();
-    String suffix = FileNameUtil.getSuffix(filename);
+    String suffix = FilenameUtils.getSuffix(filename);
     String contentType = ContentTypeUtils.getContentType(suffix);
 
     byte[] fileContent = uploadFile.getData();
@@ -65,7 +65,7 @@ public class GoogleStorageService {
     uploadBytesToGoogle(fileContent, targetName, contentType);
 
     // 存入到数据库
-    String md5 = MD5.create().digestHex(fileContent);
+    String md5 = Md5Utils.digestHex(fileContent);
     TableInput kv = TableInput.create();
     kv.set("md5", md5);
     kv.set("filename", filename);

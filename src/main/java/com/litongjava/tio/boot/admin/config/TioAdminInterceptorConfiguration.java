@@ -2,11 +2,11 @@ package com.litongjava.tio.boot.admin.config;
 
 import java.util.function.Predicate;
 
+import com.litongjava.tio.boot.admin.services.TokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
-import com.litongjava.tio.boot.satoken.AuthTokenInterceptor;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.utils.environment.EnvUtils;
+import com.litongjava.tio.boot.token.AuthTokenInterceptor;
 
 public class TioAdminInterceptorConfiguration {
 
@@ -34,16 +34,8 @@ public class TioAdminInterceptorConfiguration {
   public void config() {
     // 创建 SaToken 拦截器实例
     if (validateTokenLogic == null) {
-      validateTokenLogic = new Predicate<String>() {
-
-        @Override
-        public boolean test(String t) {
-          String saAdminToken = EnvUtils.get("sa.admin.token");
-          return saAdminToken.equals(t);
-        }
-      };
-    };
-    
+      validateTokenLogic = new TokenPredicate();
+    }
 
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(validateTokenLogic);
     HttpInterceptorModel model = new HttpInterceptorModel();
@@ -55,7 +47,9 @@ public class TioAdminInterceptorConfiguration {
     model.addAllowUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
     model.addAllowUrls("/api/event/add");
 
-    String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*", "/table/json/tio_boot_admin_system_docx/get/*", "/table/json/tio_boot_admin_system_pdf/get/*" };
+    String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*",
+        //
+        "/table/json/tio_boot_admin_system_docx/get/*", "/table/json/tio_boot_admin_system_pdf/get/*" };
 
     model.addAllowUrls(previewUrls);
     if (permitUrls != null) {

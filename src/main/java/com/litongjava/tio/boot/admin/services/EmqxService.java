@@ -1,7 +1,9 @@
 package com.litongjava.tio.boot.admin.services;
 
+import java.security.SecureRandom;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
@@ -14,8 +16,6 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.crypto.digest.DigestUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -23,10 +23,10 @@ public class EmqxService {
 
   public Document getNewUserDocument(String userId, String username, String password) {
     // 1. 随机生成一个盐字符串
-    String salt = RandomUtil.randomString(32);
+    String salt = randomString(32);
 
     // 2. 使用 hutool 对password进行加密 加密方式sha256 加盐方式 suffix 盐使用上面生成的盐
-    String passwordHash = DigestUtil.sha256Hex(password + salt);
+    String passwordHash = DigestUtils.sha256Hex(password + salt);
 
     // 要插入的数据
     Document newUser = new Document("username", username).append("is_superuser", false)
@@ -102,12 +102,12 @@ public class EmqxService {
   }
 
   private Document getNewUserDocument(String username, String password) {
-    log.info("password:{}",password);
+    log.info("password:{}", password);
     // 1. 随机生成一个盐字符串
-    String salt = RandomUtil.randomString(32);
+    String salt = randomString(32);
 
     // 2. 使用 hutool 对password进行加密 加密方式sha256 加盐方式 suffix 盐使用上面生成的盐
-    String passwordHash = DigestUtil.sha256Hex(password + salt);
+    String passwordHash = DigestUtils.sha256Hex(password + salt);
 
     // 要插入的数据
     Document newUser = new Document("username", username).append("is_superuser", false)
@@ -137,6 +137,25 @@ public class EmqxService {
       addAuthUser(kv.getStr("user_id"), kv.getStr("username"), kv.getStr("password"));
       return TableResult.ok();
     }
+  }
+
+  //定义可用字符集
+  private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  private static final SecureRandom random = new SecureRandom();
+
+  /**
+   * 生成指定长度的随机盐字符串
+   *
+   * @param length 需要生成的字符串长度
+   * @return 随机盐字符串
+   */
+  public static String randomString(int length) {
+    StringBuilder salt = new StringBuilder(length);
+    for (int i = 0; i < length; i++) {
+      int index = random.nextInt(CHARACTERS.length());
+      salt.append(CHARACTERS.charAt(index));
+    }
+    return salt.toString();
   }
 
 }

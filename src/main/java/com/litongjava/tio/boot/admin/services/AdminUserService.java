@@ -9,7 +9,7 @@ import com.litongjava.tio.boot.admin.costants.TioBootAdminSql;
 /**
  * @author Tong Li
  */
-public class UserService {
+public class AdminUserService {
   public RespBodyVo currentUser(Object loginId) {
     String userById = TioBootAdminSql.getUserById();
     SqlPara sqlPara = SqlPara.by(userById);
