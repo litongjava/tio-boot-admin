@@ -9,4 +9,5 @@ public interface TioBootAdminTableNames {
   String tio_boot_admin_system_upload_file = "tio_boot_admin_system_upload_file";
   String tio_boot_admin_system_constants_config = "tio_boot_admin_system_constants_config";
   String tio_boot_admin_sd_generated_history = "tio_boot_admin_sd_generated_history";
+  String app_users = "app_users";
 }

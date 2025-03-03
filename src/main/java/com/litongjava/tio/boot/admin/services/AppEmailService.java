@@ -1,6 +1,7 @@
 package com.litongjava.tio.boot.admin.services;
 
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 import com.litongjava.db.activerecord.Db;
@@ -17,10 +18,10 @@ public class AppEmailService {
     String code = String.valueOf((int) (Math.random() * 900000 + 100000));
     // 设置过期时间（例如 15 分钟后）
     LocalDateTime expireTime = LocalDateTime.now().plusMinutes(15);
-
+    OffsetDateTime atOffset = expireTime.atOffset(ZoneOffset.UTC);
     // 保存验证码记录
     String insertSql = "INSERT INTO app_email_verification (email, verification_code, expire_time) VALUES (?,?,?)";
-    int rows = Db.updateBySql(insertSql, email, code, expireTime.toInstant(ZoneOffset.UTC));
+    int rows = Db.updateBySql(insertSql, email, code, atOffset);
     if (rows > 0) {
       EmailSender emailSender = TioBootServer.me().getEmailSender();
       if (emailSender != null) {

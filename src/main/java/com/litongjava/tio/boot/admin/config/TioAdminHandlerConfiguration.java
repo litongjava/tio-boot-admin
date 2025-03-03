@@ -2,11 +2,14 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AppUserLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AppUserRegisterHandler;
+import com.litongjava.tio.boot.admin.handler.EmailVerificationHandler;
 import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
 import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
-import com.litongjava.tio.boot.admin.handler.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.SystemFileAwsS3Handler;
+import com.litongjava.tio.boot.admin.handler.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.admin.handler.UserHandler;
@@ -54,5 +57,18 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
     r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
+
+    AppUserRegisterHandler appUserRegisterHandler = Aop.get(AppUserRegisterHandler.class);
+    AppUserLoginHandler loginHandler = Aop.get(AppUserLoginHandler.class);
+    EmailVerificationHandler emailVerificationHandler = Aop.get(EmailVerificationHandler.class);
+    // 注册接口
+    r.add("/api/v1/register", appUserRegisterHandler::register);
+    // 登录接口
+    r.add("/api/v1/login", loginHandler::login);
+    // 发送验证码邮件接口
+    r.add("/api/v1/sendVerification", emailVerificationHandler::sendVerification);
+    // 邮箱验证接口
+    r.add("/api/v1/verify", emailVerificationHandler::verifyEmail);
+    r.add("/verification/email", emailVerificationHandler::verifyEmail);
   }
 }

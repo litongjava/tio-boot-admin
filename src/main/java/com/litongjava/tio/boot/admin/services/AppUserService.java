@@ -4,6 +4,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
@@ -12,13 +13,10 @@ public class AppUserService {
 
   // 注册用户：先检查邮箱是否已存在，然后插入用户记录
   public boolean registerUser(String email, String password, int userType, String orgin) {
-    // 检查邮箱是否存在（简化处理）
-    String checkSql = "SELECT COUNT(*) FROM app_users WHERE email=? AND deleted=0";
-    long count = Db.queryLong(checkSql, email);
-    if (count > 0) {
-      return false;
+    boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
+    if(exists) {
+      return true;
     }
-
     // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
     String salt = String.valueOf(System.currentTimeMillis());
     // 生成密码哈希（密码+盐）
