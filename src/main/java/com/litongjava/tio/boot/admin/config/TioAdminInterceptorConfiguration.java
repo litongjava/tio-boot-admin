@@ -45,7 +45,7 @@ public class TioAdminInterceptorConfiguration {
     model.addAllowUrls("", "/");
     //user
     model.addAllowUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
-    model.addAllowUrls("/api/v1/login", "/api/v1/register", "/api/v1/referesh", "/api/v1/sendVerification", "/api/v1/verify", "/verification/email");
+    model.addAllowUrls("/api/v1/login", "/api/v1/register", "/api/v1/user/referesh", "/api/v1/sendVerification", "/api/v1/verify", "/verification/email");
     model.addAllowUrls("/api/event/add");
 
     String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*",
