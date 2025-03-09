@@ -74,8 +74,10 @@ public class AppUserService {
   }
 
   public boolean remove(String userId) {
-    String sql = "update app_users set deleted=1 WHERE id=?";
-    Db.updateBySql(sql, userId);
+    //String sql = "update app_users set deleted=1 WHERE id=?";
+    //Db.updateBySql(sql, userId);
+    String sql = "delete from app_users WHERE id=?";
+    Db.delete(sql, userId);
     return true;
   }
 }
