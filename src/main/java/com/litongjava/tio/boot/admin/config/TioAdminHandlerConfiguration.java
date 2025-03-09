@@ -3,6 +3,7 @@ package com.litongjava.tio.boot.admin.config;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserAnonymousHandler;
+import com.litongjava.tio.boot.admin.handler.AppUserGoogleHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserLoginHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserRegisterHandler;
@@ -81,12 +82,15 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/v1/user/resetPassword", appUserHandler::resetPassword);
 
     r.add("/api/v1/anonymous/create", appUserAnonymousHandler::create);
-
+    
     // 发送验证码邮件接口
     r.add("/api/v1/sendVerification", emailVerificationHandler::sendVerification);
     r.add("/api/v1/sendVerificationCode", emailVerificationHandler::sendVerificationCode);
     // 邮箱验证接口
     r.add("/api/v1/verify", emailVerificationHandler::verifyEmail);
     r.add("/verification/email", emailVerificationHandler::verifyEmail);
+    
+    AppUserGoogleHandler appUserGoogleHandler = Aop.get(AppUserGoogleHandler.class);
+    r.add("/api/v1/google/login", appUserGoogleHandler::login);
   }
 }

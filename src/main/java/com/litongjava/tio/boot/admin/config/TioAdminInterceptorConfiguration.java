@@ -49,7 +49,9 @@ public class TioAdminInterceptorConfiguration {
         //
         "/api/v1/sendVerification", "/api/v1/sendVerificationCode", "/api/v1/verify", "/verification/email",
         //
-        "/api/v1/user/resetPassword", "/api/v1/anonymous/create");
+        "/api/v1/user/resetPassword", "/api/v1/anonymous/create",
+        //
+        "/api/v1/google/login");
     model.addAllowUrls("/api/event/add");
 
     String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*",
