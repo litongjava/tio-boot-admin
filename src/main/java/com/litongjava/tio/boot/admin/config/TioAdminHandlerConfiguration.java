@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AppUserAnonymousHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserLoginHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserRegisterHandler;
@@ -64,19 +65,26 @@ public class TioAdminHandlerConfiguration {
     EmailVerificationHandler emailVerificationHandler = Aop.get(EmailVerificationHandler.class);
     AppUserHandler appUserHandler = Aop.get(AppUserHandler.class);
 
+    AppUserAnonymousHandler appUserAnonymousHandler = Aop.get(AppUserAnonymousHandler.class);
     // 注册接口
     r.add("/api/v1/register", appUserRegisterHandler::register);
     // 登录接口
     r.add("/api/v1/login", loginHandler::login);
-    //刷新
-    r.add("/api/v1/user/referesh", appUserHandler::referesh);
+
     // 登出
     r.add("/api/v1/logout", loginHandler::logout);
+    //刷新
+    r.add("/api/v1/user/referesh", appUserHandler::refresh);
     //删除
     r.add("/api/v1/user/remove", appUserHandler::remove);
-    
+    //删除
+    r.add("/api/v1/user/resetPassword", appUserHandler::resetPassword);
+
+    r.add("/api/v1/anonymous/create", appUserAnonymousHandler::create);
+
     // 发送验证码邮件接口
     r.add("/api/v1/sendVerification", emailVerificationHandler::sendVerification);
+    r.add("/api/v1/sendVerificationCode", emailVerificationHandler::sendVerificationCode);
     // 邮箱验证接口
     r.add("/api/v1/verify", emailVerificationHandler::verifyEmail);
     r.add("/verification/email", emailVerificationHandler::verifyEmail);

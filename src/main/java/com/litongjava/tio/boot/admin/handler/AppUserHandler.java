@@ -5,15 +5,17 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.services.AppUserService;
+import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
+import com.litongjava.tio.utils.json.JsonUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
 
 public class AppUserHandler {
-  public HttpResponse referesh(HttpRequest request) {
+  public HttpResponse refresh(HttpRequest request) {
     HttpResponse response = TioRequestContext.getResponse();
     String bodyString = request.getBodyString();
     String refresh_token = FastJson2Utils.parseObject(bodyString).getString("refresh_token");
@@ -46,5 +48,15 @@ public class AppUserHandler {
       response.setJson(RespBodyVo.fail());
     }
     return response;
+  }
+
+  public HttpResponse resetPassword(HttpRequest request) {
+    HttpResponse response = TioRequestContext.getResponse();
+    String bodyString = request.getBodyString();
+    UserResetPasswordRequest userResetPassword = JsonUtils.parse(bodyString, UserResetPasswordRequest.class);
+
+    AppUserService appUserService = Aop.get(AppUserService.class);
+    RespBodyVo vo = appUserService.resetPassword(userResetPassword);
+    return response.setJson(vo);
   }
 }

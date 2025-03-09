@@ -31,6 +31,25 @@ public class AppEmailService {
     }
     return false;
   }
+  
+  public boolean sendVerificationCodeEmail(String email, String origin) {
+    // 生成验证码（例如 6 位数字或随机字符串）
+    String code = String.valueOf((int) (Math.random() * 900000 + 100000));
+    // 设置过期时间（例如 15 分钟后）
+    LocalDateTime expireTime = LocalDateTime.now().plusMinutes(15);
+    OffsetDateTime atOffset = expireTime.atOffset(ZoneOffset.UTC);
+    // 保存验证码记录
+    String insertSql = "INSERT INTO app_email_verification (email, verification_code, expire_time) VALUES (?,?,?)";
+    int rows = Db.updateBySql(insertSql, email, code, atOffset);
+    if (rows > 0) {
+      EmailSender emailSender = TioBootServer.me().getEmailSender();
+      if (emailSender != null) {
+        //
+        return emailSender.sendVerificationCodeEmail(email, origin, code);
+      }
+    }
+    return false;
+  }
 
   //验证邮箱验证码是否正确且未过期
   public boolean verifyEmailCode(String email, String code) {
@@ -47,4 +66,6 @@ public class AppEmailService {
     }
     return false;
   }
+
+ 
 }

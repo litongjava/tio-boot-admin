@@ -1,14 +1,24 @@
 package com.litongjava.tio.boot.admin.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
+import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Db;
+import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.validate.ValidateResult;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUser;
+import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
+import com.litongjava.tio.utils.validator.EmailValidator;
+import com.litongjava.tio.utils.validator.PasswordValidator;
 
 public class AppUserService {
 
@@ -79,5 +89,75 @@ public class AppUserService {
     String sql = "delete from app_users WHERE id=?";
     Db.delete(sql, userId);
     return true;
+  }
+
+  public RespBodyVo resetPassword(UserResetPasswordRequest req) {
+
+    List<ValidateResult> validateResults = new ArrayList<>();
+    boolean ok = true;
+    String email = req.getEmail();
+    String code = req.getCode();
+    boolean validate = EmailValidator.validate(email);
+    if (!validate) {
+      ValidateResult validateResult = ValidateResult.by("eamil", "Failed to valiate email:" + email);
+      validateResults.add(validateResult);
+      ok = false;
+    }
+
+    String password = req.getPassword();
+    validate = PasswordValidator.validate(password);
+    if (!validate) {
+      ValidateResult validateResult = ValidateResult.by("password", "Failed to valiate password:" + password);
+      validateResults.add(validateResult);
+      ok = false;
+    }
+
+    if (!ok) {
+      return RespBodyVo.failData(validateResults);
+    }
+
+    boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
+    if (exists) {
+      ValidateResult validateResult = ValidateResult.by("eamil", "Eamil already taken" + email);
+      validateResults.add(validateResult);
+    }
+
+    if (!ok) {
+      return RespBodyVo.failData(validateResults);
+    }
+
+    boolean verify = Aop.get(AppEmailService.class).verifyEmailCode(email, code);
+    if (!verify) {
+      return RespBodyVo.fail("Failed to verify code");
+    }
+
+    // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
+    String salt = String.valueOf(System.currentTimeMillis());
+    // 生成密码哈希（密码+盐）
+    String passwordHash = DigestUtils.sha256Hex(password + salt);
+
+    String updateSql = "update app_users set password_salt=?, password_hash=? where email=?";
+    Db.updateBySql(updateSql, salt, passwordHash, email);
+    return RespBodyVo.ok();
+  }
+
+  public RespBodyVo createAnonymousUser(String origin) {
+    long longId = SnowflakeIdUtils.id();
+    String userId = longId + "";
+    String insertSql = "INSERT INTO app_users (id,of) VALUES (?,?)";
+
+    Db.updateBySql(insertSql, userId, origin);
+
+    // 生成 token，有效期 7 天（604800秒）
+    Long timeout = EnvUtils.getLong("app.token.timeout", 604800L);
+    Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
+    String token = createToken(userId, tokenTimeout);
+    String refreshToken = createRefreshToken(userId);
+
+    Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue())
+        //
+        .set("refresh_token", refreshToken);
+
+    return RespBodyVo.ok(kv);
   }
 }

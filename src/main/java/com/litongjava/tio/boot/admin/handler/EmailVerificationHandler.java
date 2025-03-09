@@ -13,6 +13,22 @@ import com.litongjava.tio.utils.json.JsonUtils;
 
 public class EmailVerificationHandler {
   // 发送验证码邮件
+  public HttpResponse sendVerificationCode(HttpRequest request) {
+    HttpResponse response = TioRequestContext.getResponse();
+    String origin = request.getOrigin();
+    CORSUtils.enableCORS(response);
+    String body = request.getBodyString();
+    EmailRequest req = JsonUtils.parse(body, EmailRequest.class);
+
+    AppEmailService emailService = Aop.get(AppEmailService.class);
+    boolean sent = emailService.sendVerificationCodeEmail(req.getEmail(), origin);
+    if (sent) {
+      return response.setJson(RespBodyVo.ok());
+    }
+    return Resps.json(response, RespBodyVo.fail());
+  }
+  
+  // 发送验证码邮件
   public HttpResponse sendVerification(HttpRequest request) {
     HttpResponse response = TioRequestContext.getResponse();
     String origin = request.getOrigin();
