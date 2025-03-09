@@ -21,18 +21,34 @@ public class AppUserLoginHandler {
     AppUserService appUserService = Aop.get(AppUserService.class);
     AppUser user = appUserService.getUserByEmail(req.getEmail());
     // 此处允许未验证邮箱的用户登录
-    if (user != null && appUserService.verifyPassword(user.getId(), req.getPassword())) {
+    if (user != null && appUserService.verifyPassword(user, req.getPassword())) {
       // 生成 token，有效期 7 天（604800秒）
       Long timeout = EnvUtils.getLong("app.token.timeout", 604800L);
-      String token = appUserService.createToken(user.getId(), timeout);
+      Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
+      String token = appUserService.createToken(user.getId(), tokenTimeout);
       String refreshToken = appUserService.createRefreshToken(user.getId());
 
-      Kv kv = Kv.by("user_id", user.getId()).set("token", token).set("expires_in", timeout.intValue())
+      Kv kv = Kv.by("user_id", user.getId()).set("token", token).set("expires_in", tokenTimeout.intValue())
           //
           .set("refresh_token", refreshToken);
 
       return response.setJson(RespBodyVo.ok(kv));
     }
     return response.setJson(RespBodyVo.fail("username or password is not correct"));
+  }
+
+  public HttpResponse logout(HttpRequest request) {
+    HttpResponse response = TioRequestContext.getResponse();
+    String userId = TioRequestContext.getUserIdString();
+
+    AppUserService appUserService = Aop.get(AppUserService.class);
+    boolean logout = appUserService.logout(userId);
+    if (logout) {
+      response.setJson(RespBodyVo.ok());
+    } else {
+      response.setJson(RespBodyVo.fail());
+    }
+    return response;
+
   }
 }

@@ -22,7 +22,7 @@ public class TokenPredicate implements Predicate<String> {
     String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
     boolean verify = JwtUtils.verify(key, token);
     if (verify) {
-      Long userId = JwtUtils.parseUserIdLong(token);
+      String userId = JwtUtils.parseUserIdString(token);
       TioRequestContext.setUserId(userId);
       return true;
     }

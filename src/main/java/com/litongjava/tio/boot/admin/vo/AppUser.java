@@ -1,7 +1,5 @@
 package com.litongjava.tio.boot.admin.vo;
 
-import java.time.OffsetDateTime;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,7 +39,7 @@ public class AppUser {
   private Boolean disabled;
   
   // 用户生日
-  private OffsetDateTime birthday;
+  private java.sql.Timestamp birthday;
   
   // 用户金币数量
   private Long coin;
@@ -86,13 +84,13 @@ public class AppUser {
   private String creator;
   
   // 创建时间
-  private OffsetDateTime createTime;
+  private java.sql.Timestamp createTime;
   
   // 更新人
   private String updater;
   
   // 更新时间
-  private OffsetDateTime updateTime;
+  private java.sql.Timestamp updateTime;
   
   // 逻辑删除标识 (0: 未删除, 1: 已删除)
   private Short deleted;

@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AppUserHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserLoginHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserRegisterHandler;
 import com.litongjava.tio.boot.admin.handler.EmailVerificationHandler;
@@ -61,10 +62,19 @@ public class TioAdminHandlerConfiguration {
     AppUserRegisterHandler appUserRegisterHandler = Aop.get(AppUserRegisterHandler.class);
     AppUserLoginHandler loginHandler = Aop.get(AppUserLoginHandler.class);
     EmailVerificationHandler emailVerificationHandler = Aop.get(EmailVerificationHandler.class);
+    AppUserHandler appUserHandler = Aop.get(AppUserHandler.class);
+
     // 注册接口
     r.add("/api/v1/register", appUserRegisterHandler::register);
     // 登录接口
     r.add("/api/v1/login", loginHandler::login);
+    //刷新
+    r.add("/api/v1/user/referesh", appUserHandler::referesh);
+    // 登出
+    r.add("/api/v1/logout", loginHandler::logout);
+    //删除
+    r.add("/api/v1/user/remove", appUserHandler::remove);
+    
     // 发送验证码邮件接口
     r.add("/api/v1/sendVerification", emailVerificationHandler::sendVerification);
     // 邮箱验证接口

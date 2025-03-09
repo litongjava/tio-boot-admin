@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.vo;
 
-import java.time.Instant;
+import java.sql.Timestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ public class EmailVerification {
   private int id;
   private String email;
   private String verificationCode;
-  private Instant createTime;
-  private Instant expireTime;
+  private Timestamp createTime;
+  private Timestamp expireTime;
   private boolean verified;
 }

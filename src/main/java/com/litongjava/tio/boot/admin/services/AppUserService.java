@@ -8,13 +8,14 @@ import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
+import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 public class AppUserService {
 
   // 注册用户：先检查邮箱是否已存在，然后插入用户记录
   public boolean registerUser(String email, String password, int userType, String orgin) {
     boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
-    if(exists) {
+    if (exists) {
       return true;
     }
     // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
@@ -23,8 +24,9 @@ public class AppUserService {
     String passwordHash = DigestUtils.sha256Hex(password + salt);
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
+    long id = SnowflakeIdUtils.id();
     String insertSql = "INSERT INTO app_users (id, email, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?)";
-    int rows = Db.updateBySql(insertSql, email, email, salt, passwordHash, userType, orgin);
+    int rows = Db.updateBySql(insertSql, id + "", email, salt, passwordHash, userType, orgin);
     return rows > 0;
   }
 
@@ -65,5 +67,15 @@ public class AppUserService {
   public String createRefreshToken(String id) {
     String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
     return JwtUtils.createTokenByUserId(key, id, -1);
+  }
+
+  public boolean logout(String userId) {
+    return true;
+  }
+
+  public boolean remove(String userId) {
+    String sql = "update app_users set deleted=1 WHERE id=?";
+    Db.updateBySql(sql, userId);
+    return true;
   }
 }
