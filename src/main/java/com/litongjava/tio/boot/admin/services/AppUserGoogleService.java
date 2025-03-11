@@ -66,8 +66,9 @@ public class AppUserGoogleService {
           userId = String.valueOf(longId);
           Row user = Row.by("id", userId).set("email", email).set("display_name", name).set("photo_url", photo_url);
           Db.save(TioBootAdminTableNames.app_users, user);
+        }else {
+          userId = emailRow.getString("id");
         }
-        userId = emailRow.getString("id");
       } else {
         userId = row.getString("id");
       }
