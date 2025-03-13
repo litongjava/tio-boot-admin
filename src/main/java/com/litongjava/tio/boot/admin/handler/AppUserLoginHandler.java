@@ -25,10 +25,11 @@ public class AppUserLoginHandler {
       // 生成 token，有效期 7 天（604800秒）
       Long timeout = EnvUtils.getLong("app.token.timeout", 604800L);
       Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
-      String token = appUserService.createToken(user.getId(), tokenTimeout);
-      String refreshToken = appUserService.createRefreshToken(user.getId());
+      String userId = user.getId();
+      String token = appUserService.createToken(userId, tokenTimeout);
+      String refreshToken = appUserService.createRefreshToken(userId);
 
-      Kv kv = Kv.by("user_id", user.getId()).set("token", token).set("expires_in", tokenTimeout.intValue())
+      Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue())
           //
           .set("refresh_token", refreshToken);
 

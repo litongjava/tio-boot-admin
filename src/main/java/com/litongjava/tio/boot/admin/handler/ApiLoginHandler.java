@@ -42,7 +42,7 @@ public class ApiLoginHandler {
 
       // 3.创建token
       String keyValue = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
-      AuthToken authToken = JwtUtils.createToken(keyValue, new AuthToken(userId, tokenTimeout));
+      AuthToken authToken = JwtUtils.createToken(keyValue, new AuthToken(userId.toString(), tokenTimeout));
       TokenManager.login(userId, authToken.getToken());
 
       Kv kv = new Kv();
