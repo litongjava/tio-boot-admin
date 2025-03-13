@@ -21,7 +21,6 @@
     <java.java-openai>1.1.6</java.java-openai>
   </properties>
   <dependencies>
-
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
@@ -107,6 +106,13 @@
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <version>5.1.46</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>com.maxmind.geoip2</groupId>
+      <artifactId>geoip2</artifactId>
+      <version>2.8.1</version>
       <scope>provided</scope>
     </dependency>
 

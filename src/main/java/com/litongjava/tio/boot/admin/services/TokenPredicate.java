@@ -13,11 +13,11 @@ public class TokenPredicate implements Predicate<String> {
   public boolean test(String token) {
     String adminToken = EnvUtils.get(AppConstant.ADMIN_TOKEN);
     //system token
-    boolean equals = adminToken.equals(token);
-    if (equals) {
+    if (adminToken != null && adminToken.equals(token)) {
       TioRequestContext.setUserId(0L);
       return true;
     }
+
     // user and admin token
     String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
     boolean verify = JwtUtils.verify(key, token);
