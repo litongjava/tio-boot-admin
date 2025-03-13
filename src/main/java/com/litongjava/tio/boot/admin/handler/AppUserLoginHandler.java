@@ -1,11 +1,11 @@
 package com.litongjava.tio.boot.admin.handler;
 
-import com.jfinal.kit.Kv;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginRequest;
+import com.litongjava.tio.boot.admin.vo.AppUserLoginVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
@@ -29,11 +29,9 @@ public class AppUserLoginHandler {
       String token = appUserService.createToken(userId, tokenTimeout);
       String refreshToken = appUserService.createRefreshToken(userId);
 
-      Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue())
-          //
-          .set("refresh_token", refreshToken);
+      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), refreshToken, token, tokenTimeout.intValue());
 
-      return response.setJson(RespBodyVo.ok(kv));
+      return response.setJson(RespBodyVo.ok(appUserLoginVo));
     }
     return response.setJson(RespBodyVo.fail("username or password is not correct"));
   }

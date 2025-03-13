@@ -3,13 +3,13 @@ package com.litongjava.tio.boot.admin.services;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.http.response.ResponseVo;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.vo.AppUserLoginVo;
 import com.litongjava.tio.boot.admin.vo.GoogleJwtPayload;
 import com.litongjava.tio.boot.admin.vo.GoogleToken;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -66,7 +66,7 @@ public class AppUserGoogleService {
           userId = String.valueOf(longId);
           Row user = Row.by("id", userId).set("email", email).set("display_name", name).set("photo_url", photo_url);
           Db.save(TioBootAdminTableNames.app_users, user);
-        }else {
+        } else {
           userId = emailRow.getString("id");
         }
       } else {
@@ -80,17 +80,15 @@ public class AppUserGoogleService {
       String token = appUserService.createToken(userId, tokenTimeout);
       String refreshToken = appUserService.createRefreshToken(userId);
 
-      Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue()).set("refresh_token", refreshToken)
-          //
-          .set("display_name", name).set("photo_url", photo_url);
-      return RespBodyVo.ok(kv);
+      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, name, email, photo_url, refreshToken, token, tokenTimeout.intValue());
+      return RespBodyVo.ok(appUserLoginVo);
     } else {
       return RespBodyVo.fail(responseVo.getBodyString());
     }
   }
 
   /**
-   * 根据 tokenResponse 解析出 Google 用户唯一标识（示例实现）
+   * 根据 tokenResponse 解析出 Google 用户唯一标识
    */
   public GoogleJwtPayload parseGoogleId(String tokenResponse) {
     GoogleToken googleToken = FastJson2Utils.parse(tokenResponse, GoogleToken.class);
