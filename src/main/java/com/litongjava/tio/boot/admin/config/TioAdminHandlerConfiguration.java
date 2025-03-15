@@ -80,7 +80,6 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/v1/user/remove", appUserHandler::remove);
     //删除
     r.add("/api/v1/user/resetPassword", appUserHandler::resetPassword);
-
     r.add("/api/v1/anonymous/create", appUserAnonymousHandler::create);
     
     // 发送验证码邮件接口
