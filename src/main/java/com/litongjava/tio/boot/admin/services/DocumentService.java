@@ -27,7 +27,7 @@ public class DocumentService {
 
     String filename = currentTimeMillis + ".png";
     UploadFile uploadFile = new UploadFile(filename, imageBytes);
-    UploadResultVo resultVo = Aop.get(AwsS3StorageService.class).uploadBytes(category, uploadFile);
+    UploadResultVo resultVo = Aop.get(AwsS3StorageService.class).uploadFile(category, uploadFile);
 
     Kv resultKv = Kv.create()
         //

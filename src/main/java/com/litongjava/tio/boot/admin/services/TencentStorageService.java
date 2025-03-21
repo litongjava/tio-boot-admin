@@ -118,7 +118,7 @@ public class TencentStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo uploadBytes(String category, UploadFile uploadFile) {
+  public UploadResultVo uploadFile(String category, UploadFile uploadFile) {
     return null;
   }
 

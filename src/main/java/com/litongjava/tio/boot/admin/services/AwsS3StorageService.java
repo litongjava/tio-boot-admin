@@ -27,12 +27,12 @@ public class AwsS3StorageService implements StorageService {
     if (StrKit.isBlank(category)) {
       category = "default";
     }
-    UploadResultVo uploadResultVo = uploadBytes(category, uploadFile);
+    UploadResultVo uploadResultVo = uploadFile(category, uploadFile);
 
     return RespBodyVo.ok(uploadResultVo);
   }
 
-  public UploadResultVo uploadBytes(String category, UploadFile uploadFile) {
+  public UploadResultVo uploadFile(String category, UploadFile uploadFile) {
     // 上传文件
     long id = SnowflakeIdUtils.id();
     String suffix = FilenameUtils.getSuffix(uploadFile.getName());
@@ -53,10 +53,10 @@ public class AwsS3StorageService implements StorageService {
    * @return
    */
   public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix) {
-    String originFilename = uploadFile.getName();
+    String name = uploadFile.getName();
     long size = uploadFile.getSize();
-
     byte[] fileContent = uploadFile.getData();
+
     String md5 = Md5Utils.digestHex(fileContent);
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record != null) {
@@ -68,7 +68,7 @@ public class AwsS3StorageService implements StorageService {
       kv.remove("bucket_name");
       kv.set("url", url);
       kv.set("md5", md5);
-      return new UploadResultVo(id, uploadFile.getName(), uploadFile.getSize(), url, md5);
+      return new UploadResultVo(id, name, size, url, md5);
     } else {
       log.info("not found from cache table:{}", md5);
     }
@@ -85,7 +85,7 @@ public class AwsS3StorageService implements StorageService {
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
 
-    TableInput kv = TableInput.create().set("name", originFilename).set("size", size).set("md5", md5)
+    TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
         .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
@@ -94,7 +94,7 @@ public class AwsS3StorageService implements StorageService {
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
-    return new UploadResultVo(save.getData().getLong("id"), originFilename, Long.valueOf(size), downloadUrl, md5);
+    return new UploadResultVo(save.getData().getLong("id"), name, Long.valueOf(size), downloadUrl, md5);
 
   }
 

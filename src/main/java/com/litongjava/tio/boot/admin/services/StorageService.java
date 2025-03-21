@@ -8,7 +8,7 @@ public interface StorageService {
 
   public RespBodyVo upload(String category, UploadFile uploadFile);
 
-  public UploadResultVo uploadBytes(String category, UploadFile uploadFile);
+  public UploadResultVo uploadFile(String category, UploadFile uploadFile);
 
   public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix);
 
