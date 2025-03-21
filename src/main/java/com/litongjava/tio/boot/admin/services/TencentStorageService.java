@@ -51,7 +51,7 @@ public class TencentStorageService implements StorageService {
 
     String targetName = "public/" + newFilename;
 
-    UploadResultVo vo = uploadBytes(id, targetName, uploadFile, suffix);
+    UploadResultVo vo = uploadFile(id, targetName, uploadFile, suffix);
     return RespBodyVo.ok(vo);
   }
 
@@ -123,7 +123,7 @@ public class TencentStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix) {
+  public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
     byte[] fileContent = uploadFile.getData();
     String filename = uploadFile.getName();
     long size = uploadFile.getSize();

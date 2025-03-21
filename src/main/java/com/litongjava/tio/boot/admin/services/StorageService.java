@@ -10,7 +10,7 @@ public interface StorageService {
 
   public UploadResultVo uploadFile(String category, UploadFile uploadFile);
 
-  public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix);
+  public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix);
 
   public String getUrl(String bucketName, String targetName);
 

@@ -40,7 +40,7 @@ public class AwsS3StorageService implements StorageService {
 
     String targetName = category + "/" + newFilename;
 
-    return uploadBytes(id, targetName, uploadFile, suffix);
+    return uploadFile(id, targetName, uploadFile, suffix);
   }
 
   /**
@@ -52,7 +52,7 @@ public class AwsS3StorageService implements StorageService {
    * @param suffix
    * @return
    */
-  public UploadResultVo uploadBytes(long id, String targetName, UploadFile uploadFile, String suffix) {
+  public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
     String name = uploadFile.getName();
     long size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
