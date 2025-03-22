@@ -85,6 +85,17 @@ public class ApiLoginHandler {
     Long userIdLong = TioRequestContext.getUserIdLong();
     boolean login = TokenManager.isLogin(userIdLong);
     return Resps.json(httpResponse, RespBodyVo.ok(login));
+  }
 
+  /**
+   * @param request
+   * @return
+   */
+  public HttpResponse validateToken(HttpRequest request) {
+    HttpResponse httpResponse = TioRequestContext.getResponse();
+    CORSUtils.enableCORS(httpResponse, new HttpCors());
+
+    Long userIdLong = TioRequestContext.getUserIdLong();
+    return Resps.txt(httpResponse, userIdLong.toString());
   }
 }
