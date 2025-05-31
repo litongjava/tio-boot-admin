@@ -57,7 +57,7 @@ public class AwsS3StorageService implements StorageService {
     long size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
 
-    String md5 = Md5Utils.digestHex(fileContent);
+    String md5 = Md5Utils.md5Hex(fileContent);
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record != null) {
       log.info("select table reuslt:{}", record.toMap());

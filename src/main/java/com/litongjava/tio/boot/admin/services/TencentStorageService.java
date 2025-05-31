@@ -144,7 +144,7 @@ public class TencentStorageService implements StorageService {
 
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);
-    String md5 = Md5Utils.digestHex(fileContent);
+    String md5 = Md5Utils.md5Hex(fileContent);
     TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size)
         //
         .set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())

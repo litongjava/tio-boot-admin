@@ -65,7 +65,7 @@ public class GoogleStorageService {
     uploadBytesToGoogle(fileContent, targetName, contentType);
 
     // 存入到数据库
-    String md5 = Md5Utils.digestHex(fileContent);
+    String md5 = Md5Utils.md5Hex(fileContent);
     TableInput kv = TableInput.create();
     kv.set("md5", md5);
     kv.set("filename", filename);
