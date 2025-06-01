@@ -7,9 +7,6 @@ import com.litongjava.tio.http.common.RequestLine;
 import com.litongjava.tio.http.common.utils.HttpIpUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class AccessLogService {
 
   public AccessLogVo parseToAccessLog(HttpRequest request) {
