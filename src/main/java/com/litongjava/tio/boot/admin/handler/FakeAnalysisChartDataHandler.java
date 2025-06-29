@@ -26,7 +26,7 @@ public class FakeAnalysisChartDataHandler {
 
     if (resource != null) {
       String fileString = resource.getFile();
-      httpResponse.setString(fileString);
+      httpResponse.body(fileString);
     }
     return httpResponse;
   }
