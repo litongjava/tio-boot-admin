@@ -13,6 +13,7 @@ import com.litongjava.model.validate.ValidateResult;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUser;
+import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
@@ -21,6 +22,26 @@ import com.litongjava.tio.utils.validator.EmailValidator;
 import com.litongjava.tio.utils.validator.PasswordValidator;
 
 public class AppUserService {
+
+  public boolean registerUserByUserId(AppUserRegisterRequest req, String origin) {
+    String password = req.getPassword();
+    String email = req.getEmail();
+    int userType = req.getUserType();
+    boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
+    if (exists) {
+      return true;
+    }
+    // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
+    String salt = String.valueOf(System.currentTimeMillis());
+    // 生成密码哈希（密码+盐）
+    String passwordHash = DigestUtils.sha256Hex(password + salt);
+
+    // 插入用户记录（id 这里简单采用 email 作为唯一标识）
+    long id = SnowflakeIdUtils.id();
+    String insertSql = "update app_users set email=?, password_salt=?, password_hash=?, user_type=?,of=? where id=?";
+    int rows = Db.updateBySql(insertSql, email, salt, passwordHash, userType, origin, id + "");
+    return rows > 0;
+  }
 
   // 注册用户：先检查邮箱是否已存在，然后插入用户记录
   public boolean registerUser(String email, String password, int userType, String orgin) {
@@ -159,5 +180,13 @@ public class AppUserService {
         .set("refresh_token", refreshToken);
 
     return RespBodyVo.ok(kv);
+  }
+
+  public boolean exists(String userId) {
+    return Db.exists("app_users", "id", userId);
+  }
+
+  public boolean existsEmail(String email) {
+    return Db.exists(TioBootAdminTableNames.app_users, "email", email);
   }
 }

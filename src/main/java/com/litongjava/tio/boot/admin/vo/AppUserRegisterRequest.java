@@ -11,4 +11,5 @@ public class AppUserRegisterRequest {
   private String email;
   private String password;
   private int userType; // 0：学生，1：教授
+  private Long userId;
 }
