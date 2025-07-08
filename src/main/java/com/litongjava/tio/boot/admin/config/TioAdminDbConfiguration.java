@@ -1,10 +1,15 @@
 package com.litongjava.tio.boot.admin.config;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 
 import com.litongjava.db.activerecord.ActiveRecordPlugin;
 import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
+import com.litongjava.db.activerecord.dialect.Sqlite3Dialect;
 import com.litongjava.db.hikaricp.DsContainer;
 import com.litongjava.hook.HookCan;
 import com.litongjava.openai.client.OpenAiClient;
@@ -24,6 +29,22 @@ public class TioAdminDbConfiguration {
       return;
     }
     log.info("jdbcUrl:{}", jdbcUrl);
+
+    // 检查并创建 SQLite 数据库路径
+    try {
+      if (jdbcUrl != null && jdbcUrl.startsWith("jdbc:sqlite:")) {
+        String dbPath = jdbcUrl.substring("jdbc:sqlite:".length());
+        Path path = Paths.get(dbPath).getParent();
+        if (path != null && !Files.exists(path)) {
+          Files.createDirectories(path);
+          log.info("已创建 SQLite 数据库目录: {}", path);
+        }
+      }
+    } catch (IOException e) {
+      log.error("创建 SQLite 数据库目录失败", e);
+      throw new RuntimeException(e);
+    }
+
     String jdbcUser = EnvUtils.get("jdbc.user");
 
     String jdbcPswd = EnvUtils.get("jdbc.pswd");
@@ -51,8 +72,10 @@ public class TioAdminDbConfiguration {
     if (EnvUtils.isDev()) {
       arp.setDevMode(true);
     }
-    if (jdbcUrl.contains("postgresql")) {
+    if (jdbcUrl.contains("jdbc:postgresql")) {
       arp.setDialect(new PostgreSqlDialect());
+    } else if (jdbcUrl.startsWith("jdbc:sqlite")) {
+      arp.setDialect(new Sqlite3Dialect());
     }
     // add sql file
     // start
