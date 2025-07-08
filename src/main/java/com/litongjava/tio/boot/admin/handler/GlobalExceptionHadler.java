@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.handler;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
     model.setLevel("LeveL 1");
 
     model.setDeviceName(localIp);
-    model.setTime(new Date());
+    model.setTime(ZonedDateTime.now());
     model.setRequestId(requestId);
     model.setUserIp(realIp);
     model.setUserId(TioRequestContext.getUserIdString());

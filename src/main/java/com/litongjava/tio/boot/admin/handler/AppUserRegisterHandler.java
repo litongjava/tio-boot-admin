@@ -3,11 +3,9 @@ package com.litongjava.tio.boot.admin.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.db.activerecord.Db;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.validate.ValidateResult;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.services.AppEmailService;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
