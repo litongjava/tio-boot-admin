@@ -21,7 +21,7 @@ import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.jwt.JwtUtils;
 import com.litongjava.tio.utils.token.TokenManager;
 
-public class ApiLoginHandler {
+public class AdminLoginHandler {
   public HttpResponse account(HttpRequest request) {
 
     HttpResponse httpResponse = TioRequestContext.getResponse();

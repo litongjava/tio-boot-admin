@@ -19,7 +19,7 @@ import com.litongjava.tio.utils.validator.PasswordValidator;
 
 public class AppUserRegisterHandler {
   AppUserService appUserService = Aop.get(AppUserService.class);
-  
+
   public HttpResponse register(HttpRequest request) {
     String origin = request.getOrigin();
     HttpResponse response = TioRequestContext.getResponse();
@@ -55,7 +55,7 @@ public class AppUserRegisterHandler {
       return response.setJson(RespBodyVo.failData(validateResults));
     }
 
-    boolean exists =appUserService.existsEmail(email); 
+    boolean exists = appUserService.existsEmail(email);
     if (exists) {
       ValidateResult validateResult = ValidateResult.by("eamil", "Eamil already taken" + email);
       validateResults.add(validateResult);
@@ -68,20 +68,33 @@ public class AppUserRegisterHandler {
     boolean success = false;
     Long userId = req.getUserId();
     if (userId != null && appUserService.exists(userId.toString())) {
-      success = appUserService.registerUserByUserId(req,origin);
+      success = appUserService.registerUserByUserId(req, origin);
     } else {
       // 注册用户（内部会处理密码加盐和哈希等逻辑）
       success = appUserService.registerUser(req.getEmail(), req.getPassword(), req.getUserType(), origin);
     }
 
     if (success) {
-      // 注册成功后发送验证邮件（验证码及链接）
-      AppEmailService emailService = Aop.get(AppEmailService.class);
-      boolean sent = emailService.sendVerificationEmail(req.getEmail(), origin);
-      if (sent) {
-        return response.setJson(RespBodyVo.ok());
+      if (req.getVerification_type() == 1) {
+        // 注册成功后发送验证邮件（验证码及链接）
+        AppEmailService emailService = Aop.get(AppEmailService.class);
+        boolean sent = emailService.sendVerificationCodeEmail(req.getEmail(), origin);
+        if (sent) {
+          return response.setJson(RespBodyVo.ok());
+        } else {
+          return response.setJson(RespBodyVo.fail("Failed to send email"));
+        }
+      } else if (req.getVerification_type() == 2) {
+        // 注册成功后发送验证邮件（验证码及链接）
+        AppEmailService emailService = Aop.get(AppEmailService.class);
+        boolean sent = emailService.sendVerificationEmail(req.getEmail(), origin);
+        if (sent) {
+          return response.setJson(RespBodyVo.ok());
+        } else {
+          return response.setJson(RespBodyVo.fail("Failed to send email"));
+        }
       } else {
-        return response.setJson(RespBodyVo.fail("Failed to send email"));
+        return response.setJson(RespBodyVo.ok());
       }
     } else {
       return response.setJson(RespBodyVo.fail());

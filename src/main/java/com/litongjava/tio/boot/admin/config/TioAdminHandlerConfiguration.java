@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.boot.admin.handler.ApiLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AdminLoginHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserAnonymousHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserGoogleHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserHandler;
@@ -15,7 +15,7 @@ import com.litongjava.tio.boot.admin.handler.SystemFileAwsS3Handler;
 import com.litongjava.tio.boot.admin.handler.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
-import com.litongjava.tio.boot.admin.handler.UserHandler;
+import com.litongjava.tio.boot.admin.handler.AdminUserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -27,9 +27,9 @@ public class TioAdminHandlerConfiguration {
       return;
     }
     // 创建controller
-    ApiLoginHandler apiLoginHandler = Aop.get(ApiLoginHandler.class);
+    AdminLoginHandler apiLoginHandler = Aop.get(AdminLoginHandler.class);
     UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
-    UserHandler userHandler = Aop.get(UserHandler.class);
+    AdminUserHandler userHandler = Aop.get(AdminUserHandler.class);
 
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
     GeographicHandler geographicHandler = Aop.get(GeographicHandler.class);
@@ -78,6 +78,11 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/v1/user/referesh", appUserHandler::refresh);
     //删除
     r.add("/api/v1/user/remove", appUserHandler::remove);
+
+    r.add("/api/v1/user/profile", appUserHandler::profile);
+    r.add("/api/v1/user/update", appUserHandler::update);
+    r.add("/api/v1/user/updatePassword", appUserHandler::updatePassword);
+
     //删除
     r.add("/api/v1/user/resetPassword", appUserHandler::resetPassword);
     r.add("/api/v1/anonymous/create", appUserAnonymousHandler::create);

@@ -29,7 +29,7 @@ public class AppUserLoginHandler {
       String token = appUserService.createToken(userId, tokenTimeout);
       String refreshToken = appUserService.createRefreshToken(userId);
 
-      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), refreshToken, token, tokenTimeout.intValue());
+      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), req.getEmail(), refreshToken, token, tokenTimeout.intValue());
 
       return response.setJson(RespBodyVo.ok(appUserLoginVo));
     }

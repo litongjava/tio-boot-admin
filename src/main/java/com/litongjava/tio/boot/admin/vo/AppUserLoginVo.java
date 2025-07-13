@@ -36,4 +36,13 @@ public class AppUserLoginVo {
     this.expires_in = expires_in;
   }
 
+  public AppUserLoginVo(String userId, String displayName, String email, String refreshToken, String token, int expires_in) {
+    this.user_id = userId;
+    this.display_name = displayName;
+    this.email = email;
+    this.refresh_token = refreshToken;
+    this.token = token;
+    this.expires_in = expires_in;
+  }
+
 }

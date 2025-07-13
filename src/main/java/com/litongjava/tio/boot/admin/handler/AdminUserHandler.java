@@ -13,7 +13,7 @@ import com.litongjava.tio.http.server.util.Resps;
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
-public class UserHandler {
+public class AdminUserHandler {
 
   public HttpResponse currentUser(HttpRequest request) {
     HttpResponse httpResponse = TioRequestContext.getResponse();
