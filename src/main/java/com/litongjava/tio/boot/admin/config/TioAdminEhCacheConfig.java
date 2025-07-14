@@ -1,15 +1,15 @@
 package com.litongjava.tio.boot.admin.config;
-import com.litongjava.annotation.AConfiguration;
-import com.litongjava.annotation.Initialization;
 import com.litongjava.ehcache.EhCachePlugin;
 import com.litongjava.hook.HookCan;
 
-@AConfiguration
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class TioAdminEhCacheConfig {
 
-  @Initialization
   public void config() {
     EhCachePlugin ehCachePlugin = new EhCachePlugin();
+    log.info("ehCachePlugin:{}", ehCachePlugin);
     ehCachePlugin.start();
     HookCan.me().addDestroyMethod(ehCachePlugin::stop);
   }
