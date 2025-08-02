@@ -42,6 +42,8 @@ public class DbRequestResponseStatisticsHandler implements ResponseStatisticsHan
     int responseStatusCode = httpResponse.getStatus().getStatus();
     HeaderValue contentTypeHeader = httpResponse.getContentType();
 
+    //避免处理器对数据进行gzip编码,获取到编码后的数据
+    byte[] body = httpResponse.getBody();
     // 异步保存
     TioThreadUtils.execute(() -> {
       String responseContentType = null;
@@ -49,7 +51,6 @@ public class DbRequestResponseStatisticsHandler implements ResponseStatisticsHan
       if (contentTypeHeader != null) {
         responseContentType = contentTypeHeader.toString();
         if (responseContentType.contains("application/json")) {
-          byte[] body = httpResponse.getBody();
           if (body != null && body.length > 0 && body.length < 1024) {
             responseBody = new String(body);
             if (responseBody != null && responseBody.indexOf('\0') != -1) {
