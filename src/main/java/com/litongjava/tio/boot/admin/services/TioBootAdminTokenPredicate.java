@@ -7,7 +7,7 @@ import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
 
-public class TokenPredicate implements Predicate<String> {
+public class TioBootAdminTokenPredicate implements Predicate<String> {
 
   @Override
   public boolean test(String token) {

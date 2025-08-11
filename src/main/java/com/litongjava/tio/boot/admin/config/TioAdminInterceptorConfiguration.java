@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.config;
 import java.util.function.Predicate;
 
 import com.litongjava.tio.boot.admin.costants.TioBootAdminUrls;
-import com.litongjava.tio.boot.admin.services.TokenPredicate;
+import com.litongjava.tio.boot.admin.services.TioBootAdminTokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.server.TioBootServer;
@@ -35,7 +35,7 @@ public class TioAdminInterceptorConfiguration {
   public void config() {
     // 创建 SaToken 拦截器实例
     if (validateTokenLogic == null) {
-      validateTokenLogic = new TokenPredicate();
+      validateTokenLogic = new TioBootAdminTokenPredicate();
     }
 
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(validateTokenLogic);
@@ -43,7 +43,7 @@ public class TioAdminInterceptorConfiguration {
     model.setInterceptor(authTokenInterceptor);
     model.addBlockUrl("/**"); // 拦截所有路由
 
-    model.addBlockeUrls(TioBootAdminUrls.ALLLOW_URLS);
+    model.addAllowUrls(TioBootAdminUrls.ALLLOW_URLS);
 
     if (permitUrls != null) {
       model.addAllowUrls(permitUrls);
