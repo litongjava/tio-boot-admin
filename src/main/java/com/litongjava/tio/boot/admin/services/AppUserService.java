@@ -35,17 +35,27 @@ public class AppUserService {
   public boolean registerUserByUserId(AppUserRegisterRequest req, String origin) {
     String password = req.getPassword();
     String email = req.getEmail();
-    int lastIndex = email.lastIndexOf("@");
     String displayName = null;
-    if (lastIndex > 0) {
-      displayName = email.substring(0, lastIndex);
+    String username = req.getUsername();
+    if (email != null) {
+      int lastIndex = email.lastIndexOf("@");
+      if (lastIndex > 0) {
+        displayName = email.substring(0, lastIndex);
+      } else {
+        displayName = email;
+      }
     } else {
-      displayName = email;
+      displayName = username;
     }
+
     int userType = req.getUserType();
-    boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
+    boolean exists = Db.exists(TioBootAdminTableNames.app_users, "username", username);
     if (exists) {
-      return true;
+      return false;
+    }
+    exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
+    if (exists) {
+      return false;
     }
     // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
     String salt = String.valueOf(System.currentTimeMillis());
@@ -54,23 +64,27 @@ public class AppUserService {
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
     long id = SnowflakeIdUtils.id();
-    String insertSql = "update app_users set display_name=?, email=?, password_salt=?, password_hash=?, user_type=?,of=? where id=?";
-    int rows = Db.updateBySql(insertSql, displayName, email, salt, passwordHash, userType, origin, id + "");
+    String insertSql = "update app_users set display_name=?, email=?, username=?,password_salt=?, password_hash=?, user_type=?,of=? where id=?";
+    int rows = Db.updateBySql(insertSql, displayName, email, username, salt, passwordHash, userType, origin, id + "");
     return rows > 0;
   }
 
   // 注册用户：先检查邮箱是否已存在，然后插入用户记录
-  public boolean registerUser(String email, String password, int userType, String orgin) {
+  public boolean registerUser(String email, String username, String password, int userType, String orgin) {
     boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
     if (exists) {
       return true;
     }
-    int lastIndex = email.lastIndexOf("@");
     String displayName = null;
-    if (lastIndex > 0) {
-      displayName = email.substring(0, lastIndex);
+    if (email != null) {
+      int lastIndex = email.lastIndexOf("@");
+      if (lastIndex > 0) {
+        displayName = email.substring(0, lastIndex);
+      } else {
+        displayName = email;
+      }
     } else {
-      displayName = email;
+      displayName = username;
     }
 
     // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
@@ -80,8 +94,8 @@ public class AppUserService {
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
     long id = SnowflakeIdUtils.id();
-    String insertSql = "INSERT INTO app_users (id, display_name,email, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?,?)";
-    int rows = Db.updateBySql(insertSql, id + "", displayName, email, salt, passwordHash, userType, orgin);
+    String insertSql = "INSERT INTO app_users (id, display_name,email,username, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?,?,?)";
+    int rows = Db.updateBySql(insertSql, id + "", displayName, email, username, salt, passwordHash, userType, orgin);
     return rows > 0;
   }
 
@@ -89,6 +103,11 @@ public class AppUserService {
   public AppUser getUserByEmail(String email) {
     String sql = "SELECT * FROM app_users WHERE email=? AND deleted=0";
     return Db.findFirst(AppUser.class, sql, email);
+  }
+
+  public AppUser getUserByUsername(String username) {
+    String sql = "SELECT * FROM app_users WHERE username=? AND deleted=0";
+    return Db.findFirst(AppUser.class, sql, username);
   }
 
   public AppUser getUserPasswordById(Long userId) {
@@ -132,8 +151,8 @@ public class AppUserService {
   }
 
   public boolean remove(String userId) {
-    //String sql = "update app_users set deleted=1 WHERE id=?";
-    //Db.updateBySql(sql, userId);
+    // String sql = "update app_users set deleted=1 WHERE id=?";
+    // Db.updateBySql(sql, userId);
     String sql = "delete from app_users WHERE id=?";
     Db.delete(sql, userId);
     return true;
@@ -147,7 +166,7 @@ public class AppUserService {
     String code = req.getCode();
     boolean validate = EmailValidator.validate(email);
     if (!validate) {
-      ValidateResult validateResult = ValidateResult.by("eamil", "Failed to valiate email:" + email);
+      ValidateResult validateResult = ValidateResult.by("email", "Failed to valiate email:" + email);
       validateResults.add(validateResult);
       ok = false;
     }
@@ -166,7 +185,7 @@ public class AppUserService {
 
     boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
     if (exists) {
-      ValidateResult validateResult = ValidateResult.by("eamil", "Eamil already taken" + email);
+      ValidateResult validateResult = ValidateResult.by("email", "email already taken" + email);
       validateResults.add(validateResult);
     }
 
@@ -210,8 +229,16 @@ public class AppUserService {
     return Db.exists("app_users", "id", userId);
   }
 
+  public String getUsernameById(String userId) {
+    return Db.queryStr("select username from app_users where id=?", userId);
+  }
+
   public boolean existsEmail(String email) {
     return Db.exists(TioBootAdminTableNames.app_users, "email", email);
+  }
+
+  public boolean existsUsername(String email) {
+    return Db.exists(TioBootAdminTableNames.app_users, "username", email);
   }
 
   public AppUser getUserById(Long userId) {

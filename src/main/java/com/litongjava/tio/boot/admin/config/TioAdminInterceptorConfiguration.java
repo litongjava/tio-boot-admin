@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.config;
 
 import java.util.function.Predicate;
 
+import com.litongjava.tio.boot.admin.costants.TioBootAdminUrls;
 import com.litongjava.tio.boot.admin.services.TokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
@@ -41,24 +42,9 @@ public class TioAdminInterceptorConfiguration {
     HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(authTokenInterceptor);
     model.addBlockUrl("/**"); // 拦截所有路由
-    // index
-    model.addAllowUrls("", "/");
-    //user
-    model.addAllowUrls("/register/*", "/api/login/account", "/api/login/outLogin"); // 设置例外路由
-    model.addAllowUrls("/api/v1/login", "/api/v1/register", "/api/v1/user/referesh",
-        //
-        "/api/v1/sendVerification", "/api/v1/sendVerificationCode", "/api/v1/verify", "/verification/email",
-        //
-        "/api/v1/user/resetPassword", "/api/v1/anonymous/create",
-        //
-        "/api/v1/google/login", "/api/v1/user/refresh");
-    model.addAllowUrls("/api/event/add");
 
-    String[] previewUrls = { "/table/json/tio_boot_admin_system_article/get/*",
-        //
-        "/table/json/tio_boot_admin_system_docx/get/*", "/table/json/tio_boot_admin_system_pdf/get/*" };
+    model.addBlockeUrls(TioBootAdminUrls.ALLLOW_URLS);
 
-    model.addAllowUrls(previewUrls);
     if (permitUrls != null) {
       model.addAllowUrls(permitUrls);
     }

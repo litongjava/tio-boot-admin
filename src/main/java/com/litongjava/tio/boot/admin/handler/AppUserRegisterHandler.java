@@ -24,23 +24,34 @@ public class AppUserRegisterHandler {
     String origin = request.getOrigin();
     HttpResponse response = TioRequestContext.getResponse();
     String body = request.getBodyString();
+    AppUserRegisterRequest req = Json.getJson().parse(body, AppUserRegisterRequest.class);
 
     List<ValidateResult> validateResults = new ArrayList<>();
     boolean ok = true;
-    if (StrUtil.isEmpty(origin)) {
-      ValidateResult validateResult = ValidateResult.by("origin", "Failed to valiate origin:" + origin);
-      validateResults.add(validateResult);
-      ok = false;
+    if (req.getVerification_type() != 0) {
+      if (StrUtil.isEmpty(origin)) {
+        ValidateResult validateResult = ValidateResult.by("origin", "Failed to valiate origin:" + origin);
+        validateResults.add(validateResult);
+        ok = false;
+      }
     }
 
     // 解析注册请求参数
-    AppUserRegisterRequest req = Json.getJson().parse(body, AppUserRegisterRequest.class);
+    boolean validate = false;
+    String username = req.getUsername();
     String email = req.getEmail();
-    boolean validate = EmailValidator.validate(email);
-    if (!validate) {
-      ValidateResult validateResult = ValidateResult.by("eamil", "Failed to valiate email:" + email);
+    if (username == null && email == null) {
+      ValidateResult validateResult = ValidateResult.by("username", "Username and email cannot both be empty.");
       validateResults.add(validateResult);
       ok = false;
+    }
+    if (email != null) {
+      validate = EmailValidator.validate(email);
+      if (!validate) {
+        ValidateResult validateResult = ValidateResult.by("email", "Failed to valiate email:" + email);
+        validateResults.add(validateResult);
+        ok = false;
+      }
     }
 
     String password = req.getPassword();
@@ -55,10 +66,23 @@ public class AppUserRegisterHandler {
       return response.setJson(RespBodyVo.failData(validateResults));
     }
 
-    boolean exists = appUserService.existsEmail(email);
-    if (exists) {
-      ValidateResult validateResult = ValidateResult.by("eamil", "Eamil already taken" + email);
-      validateResults.add(validateResult);
+    if (email != null) {
+      boolean exists = appUserService.existsEmail(email);
+      if (exists) {
+        ValidateResult validateResult = ValidateResult.by("email", "email already taken" + email);
+        validateResults.add(validateResult);
+        ok = false;
+      }
+    }
+
+    if (username != null) {
+      boolean exists = appUserService.existsUsername(username);
+      if (exists) {
+        ValidateResult validateResult = ValidateResult.by("email", "username already taken" + email);
+        validateResults.add(validateResult);
+        ok = false;
+      }
+
     }
 
     if (!ok) {
@@ -71,7 +95,8 @@ public class AppUserRegisterHandler {
       success = appUserService.registerUserByUserId(req, origin);
     } else {
       // 注册用户（内部会处理密码加盐和哈希等逻辑）
-      success = appUserService.registerUser(req.getEmail(), req.getPassword(), req.getUserType(), origin);
+      success = appUserService.registerUser(req.getEmail(), req.getUsername(), req.getPassword(), req.getUserType(),
+          origin);
     }
 
     if (success) {

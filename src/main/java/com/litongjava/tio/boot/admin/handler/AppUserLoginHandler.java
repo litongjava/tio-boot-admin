@@ -19,7 +19,19 @@ public class AppUserLoginHandler {
     AppUserLoginRequest req = JsonUtils.parse(body, AppUserLoginRequest.class);
 
     AppUserService appUserService = Aop.get(AppUserService.class);
-    AppUser user = appUserService.getUserByEmail(req.getEmail());
+    String username = req.getUsername();
+    String email = req.getEmail();
+    if (username == null && email == null) {
+      return response.setJson(RespBodyVo.fail("username and password cannot both be empty"));
+    }
+
+    AppUser user = null;
+    if (username != null) {
+      user = appUserService.getUserByUsername(username);
+    } else if (email != null) {
+      user = appUserService.getUserByEmail(email);
+    }
+
     // 此处允许未验证邮箱的用户登录
     if (user != null && appUserService.verifyPassword(user, req.getPassword())) {
       // 生成 token，有效期 7 天（604800秒）
@@ -29,7 +41,8 @@ public class AppUserLoginHandler {
       String token = appUserService.createToken(userId, tokenTimeout);
       String refreshToken = appUserService.createRefreshToken(userId);
 
-      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), req.getEmail(), refreshToken, token, tokenTimeout.intValue());
+      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), email, refreshToken, token,
+          tokenTimeout.intValue());
 
       return response.setJson(RespBodyVo.ok(appUserLoginVo));
     }
