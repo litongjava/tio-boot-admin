@@ -18,9 +18,15 @@ public class AdminUserHandler {
   public HttpResponse currentUser(HttpRequest request) {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
-    Long userId = Long.valueOf(TioRequestContext.getUserIdString());
+    String userIdString = TioRequestContext.getUserIdString();
+    if(userIdString==null) {
+      httpResponse.setStatus(401);
+      return httpResponse;
+    }
+    Long userId = Long.valueOf(userIdString);
     RespBodyVo respVo = Aop.get(AdminUserService.class).currentUser(userId);
-    return Resps.json(httpResponse, respVo);
+    httpResponse.body(respVo);
+    return httpResponse;
   }
 
   public HttpResponse accountSettingCurrentUser(HttpRequest request) {

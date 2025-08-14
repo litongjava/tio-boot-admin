@@ -175,7 +175,7 @@ public class ApiTableController {
     TableInput kv = TableInputUtils.camelToUnderscore(map);
 
     log.info("tableName:{},kv:{}", f, kv);
-    String filename = f + "_export_" + System.currentTimeMillis() + ".xlsx";
+    String filename = f + "_export-current" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
     List<Row> records = ApiTable.list(f, kv).getData();
