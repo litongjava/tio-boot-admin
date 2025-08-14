@@ -162,8 +162,8 @@ public class ApiTableController {
   /**
    * 导出当前数据
    */
-  @RequestPath("/{f}/export-excel")
-  public HttpResponse exportExcel(String f, HttpRequest request) throws IOException {
+  @RequestPath("/{f}/export-current")
+  public HttpResponse exportCurrent(String f, HttpRequest request) throws IOException {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
     ApiTable.transformType(f, map);
@@ -178,15 +178,19 @@ public class ApiTableController {
     String filename = f + "_export-current" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    List<Row> records = ApiTable.list(f, kv).getData();
+    TableResult<Page<Row>> result = ApiTable.page(f, kv);
+    List<Row> records = result.getData().getList();
+
     HttpResponse response = TioRequestContext.getResponse();
-    return EasyExcelResponseUtils.exportRecords(response, filename, f, records);
+    EasyExcelResponseUtils.exportRecords(response, filename, f, records);
+    log.info("finished {}", filename);
+    return response;
   }
 
   /**
    * 导出所有数据
    */
-  @RequestPath("/{f}/export-table-excel")
+  @RequestPath("/{f}/export-all")
   public HttpResponse exportAllExcel(String f, HttpRequest request) throws IOException, SQLException {
     Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
     map.remove("f");
@@ -203,12 +207,11 @@ public class ApiTableController {
     String filename = f + "-all_" + System.currentTimeMillis() + ".xlsx";
 
     // 获取数据
-    TableResult<Page<Row>> tableResult = ApiTable.page(f, kv);
-    List<Row> records = tableResult.getData().getList();
-
+    TableResult<List<Row>> result = ApiTable.list(f, kv);
+    List<Row> records = result.getData();
     HttpResponse response = TioRequestContext.getResponse();
     EasyExcelResponseUtils.exportRecords(response, filename, f, records);
-    log.info("finished");
+    log.info("finished {}", filename);
     return response;
   }
 
