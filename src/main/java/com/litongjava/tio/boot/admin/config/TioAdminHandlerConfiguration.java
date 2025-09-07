@@ -75,7 +75,7 @@ public class TioAdminHandlerConfiguration {
     // 登出
     r.add("/api/v1/logout", loginHandler::logout);
     //刷新
-    r.add("/api/v1/user/referesh", appUserHandler::refresh);
+    r.add("/api/v1/user/refresh", appUserHandler::refresh);
     //删除
     r.add("/api/v1/user/remove", appUserHandler::remove);
 

@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.config;
 import com.jfinal.template.Engine;
 import com.litongjava.template.RowFieldGetter;
 
-public class TioBootAdminEnjoyEngineConfig {
+public class TioAdminEnjoyEngineConfig {
 
   private final String RESOURCE_BASE_PATH = "/enjoy-templates/";
 
