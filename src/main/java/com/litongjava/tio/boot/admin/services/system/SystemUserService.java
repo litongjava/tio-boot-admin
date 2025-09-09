@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.system;
 
 import java.util.Map;
 

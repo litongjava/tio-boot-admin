@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.storage;
 
 import java.io.ByteArrayInputStream;
 
@@ -7,8 +7,12 @@ import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
+import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
+import com.litongjava.tio.boot.admin.services.StorageService;
+import com.litongjava.tio.boot.admin.services.SysConfigConstantsService;
+import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
@@ -67,7 +71,8 @@ public class TencentStorageService implements StorageService {
   /**
    * getPutObjectRequest
    */
-  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix, String bucketName) {
+  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix,
+      String bucketName) {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileContent);
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentLength(fileContent.length);
@@ -147,7 +152,7 @@ public class TencentStorageService implements StorageService {
     String md5 = Md5Utils.md5Hex(fileContent);
     TableInput kv = TableInput.create().set("md5", md5).set("name", filename).set("size", size)
         //
-        .set("platform", "tencent").set("region_name", systemTxCosConfig.getRegion())
+        .set("platform", StoragePlatformConst.aws_s3).set("region_name", systemTxCosConfig.getRegion())
         //
         .set("bucket_name", bucketName).set("target_name", targetName).set("file_id", etag);
 

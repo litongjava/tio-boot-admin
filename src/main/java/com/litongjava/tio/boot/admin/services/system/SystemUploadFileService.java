@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.system;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Row;
@@ -17,7 +17,12 @@ public class SystemUploadFileService {
     if (record == null) {
       return null;
     }
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    String platform = record.getStr("platform");
+    String region_name = record.getStr("region_name");
+    String bucket_name = record.getStr("bucket_name");
+    String target_name = record.getStr("target_name");
+    
+    String url = this.getUrl(platform, region_name, bucket_name, target_name);
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
@@ -30,7 +35,11 @@ public class SystemUploadFileService {
       return null;
     }
     Long id = record.getLong("id");
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    String platform = record.getStr("platform");
+    String region_name = record.getStr("region_name");
+    String bucket_name = record.getStr("bucket_name");
+    String target_name = record.getStr("target_name");
+    String url = this.getUrl(platform, region_name, bucket_name, target_name);
     Kv kv = record.toKv();
     kv.set("url", url);
     kv.set("md5", md5);
@@ -39,9 +48,8 @@ public class SystemUploadFileService {
     return new UploadResultVo(id, originFilename, size, url, md5);
   }
 
-  public String getUrl(String bucketName, String targetName) {
-    return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, targetName);
+  public String getUrl(String platform, String region_name, String bucket_name, String targetName) {
+    return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, region_name, targetName);
   }
-
 
 }

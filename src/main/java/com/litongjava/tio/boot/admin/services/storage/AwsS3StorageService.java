@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.storage;
 
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
@@ -8,8 +8,11 @@ import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.table.services.ApiTable;
+import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
+import com.litongjava.tio.boot.admin.services.StorageService;
+import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
@@ -87,7 +90,8 @@ public class AwsS3StorageService implements StorageService {
 
     TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
-        .set("platform", "aws s3").set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
+        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName)
+        .set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
@@ -100,7 +104,7 @@ public class AwsS3StorageService implements StorageService {
 
   @Override
   public String getUrl(String bucketName, String targetName) {
-    return Aop.get(SystemUploadFileService.class).getUrl(bucketName, targetName);
+    return AwsS3Utils.getUrl(bucketName, targetName);
   }
 
   @Override

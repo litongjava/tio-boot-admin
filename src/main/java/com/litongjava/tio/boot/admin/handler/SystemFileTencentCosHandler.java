@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.handler;
 import com.jfinal.kit.StrKit;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.tio.boot.admin.services.TencentStorageService;
+import com.litongjava.tio.boot.admin.services.storage.TencentStorageService;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;

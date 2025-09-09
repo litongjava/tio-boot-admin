@@ -6,6 +6,7 @@ import java.io.ByteArrayOutputStream;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.utils.PDDocumentUtils;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
