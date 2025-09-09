@@ -9,13 +9,14 @@ import com.litongjava.db.activerecord.Row;
 
 public class SystemUploadFileDao {
   public static final String tableName = "tio_boot_admin_system_upload_file";
-  public static final String getFileBasicInfoByMd5Sql = String.format(
-      //
-      "select id,name,size,platform,region_name,bucket_name,target_name from %s  where md5=? and deleted=0", tableName);
+  private static final String selectSqlByMd5 = "select id,name,size,platform,region_name,bucket_name,target_name from %s  where md5=? and deleted=0";
 
-  public static final String getFileBasicInfoByIdSql = String.format(
-      //
-      "select md5,name,size,bucket_name,target_name from %s where id=? and deleted=0", tableName);
+  public static final String getFileBasicInfoByMd5Sql = String.format(selectSqlByMd5, tableName);
+
+  public static final String selectSqlById = "select md5,name,size,bucket_name,target_name from %s where id=? and deleted=0";
+  public static final String getFileBasicInfoByIdSql = String.format(selectSqlById, tableName);
+
+  public static final String selectSqlByIds = "select id,md5,name,size,platform,region_name,bucket_name,target_name from %s where id in (%s) and deleted=0";
 
   public Row getFileBasicInfoByMd5(String md5) {
     return Db.findFirst(getFileBasicInfoByMd5Sql, md5);
@@ -35,8 +36,7 @@ public class SystemUploadFileDao {
     String placeholders = file_ids.stream().map(id -> "?").collect(Collectors.joining(","));
 
     // Build the SQL statement using the placeholders.
-    String sql = String.format("select id,md5,name,size,bucket_name,target_name from %s where id in (%s) and deleted=0",
-        tableName, placeholders);
+    String sql = String.format(selectSqlByIds, tableName, placeholders);
 
     // Execute the query and return the results.
     return Db.find(sql, file_ids.toArray());
