@@ -8,6 +8,7 @@ import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.boot.token.AuthTokenInterceptor;
+import com.litongjava.tio.boot.token.UserTokenInterceptor;
 
 public class TioAdminInterceptorConfiguration {
 
@@ -33,16 +34,21 @@ public class TioAdminInterceptorConfiguration {
   }
 
   public void config() {
-    // 创建 SaToken 拦截器实例
+    // token验证逻辑
     if (validateTokenLogic == null) {
       validateTokenLogic = new TioBootAdminTokenPredicate();
     }
 
     AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(validateTokenLogic);
-    HttpInterceptorModel model = new HttpInterceptorModel();
-    model.setInterceptor(authTokenInterceptor);
-    model.addBlockUrl("/**"); // 拦截所有路由
+    TioBootServer.me().setAuthTokenInterceptor(authTokenInterceptor);
 
+    UserTokenInterceptor userTokenInterceptor = new UserTokenInterceptor();
+    HttpInterceptorModel model = new HttpInterceptorModel();
+    model.setInterceptor(userTokenInterceptor);
+    // 拦截所有路由
+    model.addBlockUrl("/**");
+
+    // 添加不拦截的路由
     model.addAllowUrls(TioBootAdminUrls.ALLLOW_URLS);
 
     if (permitUrls != null) {
