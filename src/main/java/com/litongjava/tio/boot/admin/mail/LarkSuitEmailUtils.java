@@ -28,4 +28,10 @@ public class LarkSuitEmailUtils {
   public static void send(String to, String subject, String content) {
     mail.send(to, subject, content, false);
   }
+  
+  public static void sendHtml(String to, String subject, String html) {
+    mail.sendHtml(to, subject, html, false);
+  }
+  
+  
 }

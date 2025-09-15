@@ -1,13 +1,11 @@
 package com.litongjava.tio.boot.admin.mail;
 
 import java.util.Properties;
-
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import com.litongjava.tio.utils.environment.EnvUtils;
 
 public class LarkSuitMail {
@@ -15,6 +13,7 @@ public class LarkSuitMail {
   private Session session;
   private Transport transport;
   private Properties prop;
+
   // 连接参数，从环境变量中读取
   private String mailHost;
   private Integer smtpPort;
@@ -56,7 +55,8 @@ public class LarkSuitMail {
 
   /**
    * 发送邮件，复用已建立的连接
-   * @param to 收件人
+   * 
+   * @param to      收件人
    * @param subject 邮件主题
    * @param content 邮件内容
    * @param isDebug 是否开启调试模式
@@ -80,7 +80,29 @@ public class LarkSuitMail {
       // 复用 transport 发送邮件
       transport.sendMessage(message, message.getAllRecipients());
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      e.printStackTrace();
+    }
+  }
+
+  public synchronized void sendHtml(String to, String subject, String html, boolean isDebug) {
+    session.setDebug(isDebug);
+    MimeMessage message = new MimeMessage(session);
+    try {
+      if (transport == null || !transport.isConnected()) {
+        transport = session.getTransport();
+        transport.connect(mailHost, smtpPort, user, password);
+      }
+
+      message.setFrom(new InternetAddress(from));
+      message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
+      message.setSubject(subject, "UTF-8");
+
+      // 关键：设置 HTML 正文
+      message.setContent(html, "text/html; charset=UTF-8");
+
+      transport.sendMessage(message, message.getAllRecipients());
+    } catch (Exception e) {
+      e.printStackTrace();
     }
   }
 
