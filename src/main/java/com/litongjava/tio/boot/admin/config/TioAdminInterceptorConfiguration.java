@@ -13,7 +13,7 @@ import com.litongjava.tio.boot.token.UserTokenInterceptor;
 public class TioAdminInterceptorConfiguration {
 
   private String[] permitUrls;
-  private boolean alloweStaticFile;
+  private boolean alloweStaticFile = true;
   private Predicate<String> validateTokenLogic;
 
   public TioAdminInterceptorConfiguration() {

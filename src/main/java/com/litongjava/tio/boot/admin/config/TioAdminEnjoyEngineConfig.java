@@ -1,7 +1,9 @@
 package com.litongjava.tio.boot.admin.config;
 
 import com.jfinal.template.Engine;
+import com.litongjava.hook.HookCan;
 import com.litongjava.template.RowFieldGetter;
+import com.litongjava.tio.boot.server.TioBootServer;
 
 public class TioAdminEnjoyEngineConfig {
 
@@ -17,9 +19,5 @@ public class TioAdminEnjoyEngineConfig {
     Engine.setFastMode(true);
     // 支持中文表达式、中文变量名、中文方法名及中文模板函数名
     Engine.setChineseExpression(true);
-
-    // add RowFieldGetter
-    Engine.addFieldGetterToFirst(new RowFieldGetter());
-
   }
 }
