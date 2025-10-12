@@ -1,9 +1,6 @@
 package com.litongjava.tio.boot.admin.config;
 
 import com.jfinal.template.Engine;
-import com.litongjava.hook.HookCan;
-import com.litongjava.template.RowFieldGetter;
-import com.litongjava.tio.boot.server.TioBootServer;
 
 public class TioAdminEnjoyEngineConfig {
 
