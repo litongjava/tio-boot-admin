@@ -72,8 +72,9 @@ public class AliyunStorageService implements StorageService {
 
     String etag = null;
     
+    OSS client=null;
     try {
-      OSS client = AliyunOssUtils.buildClient();
+      client= AliyunOssUtils.buildClient();
       PutObjectResult result = AliyunOssUtils.upload(
           client,
           AliyunOssUtils.bucketName,
@@ -85,6 +86,8 @@ public class AliyunStorageService implements StorageService {
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
+    }finally {
+      client.shutdown();
     }
 
     // 记录入库
