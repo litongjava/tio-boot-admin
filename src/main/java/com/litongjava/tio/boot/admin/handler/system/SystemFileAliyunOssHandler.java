@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.handler;
+package com.litongjava.tio.boot.admin.handler.system;
 
 import java.util.Map;
 
@@ -24,15 +24,17 @@ import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 
-public class SystemFileAwsS3Handler {
+public class SystemFileAliyunOssHandler {
 
+  AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+  
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
     UploadFile uploadFile = request.getUploadFile("file");
     String category = request.getParam("category");
 
-    AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+    
     if (uploadFile != null) {
       RespBodyVo RespBodyVo = storageService.upload(category, uploadFile);
       return Resps.json(httpResponse, RespBodyVo);
@@ -57,7 +59,7 @@ public class SystemFileAwsS3Handler {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+    
     RespBodyVo respBodyVo = null;
     String id = request.getParam("id");
 

@@ -1,11 +1,22 @@
-package com.litongjava.tio.boot.admin.handler;
+package com.litongjava.tio.boot.admin.handler.system;
 
+import java.util.Map;
+
+import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
+import com.litongjava.db.TableInput;
+import com.litongjava.db.TableResult;
+import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.tio.boot.admin.services.storage.TencentStorageService;
+import com.litongjava.table.services.ApiTable;
+import com.litongjava.table.utils.TableInputUtils;
+import com.litongjava.table.utils.TableResultUtils;
+import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
+import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.common.UploadFile;
@@ -13,30 +24,40 @@ import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 
-/**
- * Created by Tong Li <https://github.com/litongjava>
- */
-public class SystemFileTencentCosHandler {
+public class SystemFileAwsS3Handler {
 
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
-
     UploadFile uploadFile = request.getUploadFile("file");
-    TencentStorageService storageService = Aop.get(TencentStorageService.class);
-    if (uploadFile != null) {
-      RespBodyVo respVo = storageService.upload(uploadFile);
-      return Resps.json(httpResponse, respVo);
+    String category = request.getParam("category");
 
+    AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+    if (uploadFile != null) {
+      RespBodyVo RespBodyVo = storageService.upload(category, uploadFile);
+      return Resps.json(httpResponse, RespBodyVo);
     }
     return Resps.json(httpResponse, RespBodyVo.ok("Fail"));
   }
-  
+
+  public HttpResponse getUploadRecordByMd5(HttpRequest request) throws Exception {
+    HttpResponse httpResponse = TioRequestContext.getResponse();
+    CORSUtils.enableCORS(httpResponse, new HttpCors());
+
+    Map<String, Object> map = TioRequestParamUtils.getRequestMap(request);
+    TableInput kv = TableInputUtils.camelToUnderscore(map);
+    // 调用ApiTable查询数据
+    TableResult<Row> jsonBean = ApiTable.get(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
+    TableResult<Kv> TableResult = TableResultUtils.recordToKv(jsonBean);
+
+    return Resps.json(httpResponse, RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));
+  }
+
   public HttpResponse getUrl(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    TencentStorageService storageService = Aop.get(TencentStorageService.class);
+    AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
     RespBodyVo respBodyVo = null;
     String id = request.getParam("id");
 

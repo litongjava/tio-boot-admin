@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.handler;
+package com.litongjava.tio.boot.admin.handler.system;
 
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
