@@ -42,11 +42,15 @@ public class AliyunOssUtils {
       DefaultCredentialProvider defaultCredentialProvider = new DefaultCredentialProvider(accessKeyId, accessKeySecret);
 
       OSS ossClient = OSSClientBuilder.create()
-          //.endpoint(endpoint)
+          //
+          .endpoint(endpoint)
+          //
           .credentialsProvider(defaultCredentialProvider)
+          //
           .clientConfiguration(conf).region(regionName).build();
       return ossClient;
     } catch (Exception e) {
+      e.printStackTrace();
       throw new RuntimeException("Failed to build Aliyun OSS client", e);
     }
   }

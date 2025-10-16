@@ -71,37 +71,28 @@ public class AliyunStorageService implements StorageService {
     }
 
     String etag = null;
-    
-    OSS client=null;
+
+    OSS client = null;
     try {
-      client= AliyunOssUtils.buildClient();
-      PutObjectResult result = AliyunOssUtils.upload(
-          client,
-          AliyunOssUtils.bucketName,
-          targetName,
-          fileContent,
-          suffix
-      );
+      client = AliyunOssUtils.buildClient();
+      PutObjectResult result = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent,
+          suffix);
       etag = result.getETag();
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException(e);
-    }finally {
-      client.shutdown();
+    } finally {
+      if (client != null) {
+        client.shutdown();
+      }
     }
 
     // 记录入库
     log.info("Uploaded to Aliyun OSS with ETag: {}", etag);
 
-    TableInput kv = TableInput.create()
-        .set("name", name)
-        .set("size", size)
-        .set("md5", md5)
-        .set("platform", StoragePlatformConst.aliyun_oss) 
-        .set("region_name", AliyunOssUtils.regionName)
-        .set("bucket_name", AliyunOssUtils.bucketName)
-        .set("target_name", targetName)
-        .set("file_id", etag);
+    TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
+        .set("platform", StoragePlatformConst.aliyun_oss).set("region_name", AliyunOssUtils.regionName)
+        .set("bucket_name", AliyunOssUtils.bucketName).set("target_name", targetName).set("file_id", etag);
 
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AliyunOssUtils.bucketName, targetName);

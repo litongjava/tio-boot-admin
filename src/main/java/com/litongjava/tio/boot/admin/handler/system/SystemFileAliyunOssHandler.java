@@ -13,7 +13,7 @@ import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
-import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
+import com.litongjava.tio.boot.admin.services.storage.AliyunStorageService;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
@@ -26,7 +26,7 @@ import com.litongjava.tio.http.server.util.Resps;
 
 public class SystemFileAliyunOssHandler {
 
-  AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+  AliyunStorageService storageService = Aop.get(AliyunStorageService.class);
   
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
