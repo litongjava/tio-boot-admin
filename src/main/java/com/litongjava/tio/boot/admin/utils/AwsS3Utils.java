@@ -44,8 +44,13 @@ public class AwsS3Utils {
 
   }
 
-  public static String getUrl(String bucketName, String targetName) {
-    return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetName);
+  public static String getUrl(String bucketName, String targetUri) {
+    if (domain != null) {
+      return "https://" + domain + "/" + targetUri;
+    }else {
+      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
+    }
+    
   }
 
   public static S3Client buildClient() {
