@@ -84,7 +84,9 @@ public class AppUserService {
         displayName = email;
       }
     } else {
-      displayName = username;
+      if (username != null) {
+        displayName = username;
+      }
     }
 
     // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
@@ -94,8 +96,14 @@ public class AppUserService {
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
     long id = SnowflakeIdUtils.id();
-    String insertSql = "INSERT INTO app_users (id, display_name,email,username, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?,?,?)";
-    int rows = Db.updateBySql(insertSql, id + "", displayName, email, username, salt, passwordHash, userType, orgin);
+    int rows;
+    if (username != null) {
+      String insertSql = "INSERT INTO app_users (id, display_name,email,username, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?,?,?)";
+      rows = Db.updateBySql(insertSql, id + "", displayName, email, username, salt, passwordHash, userType, orgin);
+    } else {
+      String insertSql = "INSERT INTO app_users (id, display_name,email, password_salt, password_hash, user_type,of) VALUES (?,?,?,?,?,?,?)";
+      rows = Db.updateBySql(insertSql, id + "", displayName, email, salt, passwordHash, userType, orgin);
+    }
     return rows > 0;
   }
 
