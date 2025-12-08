@@ -10,9 +10,9 @@ import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.validate.ValidateResult;
-import com.litongjava.template.SqlTemplates;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.sql.AppUsersSql;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
@@ -27,7 +27,7 @@ import com.litongjava.tio.utils.validator.PasswordValidator;
 public class AppUserService {
 
   // 查询用户基本信息（不含密码相关字段），自动映射下划线到驼峰
-  private static final String SQL_SELECT_USER = SqlTemplates.get("app_users.findById");
+  private static final String SQL_SELECT_USER = AppUsersSql.findById;
 
   // 仅查询密码盐与哈希
   private static final String SQL_SELECT_PASSWORD = "SELECT id, password_salt, password_hash FROM app_users WHERE id = ? AND deleted = 0";
