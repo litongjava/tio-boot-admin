@@ -1,29 +1,30 @@
 package com.litongjava.tio.boot.admin.mail;
 
 import java.util.Properties;
+
+import javax.mail.Authenticator;
 import javax.mail.Message;
+import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 import com.litongjava.tio.utils.environment.EnvUtils;
 
 public class LarkSuitMail {
 
-  private Session session;
-  private Transport transport;
-  private Properties prop;
+  private final Session session;
+  private final Properties prop;
 
-  // 连接参数，从环境变量中读取
-  private String mailHost;
-  private Integer smtpPort;
-  private String user;
-  private String password;
-  private String from;
-  private String mailTransportProtocol;
+  private final String mailHost;
+  private final Integer smtpPort;
+  private final String user;
+  private final String password;
+  private final String from;
+  private final String mailTransportProtocol;
 
   public LarkSuitMail() {
-    // 初始化连接参数
     mailHost = EnvUtils.get("lark.mail.host");
     mailTransportProtocol = EnvUtils.get("lark.mail.protocol");
     smtpPort = EnvUtils.getInt("lark.mail.smpt.port");
@@ -31,7 +32,6 @@ public class LarkSuitMail {
     password = EnvUtils.get("lark.mail.password");
     from = EnvUtils.get("lark.mail.from");
 
-    // 设置邮件属性
     prop = new Properties();
     prop.setProperty("mail.host", mailHost);
     prop.setProperty("mail.transport.protocol", mailTransportProtocol);
@@ -41,81 +41,48 @@ public class LarkSuitMail {
     prop.setProperty("mail.smtp.socketFactory.fallback", "false");
     prop.setProperty("mail.smtp.socketFactory.port", smtpPort.toString());
 
-    // 创建Session
-    session = Session.getInstance(prop);
+    prop.setProperty("mail.smtp.connectiontimeout", "3000");
+    prop.setProperty("mail.smtp.timeout", "5000");
+    prop.setProperty("mail.smtp.writetimeout", "5000");
 
-    // 初次建立连接
-    try {
-      transport = session.getTransport();
-      transport.connect(mailHost, smtpPort, user, password);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    // 关键：加入 Authenticator，支持账号密码登录
+    session = Session.getInstance(prop, new Authenticator() {
+      @Override
+      protected PasswordAuthentication getPasswordAuthentication() {
+        return new PasswordAuthentication(user, password);
+      }
+    });
   }
 
-  /**
-   * 发送邮件，复用已建立的连接
-   * 
-   * @param to      收件人
-   * @param subject 邮件主题
-   * @param content 邮件内容
-   * @param isDebug 是否开启调试模式
-   */
-  public synchronized void send(String to, String subject, String content, boolean isDebug) {
-    // 设置调试模式
-    session.setDebug(isDebug);
-    MimeMessage message = new MimeMessage(session);
+  public void send(String to, String subject, String content, boolean isDebug) {
     try {
-      // 如果连接断开，重新连接
-      if (transport == null || !transport.isConnected()) {
-        transport = session.getTransport();
-        transport.connect(mailHost, smtpPort, user, password);
-      }
-      // 设置邮件信息
+      session.setDebug(isDebug);
+
+      MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(from));
       message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
       message.setSubject(subject);
       message.setText(content);
 
-      // 复用 transport 发送邮件
-      transport.sendMessage(message, message.getAllRecipients());
+      Transport.send(message); // 内部自动 connect + send + close
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
 
-  public synchronized void sendHtml(String to, String subject, String html, boolean isDebug) {
-    session.setDebug(isDebug);
-    MimeMessage message = new MimeMessage(session);
+  public void sendHtml(String to, String subject, String html, boolean isDebug) {
     try {
-      if (transport == null || !transport.isConnected()) {
-        transport = session.getTransport();
-        transport.connect(mailHost, smtpPort, user, password);
-      }
+      session.setDebug(isDebug);
 
+      MimeMessage message = new MimeMessage(session);
       message.setFrom(new InternetAddress(from));
       message.setRecipient(Message.RecipientType.TO, new InternetAddress(to));
       message.setSubject(subject, "UTF-8");
-
-      // 关键：设置 HTML 正文
       message.setContent(html, "text/html; charset=UTF-8");
 
-      transport.sendMessage(message, message.getAllRecipients());
+      Transport.send(message);
     } catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  /**
-   * 关闭 SMTP 连接，可在应用退出时调用
-   */
-  public synchronized void close() {
-    if (transport != null && transport.isConnected()) {
-      try {
-        transport.close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
     }
   }
 }

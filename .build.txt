@@ -1,5 +1,5 @@
 [win.env]
-set JAVA_HOME=D:\java\jdk1.8.0_121
+set JAVA_HOME=D:\java\jdk-17.0.4.1
 
 [win.build]
 mvn clean install -DskipTests -Dgpg.skip=true
