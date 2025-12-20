@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.litongjava</groupId>
   <artifactId>tio-boot-admin</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.9</version>
   <packaging>jar</packaging>
   <name>tio-boot-admin</name>
   <description>tio-boot admin</description>
@@ -21,8 +21,8 @@
     <jfinal-aop.version>1.3.8</jfinal-aop.version>
     <java-db.version>1.5.7</java-db.version>
     <api-table.version>1.5.6</api-table.version>
-    <tio-utils.version>3.7.3.v20251101-RELEASE</tio-utils.version>
-    <tio-boot.version>2.0.4</tio-boot.version>
+    <tio-utils.version>3.7.3.v20251201-RELEASE</tio-utils.version>
+    <tio-boot.version>2.0.5</tio-boot.version>
     <java.java-openai>1.2.5</java.java-openai>
   </properties>
 

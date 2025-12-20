@@ -1,7 +1,10 @@
 package com.litongjava.tio.boot.admin.utils;
 
+import java.io.File;
+
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
+import com.litongjava.tio.utils.hutool.FilenameUtils;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -21,14 +24,26 @@ public class AwsS3Utils {
   public static final String secretAccessKey = EnvUtils.get("AWS_S3_SECRET_ACCESS_KEY");
   public static final String domain = EnvUtils.getStr("AWS_S3_BUCKET_DOMAIN");
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
-      String suffix) {
+  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent, String suffix) {
     try {
       String contentType = ContentTypeUtils.getContentType(suffix);
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
-          .build();
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
 
       PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromBytes(fileContent));
+      return putObject;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, File file) {
+    String name = file.getName();
+    String suffix = FilenameUtils.getSuffix(name);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    try {
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
+
+      PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromFile(file));
       return putObject;
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -47,10 +62,10 @@ public class AwsS3Utils {
   public static String getUrl(String bucketName, String targetUri) {
     if (domain != null) {
       return "https://" + domain + "/" + targetUri;
-    }else {
+    } else {
       return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
     }
-    
+
   }
 
   public static S3Client buildClient() {
