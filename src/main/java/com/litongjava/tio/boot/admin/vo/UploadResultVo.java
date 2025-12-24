@@ -12,8 +12,10 @@ import lombok.experimental.Accessors;
 public class UploadResultVo {
   private Long id;
   private Long size;
-  private String name, targetName, url, md5;
+  private String name, targetName, url, md5, etag;
   private String content;
+  private String etag2;
+  private String url2;
 
   public UploadResultVo(long id, String filename, Long size, String url, String md5) {
     this.id = id;
@@ -22,7 +24,7 @@ public class UploadResultVo {
     this.url = url;
     this.md5 = md5;
   }
-  
+
   public UploadResultVo(long id, String filename, String url, String md5) {
     this.id = id;
     this.name = filename;

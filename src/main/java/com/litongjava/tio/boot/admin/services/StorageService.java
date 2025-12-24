@@ -13,6 +13,8 @@ public interface StorageService {
   public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix);
 
   public String getUrl(String bucketName, String targetName);
+  
+  public String getUrl(String targetName);
 
   public UploadResultVo getUrlById(String id);
 

@@ -37,10 +37,10 @@ public class AwsS3StorageService implements StorageService {
 
   public UploadResultVo uploadFile(String category, UploadFile uploadFile) {
     // 上传文件
+    String name = uploadFile.getName();
+    String suffix = FilenameUtils.getSuffix(name);
     long id = SnowflakeIdUtils.id();
-    String suffix = FilenameUtils.getSuffix(uploadFile.getName());
     String newFilename = id + "." + suffix;
-
     String targetName = category + "/" + newFilename;
 
     return uploadFile(id, targetName, uploadFile, suffix);
@@ -90,8 +90,7 @@ public class AwsS3StorageService implements StorageService {
 
     TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
-        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName)
-        .set("bucket_name", AwsS3Utils.bucketName)
+        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
@@ -108,6 +107,11 @@ public class AwsS3StorageService implements StorageService {
   }
 
   @Override
+  public String getUrl(String targetName) {
+    return AwsS3Utils.getUrl(targetName);
+  }
+
+  @Override
   public UploadResultVo getUrlById(String id) {
     return Aop.get(SystemUploadFileService.class).getUrlById(id);
   }
@@ -121,4 +125,5 @@ public class AwsS3StorageService implements StorageService {
   public UploadResultVo getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
+
 }

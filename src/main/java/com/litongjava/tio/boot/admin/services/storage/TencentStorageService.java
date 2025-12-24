@@ -13,6 +13,7 @@ import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.SysConfigConstantsService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
+import com.litongjava.tio.boot.admin.utils.TencentCOSUtils;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.http.common.UploadFile;
@@ -39,16 +40,6 @@ public class TencentStorageService implements StorageService {
   public RespBodyVo upload(UploadFile uploadFile) {
     String filename = uploadFile.getName();
 
-    // 上传文件
-    long threadId = Thread.currentThread().getId();
-    if (threadId > 31L) {
-      threadId %= 31L;
-    }
-
-    if (threadId < 0L) {
-      threadId = 0L;
-    }
-
     long id = SnowflakeIdUtils.id();
     String suffix = FilenameUtils.getSuffix(filename);
     String newFilename = id + "." + suffix;
@@ -71,8 +62,7 @@ public class TencentStorageService implements StorageService {
   /**
    * getPutObjectRequest
    */
-  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix,
-      String bucketName) {
+  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix, String bucketName) {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileContent);
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentLength(fileContent.length);
@@ -91,10 +81,12 @@ public class TencentStorageService implements StorageService {
   }
 
   public String getUrl(String bucketName, String targetName) {
-    SystemTxCosConfigVo systemTxCosConfig = Aop.get(SysConfigConstantsService.class).getSystemTxCosConfig();
-    String region = systemTxCosConfig.getRegion();
-    String domain = "https://" + bucketName + ".cos." + region + ".myqcloud.com";
-    return domain + "/" + targetName;
+    return TencentCOSUtils.getUrl(bucketName, targetName);
+  }
+
+  @Override
+  public String getUrl(String targetName) {
+    return TencentCOSUtils.getUrl(targetName);
   }
 
   public UploadResultVo getUrlById(String id) {

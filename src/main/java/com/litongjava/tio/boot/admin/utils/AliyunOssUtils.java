@@ -1,10 +1,11 @@
 package com.litongjava.tio.boot.admin.utils;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 
+import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.common.auth.DefaultCredentialProvider;
 import com.aliyun.oss.common.comm.SignVersion;
 import com.aliyun.oss.model.ObjectMetadata;
@@ -12,6 +13,7 @@ import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
+import com.litongjava.tio.utils.hutool.FilenameUtils;
 
 /**
  * Aliyun OSS 工具类 功能类似 AwsS3Utils，用于统一上传与 URL 获取。
@@ -25,8 +27,8 @@ public class AliyunOssUtils {
 
   // 从环境变量或配置文件读取配置
   public static final String bucketName = EnvUtils.get("OSS_BUCKET_NAME");
-  public static final String regionName = EnvUtils.get("OSS_REGION_NAME"); // 例如 cn-hangzhou
-  public static final String endpoint = EnvUtils.get("OSS_ENDPOINT"); // 例如 https://oss-cn-hangzhou.aliyuncs.com
+  public static final String regionName = EnvUtils.get("OSS_REGION_NAME");
+  public static final String endpoint = EnvUtils.get("OSS_ENDPOINT");
   public static final String accessKeyId = EnvUtils.get("OSS_ACCESS_KEY_ID");
   public static final String accessKeySecret = EnvUtils.get("OSS_ACCESS_KEY_SECRET");
 
@@ -67,6 +69,26 @@ public class AliyunOssUtils {
       }
 
       PutObjectRequest req = new PutObjectRequest(bucketName, objectKey, new ByteArrayInputStream(bytes), metadata);
+
+      return client.putObject(req);
+    } catch (Exception e) {
+      throw new RuntimeException("Aliyun OSS upload error", e);
+    }
+  }
+
+  public static PutObjectResult upload(OSS client, String bucketName, String objectKey, File file) {
+    String name = file.getName();
+    long length = file.length();
+    String suffix = FilenameUtils.getSuffix(name);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    try {
+      ObjectMetadata metadata = new ObjectMetadata();
+      metadata.setContentLength(length);
+      if (suffix != null) {
+        metadata.setContentType(contentType);
+      }
+
+      PutObjectRequest req = new PutObjectRequest(bucketName, objectKey, file, metadata);
 
       return client.putObject(req);
     } catch (Exception e) {

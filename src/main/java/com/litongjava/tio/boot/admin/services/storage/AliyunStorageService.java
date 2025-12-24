@@ -75,8 +75,7 @@ public class AliyunStorageService implements StorageService {
     OSS client = null;
     try {
       client = AliyunOssUtils.buildClient();
-      PutObjectResult result = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent,
-          suffix);
+      PutObjectResult result = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent, suffix);
       etag = result.getETag();
     } catch (Exception e) {
       e.printStackTrace();
@@ -90,9 +89,9 @@ public class AliyunStorageService implements StorageService {
     // 记录入库
     log.info("Uploaded to Aliyun OSS with ETag: {}", etag);
 
-    TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
-        .set("platform", StoragePlatformConst.aliyun_oss).set("region_name", AliyunOssUtils.regionName)
-        .set("bucket_name", AliyunOssUtils.bucketName).set("target_name", targetName).set("file_id", etag);
+    TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5).set("platform", StoragePlatformConst.aliyun_oss)
+        .set("region_name", AliyunOssUtils.regionName).set("bucket_name", AliyunOssUtils.bucketName).set("target_name", targetName)
+        .set("file_id", etag);
 
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AliyunOssUtils.bucketName, targetName);
@@ -103,6 +102,11 @@ public class AliyunStorageService implements StorageService {
   @Override
   public String getUrl(String bucketName, String targetName) {
     return AliyunOssUtils.getUrl(bucketName, targetName);
+  }
+
+  @Override
+  public String getUrl(String targetName) {
+    return AliyunOssUtils.getUrl(targetName);
   }
 
   @Override
@@ -119,4 +123,5 @@ public class AliyunStorageService implements StorageService {
   public UploadResultVo getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
+
 }
