@@ -36,6 +36,20 @@ public class AwsS3Utils {
     }
   }
 
+  public static PutObjectResponse upload(S3Client client, String targetName, File file) {
+    String name = file.getName();
+    String suffix = FilenameUtils.getSuffix(name);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    try {
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
+
+      PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromFile(file));
+      return putObject;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, File file) {
     String name = file.getName();
     String suffix = FilenameUtils.getSuffix(name);
@@ -54,7 +68,7 @@ public class AwsS3Utils {
     if (domain != null) {
       return "https://" + domain + "/" + targetUri;
     } else {
-      return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, regionName, targetUri);
+      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
     }
 
   }

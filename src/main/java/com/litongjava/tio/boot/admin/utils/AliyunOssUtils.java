@@ -75,6 +75,26 @@ public class AliyunOssUtils {
       throw new RuntimeException("Aliyun OSS upload error", e);
     }
   }
+  
+  public static PutObjectResult upload(OSS client,String objectKey, File file) {
+    String name = file.getName();
+    long length = file.length();
+    String suffix = FilenameUtils.getSuffix(name);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    try {
+      ObjectMetadata metadata = new ObjectMetadata();
+      metadata.setContentLength(length);
+      if (suffix != null) {
+        metadata.setContentType(contentType);
+      }
+
+      PutObjectRequest req = new PutObjectRequest(bucketName, objectKey, file, metadata);
+
+      return client.putObject(req);
+    } catch (Exception e) {
+      throw new RuntimeException("Aliyun OSS upload error", e);
+    }
+  }
 
   public static PutObjectResult upload(OSS client, String bucketName, String objectKey, File file) {
     String name = file.getName();
