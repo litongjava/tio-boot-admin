@@ -39,4 +39,9 @@ public class UploadResultVo {
     this.url = url;
     this.md5 = md5;
   }
+
+  public UploadResultVo(String etag, String url) {
+    this.etag = etag;
+    this.url = url;
+  }
 }
