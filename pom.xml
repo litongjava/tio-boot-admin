@@ -10,7 +10,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>17</java.version>
+    <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <graalvm.version>23.1.1</graalvm.version>
@@ -23,7 +23,7 @@
     <api-table.version>1.5.6</api-table.version>
     <tio-utils.version>3.7.3.v20260201-RELEASE</tio-utils.version>
     <tio-boot.version>2.0.6</tio-boot.version>
-    <java.java-openai>1.2.5</java.java-openai>
+    <java.java-openai>1.2.6</java.java-openai>
   </properties>
 
   <dependencies>
