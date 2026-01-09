@@ -53,7 +53,7 @@ public class TioVirtualThreadUtils {
     if (virtualThreadExecutor == null) {
       // Two equivalent options:
       // 1) with custom name factory:
-      virtualThreadExecutor = Executors.newThreadPerTaskExecutor(namedVirtualThreadFactory("t-vt"));
+      virtualThreadExecutor = Executors.newThreadPerTaskExecutor(namedVirtualThreadFactory("tvt"));
 
       // 2) simplest:
       // virtualThreadExecutor = Executors.newVirtualThreadPerTaskExecutor();
