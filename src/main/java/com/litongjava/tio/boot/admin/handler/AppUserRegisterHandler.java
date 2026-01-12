@@ -69,7 +69,7 @@ public class AppUserRegisterHandler {
     if (email != null) {
       boolean exists = appUserService.existsEmail(email);
       if (exists) {
-        ValidateResult validateResult = ValidateResult.by("email", "email already taken" + email);
+        ValidateResult validateResult = ValidateResult.by("email", "email already taken " + email);
         validateResults.add(validateResult);
         ok = false;
       }
@@ -78,7 +78,7 @@ public class AppUserRegisterHandler {
     if (username != null) {
       boolean exists = appUserService.existsUsername(username);
       if (exists) {
-        ValidateResult validateResult = ValidateResult.by("email", "username already taken" + email);
+        ValidateResult validateResult = ValidateResult.by("email", "username already taken"  + username);
         validateResults.add(validateResult);
         ok = false;
       }

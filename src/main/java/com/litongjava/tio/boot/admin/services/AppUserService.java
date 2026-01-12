@@ -193,7 +193,7 @@ public class AppUserService {
 
     boolean exists = Db.exists(TioBootAdminTableNames.app_users, "email", email);
     if (exists) {
-      ValidateResult validateResult = ValidateResult.by("email", "email already taken" + email);
+      ValidateResult validateResult = ValidateResult.by("email", "email already taken " + email);
       validateResults.add(validateResult);
     }
 
