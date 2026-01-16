@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.bson.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jfinal.kit.Kv;
 import com.litongjava.annotation.EnableCORS;
@@ -24,13 +26,11 @@ import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RequestPath("/mongodb/json")
-@Slf4j
 @EnableCORS
 public class MongodbController {
-
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
+  
   private MongodbJsonService mongodbJsonService = Aop.get(MongodbJsonService.class);
 
   @RequestPath("/{f}/page")

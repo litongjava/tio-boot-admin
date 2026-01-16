@@ -6,6 +6,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jfinal.kit.Kv;
 import com.litongjava.annotation.EnableCORS;
 import com.litongjava.annotation.RequestPath;
@@ -25,13 +28,10 @@ import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RequestPath("/api/table")
-@Slf4j
 @EnableCORS
 public class ApiTableController {
-
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
   @RequestPath("/index")
   public String index() {
     return "TableJsonController";

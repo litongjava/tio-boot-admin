@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.litongjava</groupId>
   <artifactId>tio-boot-admin</artifactId>
@@ -24,9 +26,17 @@
     <tio-utils.version>3.7.3.v20260201-RELEASE</tio-utils.version>
     <tio-boot.version>2.0.6</tio-boot.version>
     <java.java-openai>1.2.6</java.java-openai>
+    <lombok-version>1.18.30</lombok-version>
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>${lombok-version}</version>
+      <optional>true</optional>
+      <scope>provided</scope>
+    </dependency>
     <!-- FastJSON2 用于 JSON 解析 -->
     <dependency>
       <groupId>com.alibaba.fastjson2</groupId>
@@ -201,14 +211,6 @@
       <groupId>com.aliyun.oss</groupId>
       <artifactId>aliyun-sdk-oss</artifactId>
       <version>3.17.4</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>1.18.30</version>
-      <optional>true</optional>
       <scope>provided</scope>
     </dependency>
 

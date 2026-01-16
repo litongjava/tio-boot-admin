@@ -3,6 +3,9 @@ package com.litongjava.tio.boot.admin.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.litongjava.hook.HookCan;
 import com.litongjava.mongo.MongoDb;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -11,11 +14,8 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class TioAdminMongoDbConfiguration {
-
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
   public void config() {
     String mongodbHost = EnvUtils.getStr("mongodb.host");
     if (mongodbHost == null) {

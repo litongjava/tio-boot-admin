@@ -6,6 +6,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.litongjava.db.activerecord.ActiveRecordPlugin;
 import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
@@ -18,10 +21,8 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 public class TioAdminDbConfiguration {
+  private final Logger log = LoggerFactory.getLogger(this.getClass());
   public void config() {
     // get dataSource
     String jdbcUrl = EnvUtils.get("jdbc.url");
