@@ -4,7 +4,7 @@ public interface TioBootAdminUrls {
 
   String[] ALLLOW_URLS = { "", "/",
 
-      "/api/event/add",
+      "/preflight", "/api/event/add",
 
       "/register/*", "/api/login/account", "/api/login/outLogin",
       //

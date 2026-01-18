@@ -16,6 +16,7 @@ import com.litongjava.tio.boot.admin.handler.system.SystemFileAwsS3Handler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemHandler;
 import com.litongjava.tio.boot.admin.handler.AdminUserHandler;
+import com.litongjava.tio.boot.admin.handler.AppPreflightHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -37,6 +38,8 @@ public class TioAdminHandlerConfiguration {
     StableDiffusionHandler stableDiffusionHandler = Aop.get(StableDiffusionHandler.class);
     SystemFileAwsS3Handler systemFileS3Handler = Aop.get(SystemFileAwsS3Handler.class);
 
+    AppPreflightHandler appPreflightHandler = new AppPreflightHandler();
+    r.add("/preflight", appPreflightHandler);
     // 添加action
     r.add("/api/login/account", apiLoginHandler::account);
     r.add("/api/login/outLogin", apiLoginHandler::outLogin);
@@ -46,8 +49,8 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/event/add", userEventHandler::add);
     r.add("/api/fake_analysis_chart_data", fakeAnalysisChartDataHandler::index);
     // upload
-    //r.add("/api/system/file/upload", systemUploadHandler::upload);
-    //r.add("/api/system/file/url", systemUploadHandler::getUrl);
+    // r.add("/api/system/file/upload", systemUploadHandler::upload);
+    // r.add("/api/system/file/url", systemUploadHandler::getUrl);
 
     r.add("/api/system/file/s3/upload", systemFileS3Handler::upload);
     r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
@@ -74,16 +77,16 @@ public class TioAdminHandlerConfiguration {
 
     // 登出
     r.add("/api/v1/logout", loginHandler::logout);
-    //刷新
+    // 刷新
     r.add("/api/v1/user/refresh", appUserHandler::refresh);
-    //删除
+    // 删除
     r.add("/api/v1/user/remove", appUserHandler::remove);
 
     r.add("/api/v1/user/profile", appUserHandler::profile);
     r.add("/api/v1/user/update", appUserHandler::update);
     r.add("/api/v1/user/updatePassword", appUserHandler::updatePassword);
 
-    //删除
+    // 删除
     r.add("/api/v1/user/resetPassword", appUserHandler::resetPassword);
     r.add("/api/v1/anonymous/create", appUserAnonymousHandler::create);
 
