@@ -17,6 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHadler implements TioBootExceptionHandler {
   private boolean sendIfDev = false;
 
+  public GlobalExceptionHadler() {
+    
+  }
   public GlobalExceptionHadler(boolean sendIfDev) {
     this.sendIfDev = sendIfDev;
   }
