@@ -15,14 +15,19 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class GlobalExceptionHadler implements TioBootExceptionHandler {
+  private boolean sendIfDev = false;
+
+  public GlobalExceptionHadler(boolean sendIfDev) {
+    this.sendIfDev = sendIfDev;
+  }
 
   @Override
   public RespBodyVo handler(HttpRequest request, Throwable e) {
-    
+
     String appGroupName = "tio-boot";
     String warningName = "GlobalExceptionHadler";
     String level = "LeveL 1";
-    
+
     NotifactionWarmModel model = NotifactionWarmUtils.toWarmModel(appGroupName, warningName, level, request, e);
     String requestId = model.getRequestId();
     String host = model.getHost();
@@ -31,9 +36,15 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
     String stackTrace = model.getStackTrace();
     log.info("requestId,{},{},{},{}", requestId, host, requestLine, bodyString, stackTrace);
     model.setContent("unknow error");
-    
 
-    if (!EnvUtils.isDev()) {
+    if (EnvUtils.isDev()) {
+      if (sendIfDev) {
+        NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
+        if (notificationSender != null) {
+          notificationSender.send(model);
+        }
+      }
+    } else {
       NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
       if (notificationSender != null) {
         notificationSender.send(model);
@@ -43,14 +54,15 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
     return RespBodyVo.fail(e.getMessage());
   }
 
-
   @Override
-  public Object wsTextHandler(WebSocketRequest webSokcetRequest, String text, ChannelContext channelContext, HttpRequest httpRequest, Throwable e) {
+  public Object wsTextHandler(WebSocketRequest webSokcetRequest, String text, ChannelContext channelContext,
+      HttpRequest httpRequest, Throwable e) {
     return null;
   }
 
   @Override
-  public Object wsBytesHandler(WebSocketRequest webSokcetRequest, byte[] bytes, ChannelContext channelContext, HttpRequest httpRequest, Throwable e) {
+  public Object wsBytesHandler(WebSocketRequest webSokcetRequest, byte[] bytes, ChannelContext channelContext,
+      HttpRequest httpRequest, Throwable e) {
     return null;
   }
 }
