@@ -18,7 +18,7 @@
     <graalvm.version>23.1.1</graalvm.version>
     <fastjson2.version>2.0.52</fastjson2.version>
 
-    <java-model.version>1.2.2</java-model.version>
+    <java-model.version>1.2.3</java-model.version>
     <hotswap-classloader.version>1.2.6</hotswap-classloader.version>
     <jfinal-aop.version>1.3.8</jfinal-aop.version>
     <java-db.version>1.5.7</java-db.version>
