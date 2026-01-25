@@ -6,6 +6,8 @@ import com.litongjava.db.TableInput;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
@@ -15,8 +17,6 @@ import com.litongjava.tio.boot.admin.services.SysConfigConstantsService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.TencentCOSUtils;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
-import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
@@ -46,7 +46,7 @@ public class TencentStorageService implements StorageService {
 
     String targetName = "public/" + newFilename;
 
-    UploadResultVo vo = uploadFile(id, targetName, uploadFile, suffix);
+    UploadResult vo = uploadFile(id, targetName, uploadFile, suffix);
     return RespBodyVo.ok(vo);
   }
 
@@ -89,11 +89,11 @@ public class TencentStorageService implements StorageService {
     return TencentCOSUtils.getUrl(targetName);
   }
 
-  public UploadResultVo getUrlById(String id) {
+  public UploadResult getUrlById(String id) {
     return getUrlById(Long.parseLong(id));
   }
 
-  public UploadResultVo getUrlById(long id) {
+  public UploadResult getUrlById(long id) {
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
       return null;
@@ -102,10 +102,10 @@ public class TencentStorageService implements StorageService {
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
-    return new UploadResultVo(id, originFilename, size, url, md5);
+    return new UploadResult(id, originFilename, size, url, md5);
   }
 
-  public UploadResultVo getUrlByMd5(String md5) {
+  public UploadResult getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 
@@ -115,12 +115,12 @@ public class TencentStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo uploadFile(String category, UploadFile uploadFile) {
+  public UploadResult uploadFile(String category, UploadFile uploadFile) {
     return null;
   }
 
   @Override
-  public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
+  public UploadResult uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
     byte[] fileContent = uploadFile.getData();
     String filename = uploadFile.getName();
     long size = uploadFile.getSize();
@@ -151,7 +151,7 @@ public class TencentStorageService implements StorageService {
     ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(bucketName, targetName);
 
-    UploadResultVo uploadResultVo = new UploadResultVo();
+    UploadResult uploadResultVo = new UploadResult();
     uploadResultVo.setId(id).setUrl(downloadUrl).setSize(size);
     uploadResultVo.setMd5(md5).setTargetName(targetName);
 

@@ -9,17 +9,17 @@ import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
-import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
@@ -64,7 +64,7 @@ public class SystemFileAwsS3Handler {
     String md5 = request.getParam("md5");
     if (StrKit.notBlank(id)) {
       // id,md5,name,url,
-      UploadResultVo uploadResultVo = storageService.getUrlById(id);
+      UploadResult uploadResultVo = storageService.getUrlById(id);
       if (uploadResultVo == null) {
         respBodyVo = RespBodyVo.fail();
       } else {
@@ -72,7 +72,7 @@ public class SystemFileAwsS3Handler {
       }
 
     } else if (StrKit.notBlank(md5)) {
-      UploadResultVo uploadResultVo = storageService.getUrlByMd5(md5);
+      UploadResult uploadResultVo = storageService.getUrlByMd5(md5);
       if (uploadResultVo == null) {
         respBodyVo = RespBodyVo.fail();
       } else {

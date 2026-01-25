@@ -6,10 +6,10 @@ import java.io.ByteArrayOutputStream;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.TableInput;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.utils.PDDocumentUtils;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
-import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.http.HttpDownloadUtils;
 
 public class DocumentService {
@@ -28,7 +28,7 @@ public class DocumentService {
 
     String filename = currentTimeMillis + ".png";
     UploadFile uploadFile = new UploadFile(filename, imageBytes);
-    UploadResultVo resultVo = Aop.get(AwsS3StorageService.class).uploadFile(category, uploadFile);
+    UploadResult resultVo = Aop.get(AwsS3StorageService.class).uploadFile(category, uploadFile);
 
     Kv resultKv = Kv.create()
         //

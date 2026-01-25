@@ -3,12 +3,12 @@ package com.litongjava.tio.boot.admin.handler.system;
 import com.jfinal.kit.StrKit;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.services.storage.TencentStorageService;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
-import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
@@ -43,7 +43,7 @@ public class SystemFileTencentCosHandler {
     String md5 = request.getParam("md5");
     if (StrKit.notBlank(id)) {
       // id,md5,name,url,
-      UploadResultVo uploadResultVo = storageService.getUrlById(id);
+      UploadResult uploadResultVo = storageService.getUrlById(id);
       if (uploadResultVo == null) {
         respBodyVo = RespBodyVo.fail();
       } else {
@@ -51,7 +51,7 @@ public class SystemFileTencentCosHandler {
       }
 
     } else if (StrKit.notBlank(md5)) {
-      UploadResultVo uploadResultVo = storageService.getUrlByMd5(md5);
+      UploadResult uploadResultVo = storageService.getUrlByMd5(md5);
       if (uploadResultVo == null) {
         respBodyVo = RespBodyVo.fail();
       } else {

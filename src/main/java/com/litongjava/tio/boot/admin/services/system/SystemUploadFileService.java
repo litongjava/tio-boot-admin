@@ -6,17 +6,17 @@ import java.util.List;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 
 public class SystemUploadFileService {
-  public UploadResultVo getUrlById(String id) {
+  public UploadResult getUrlById(String id) {
     return getUrlById(Long.parseLong(id));
   }
 
-  public UploadResultVo getUrlById(long id) {
+  public UploadResult getUrlById(long id) {
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
       return null;
@@ -30,10 +30,10 @@ public class SystemUploadFileService {
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
-    return new UploadResultVo(id, originFilename, size, url, md5);
+    return new UploadResult(id, originFilename, size, url, md5);
   }
 
-  public UploadResultVo getUrlByMd5(String md5) {
+  public UploadResult getUrlByMd5(String md5) {
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
     if (record == null) {
       return null;
@@ -49,7 +49,7 @@ public class SystemUploadFileService {
     kv.set("md5", md5);
     String originFilename = record.getStr("filename");
     Long size = record.getLong("size");
-    return new UploadResultVo(id, originFilename, size, url, md5);
+    return new UploadResult(id, originFilename, size, url, md5);
   }
 
   public String getUrl(String platform, String region_name, String bucket_name, String targetName) {
@@ -59,12 +59,12 @@ public class SystemUploadFileService {
     return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, region_name, targetName);
   }
 
-  public List<UploadResultVo> getUploadResultByIds(List<Long> ids) {
+  public List<UploadResult> getUploadResultByIds(List<Long> ids) {
     List<Row> rows = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByIds(ids);
     if (rows == null) {
       return null;
     }
-    List<UploadResultVo> results = new ArrayList<>();
+    List<UploadResult> results = new ArrayList<>();
 
     for (Row record : rows) {
       Long id = record.getLong("id");
@@ -77,7 +77,7 @@ public class SystemUploadFileService {
       String originFilename = record.getStr("fielename");
       String md5 = record.getStr("md5");
       Long size = record.getLong("size");
-      UploadResultVo uploadResultVo = new UploadResultVo(id, originFilename, size, url, md5);
+      UploadResult uploadResultVo = new UploadResult(id, originFilename, size, url, md5);
       results.add(uploadResultVo);
     }
 

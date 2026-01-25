@@ -6,11 +6,11 @@ import java.util.List;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.PutObjectResult;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.utils.AliyunOssUtils;
 import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadInput;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
 
 import lombok.extern.slf4j.Slf4j;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -19,8 +19,8 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 @Slf4j
 public class StorageUploadService {
 
-  public UploadResultVo uploadFile(String storagePlatform, String localFile, String targetName) {
-    UploadResultVo uploadResultVo = new UploadResultVo();
+  public UploadResult uploadFile(String storagePlatform, String localFile, String targetName) {
+    UploadResult uploadResultVo = new UploadResult();
     String downloadUrl = null;
     String etag = null;
     if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
@@ -55,8 +55,8 @@ public class StorageUploadService {
     return uploadResultVo;
   }
 
-  public List<UploadResultVo> uploadFile(String storagePlatform, List<UploadInput> uploadFiles) {
-    List<UploadResultVo> result = new ArrayList<>(uploadFiles.size());
+  public List<UploadResult> uploadFile(String storagePlatform, List<UploadInput> uploadFiles) {
+    List<UploadResult> result = new ArrayList<>(uploadFiles.size());
 
     String downloadUrl = null;
     String etag = null;
@@ -67,7 +67,7 @@ public class StorageUploadService {
           PutObjectResponse response = AwsS3Utils.upload(client, uploadInput.targetName, new File(uploadInput.localFilePath));
           etag = response.eTag();
           downloadUrl = AwsS3Utils.getUrl(uploadInput.targetName);
-          UploadResultVo uploadResultVo = new UploadResultVo(etag, downloadUrl);
+          UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
           result.add(uploadResultVo);
         }
 
@@ -84,7 +84,7 @@ public class StorageUploadService {
           PutObjectResult response = AliyunOssUtils.upload(client, uploadInput.targetName, new File(uploadInput.localFilePath));
           etag = response.getETag();
           downloadUrl = AliyunOssUtils.getUrl(uploadInput.targetName);
-          UploadResultVo uploadResultVo = new UploadResultVo(etag, downloadUrl);
+          UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
           result.add(uploadResultVo);
         }
       } catch (Exception e) {

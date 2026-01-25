@@ -25,7 +25,7 @@
     <api-table.version>1.5.6</api-table.version>
     <tio-utils.version>3.7.3.v20260201-RELEASE</tio-utils.version>
     <tio-boot.version>2.0.6</tio-boot.version>
-    <java.java-openai>1.2.6</java.java-openai>
+    <java-openai>1.2.6</java-openai>
     <lombok-version>1.18.30</lombok-version>
   </properties>
 
@@ -96,7 +96,7 @@
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>java-openai</artifactId>
-      <version>${java.java-openai}</version>
+      <version>${java-openai}</version>
     </dependency>
 
     <dependency>

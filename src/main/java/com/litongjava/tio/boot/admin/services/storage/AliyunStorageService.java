@@ -9,6 +9,8 @@ import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
+import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
@@ -16,8 +18,6 @@ import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.AliyunOssUtils;
-import com.litongjava.tio.boot.admin.vo.UploadResultVo;
-import com.litongjava.tio.http.common.UploadFile;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -32,12 +32,12 @@ public class AliyunStorageService implements StorageService {
     if (StrKit.isBlank(category)) {
       category = "default";
     }
-    UploadResultVo uploadResultVo = uploadFile(category, uploadFile);
+    UploadResult uploadResultVo = uploadFile(category, uploadFile);
     return RespBodyVo.ok(uploadResultVo);
   }
 
   @Override
-  public UploadResultVo uploadFile(String category, UploadFile uploadFile) {
+  public UploadResult uploadFile(String category, UploadFile uploadFile) {
     long id = SnowflakeIdUtils.id();
     String suffix = FilenameUtils.getSuffix(uploadFile.getName());
     String newFilename = id + "." + suffix;
@@ -46,7 +46,7 @@ public class AliyunStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
+  public UploadResult uploadFile(long id, String targetName, UploadFile uploadFile, String suffix) {
     String name = uploadFile.getName();
     long size = uploadFile.getSize();
     byte[] fileContent = uploadFile.getData();
@@ -65,7 +65,7 @@ public class AliyunStorageService implements StorageService {
       kv.set("url", url);
       kv.set("md5", md5);
 
-      return new UploadResultVo(id, name, size, url, md5);
+      return new UploadResult(id, name, size, url, md5);
     } else {
       log.info("not found from cache table: {}", md5);
     }
@@ -96,7 +96,7 @@ public class AliyunStorageService implements StorageService {
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(AliyunOssUtils.bucketName, targetName);
 
-    return new UploadResultVo(save.getData().getLong("id"), name, size, downloadUrl, md5);
+    return new UploadResult(save.getData().getLong("id"), name, size, downloadUrl, md5);
   }
 
   @Override
@@ -110,17 +110,17 @@ public class AliyunStorageService implements StorageService {
   }
 
   @Override
-  public UploadResultVo getUrlById(String id) {
+  public UploadResult getUrlById(String id) {
     return Aop.get(SystemUploadFileService.class).getUrlById(id);
   }
 
   @Override
-  public UploadResultVo getUrlById(long id) {
+  public UploadResult getUrlById(long id) {
     return Aop.get(SystemUploadFileService.class).getUrlById(id);
   }
 
   @Override
-  public UploadResultVo getUrlByMd5(String md5) {
+  public UploadResult getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 

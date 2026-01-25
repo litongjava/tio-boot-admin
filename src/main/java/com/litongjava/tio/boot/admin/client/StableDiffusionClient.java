@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.tio.http.common.UploadFile;
+import com.litongjava.model.upload.UploadFile;
 import com.litongjava.tio.utils.environment.EnvUtils;
 
 import okhttp3.MediaType;
