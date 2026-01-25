@@ -3,12 +3,12 @@ package com.litongjava.tio.boot.admin.handler;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.exception.TioBootExceptionHandler;
 import com.litongjava.tio.boot.sender.NotifactionWarmUtils;
-import com.litongjava.tio.boot.sender.NotificationSender;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.core.ChannelContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.notification.NotifactionWarmModel;
+import com.litongjava.tio.utils.notification.NotificationSender;
 import com.litongjava.tio.websocket.common.WebSocketRequest;
 
 import lombok.extern.slf4j.Slf4j;
