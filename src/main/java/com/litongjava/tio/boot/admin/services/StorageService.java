@@ -11,7 +11,7 @@ public interface StorageService {
   public UploadResult uploadFile(String category, UploadFile uploadFile);
 
   public UploadResult uploadFile(long id, String targetName, UploadFile uploadFile, String suffix);
-
+  
   public String getUrl(String bucketName, String targetName);
   
   public String getUrl(String targetName);
