@@ -26,9 +26,14 @@ import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
 public class AwsS3StorageService implements StorageService {
+  @Override
+  public RespBodyVo upload(UploadFile uploadFile) {
+    return upload(DEFAULT_CATEGORY, uploadFile);
+  }
+
   public RespBodyVo upload(String category, UploadFile uploadFile) {
     if (StrKit.isBlank(category)) {
-      category = "default";
+      category = DEFAULT_CATEGORY;
     }
     UploadResult uploadResultVo = uploadFile(category, uploadFile);
 
@@ -36,13 +41,16 @@ public class AwsS3StorageService implements StorageService {
   }
 
   public UploadResult uploadFile(String category, UploadFile uploadFile) {
+    long id = SnowflakeIdUtils.id();
+    return uploadFile(category, uploadFile, id);
+  }
+
+  public UploadResult uploadFile(String category, UploadFile uploadFile, Long id) {
     // 上传文件
     String name = uploadFile.getName();
     String suffix = FilenameUtils.getSuffix(name);
-    long id = SnowflakeIdUtils.id();
     String newFilename = id + "." + suffix;
     String targetName = category + "/" + newFilename;
-
     return uploadFile(id, targetName, uploadFile, suffix);
   }
 
@@ -90,7 +98,8 @@ public class AwsS3StorageService implements StorageService {
 
     TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
-        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName).set("bucket_name", AwsS3Utils.bucketName)
+        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName)
+        .set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 

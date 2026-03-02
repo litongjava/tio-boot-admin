@@ -2,6 +2,7 @@ package com.litongjava.tio.boot.admin.services.storage;
 
 import java.io.ByteArrayInputStream;
 
+import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
@@ -38,16 +39,37 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class TencentStorageService implements StorageService {
   public RespBodyVo upload(UploadFile uploadFile) {
+
+    String category = DEFAULT_CATEGORY;
+    return upload(category, uploadFile);
+  }
+
+  public RespBodyVo upload(String category, UploadFile uploadFile) {
+    if (StrKit.isBlank(category)) {
+      category = DEFAULT_CATEGORY;
+    }
+    UploadResult vo = uploadFile(category, uploadFile);
+    return RespBodyVo.ok(vo);
+  }
+
+  @Override
+  public UploadResult uploadFile(String category, UploadFile uploadFile) {
+    long id = SnowflakeIdUtils.id();
+    UploadResult vo = uploadFile(category, uploadFile, id);
+    return vo;
+  }
+
+  @Override
+  public UploadResult uploadFile(String category, UploadFile uploadFile, Long id) {
     String filename = uploadFile.getName();
 
-    long id = SnowflakeIdUtils.id();
     String suffix = FilenameUtils.getSuffix(filename);
     String newFilename = id + "." + suffix;
 
-    String targetName = "public/" + newFilename;
+    String targetName = category + newFilename;
 
     UploadResult vo = uploadFile(id, targetName, uploadFile, suffix);
-    return RespBodyVo.ok(vo);
+    return vo;
   }
 
   /**
@@ -62,7 +84,8 @@ public class TencentStorageService implements StorageService {
   /**
    * getPutObjectRequest
    */
-  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix, String bucketName) {
+  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix,
+      String bucketName) {
     ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileContent);
     ObjectMetadata objectMetadata = new ObjectMetadata();
     objectMetadata.setContentLength(fileContent.length);
@@ -107,16 +130,6 @@ public class TencentStorageService implements StorageService {
 
   public UploadResult getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
-  }
-
-  @Override
-  public RespBodyVo upload(String category, UploadFile uploadFile) {
-    return null;
-  }
-
-  @Override
-  public UploadResult uploadFile(String category, UploadFile uploadFile) {
-    return null;
   }
 
   @Override
