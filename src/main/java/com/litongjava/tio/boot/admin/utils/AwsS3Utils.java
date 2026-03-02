@@ -7,6 +7,9 @@ import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
@@ -23,11 +26,14 @@ public class AwsS3Utils {
   public static final String accessKeyId = EnvUtils.get("AWS_S3_ACCESS_KEY_ID");
   public static final String secretAccessKey = EnvUtils.get("AWS_S3_SECRET_ACCESS_KEY");
   public static final String domain = EnvUtils.getStr("AWS_S3_BUCKET_DOMAIN");
+  public static final String AWS_PROFILE = EnvUtils.getStr("AWS_PROFILE");
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent, String suffix) {
+  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
+      String suffix) {
     try {
       String contentType = ContentTypeUtils.getContentType(suffix);
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
+          .build();
 
       PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromBytes(fileContent));
       return putObject;
@@ -41,7 +47,8 @@ public class AwsS3Utils {
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
     try {
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
+          .build();
 
       PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromFile(file));
       return putObject;
@@ -55,7 +62,8 @@ public class AwsS3Utils {
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
     try {
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType).build();
+      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
+          .build();
 
       PutObjectResponse putObject = client.putObject(putOb, RequestBody.fromFile(file));
       return putObject;
@@ -83,17 +91,23 @@ public class AwsS3Utils {
   }
 
   public static S3Client buildClient() {
-    AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
-    StaticCredentialsProvider staticCredentialsProvider = StaticCredentialsProvider.create(awsCreds);
-
-    Region region = Region.of(regionName);
-    // 创建S3客户端
     S3ClientBuilder builder = S3Client.builder();
 
-    S3Client s3 = builder.region(region) //
-        .credentialsProvider(staticCredentialsProvider) //
-        .build();
+    Region region = Region.of(regionName);
+    builder.region(region);
 
+    AwsCredentialsProvider credentialsProvider = null;
+    if (accessKeyId != null && secretAccessKey != null) {
+      AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+      credentialsProvider = StaticCredentialsProvider.create(awsCreds);
+    } else if (AWS_PROFILE != null) {
+      credentialsProvider = ProfileCredentialsProvider.create(AWS_PROFILE);
+    } else {
+      credentialsProvider = DefaultCredentialsProvider.create();
+    }
+
+    // 创建S3客户端
+    S3Client s3 = builder.credentialsProvider(credentialsProvider).build();
     return s3;
 
   }
