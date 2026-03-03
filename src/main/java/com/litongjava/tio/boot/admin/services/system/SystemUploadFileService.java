@@ -70,7 +70,7 @@ public class SystemUploadFileService {
     String target_name = record.getStr("target_name");
 
     String url = this.getUrl(platform, region_name, bucket_name, target_name);
-    String originFilename = record.getStr("fielename");
+    String originFilename = record.getStr("name");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);
@@ -88,7 +88,7 @@ public class SystemUploadFileService {
     String name = record.getStr("name");
 
     String url = this.getPresignedDownloadUrl(platform, region_name, bucket_name, target_name, name);
-    String originFilename = record.getStr("fielename");
+    String originFilename = record.getStr("name");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);

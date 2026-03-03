@@ -13,7 +13,7 @@ public class SystemUploadFileDao {
 
   public static final String getFileBasicInfoByMd5Sql = String.format(selectSqlByMd5, tableName);
 
-  public static final String selectSqlById = "select md5,name,size,bucket_name,target_name from %s where id=? and deleted=0";
+  public static final String selectSqlById = "select md5,name,size,platform,region_name,bucket_name,target_name from %s where id=? and deleted=0";
   public static final String getFileBasicInfoByIdSql = String.format(selectSqlById, tableName);
 
   public static final String selectSqlByIds = "select id,md5,name,size,platform,region_name,bucket_name,target_name from %s where id in (%s) and deleted=0";
