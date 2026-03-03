@@ -129,6 +129,20 @@ public class CloudflareR2Utils {
     return getPresignedDownloadUrl(bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
+      String downloadFilename) {
+    String suffix = FilenameUtils.getSuffix(downloadFilename);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
+        contentType);
+  }
+
+  public static String getPresignedDownloadUrl(String bucket, String key, Duration expires, String downloadFilename,
+      String contentType) {
+    String region = resolveRegion();
+    return getPresignedDownloadUrl(region, bucket, key, expires, downloadFilename, contentType);
+  }
+
   /**
    * 生成可下载的预签名 GET URL
    *
@@ -138,14 +152,14 @@ public class CloudflareR2Utils {
    * @param downloadFilename 下载保存的文件名（可选）
    * @param contentType      响应 Content-Type（可选）
    */
-  public static String getPresignedDownloadUrl(String bucket, String key, Duration expires, String downloadFilename,
-      String contentType) {
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String key, Duration expires,
+      String downloadFilename, String contentType) {
 
     if (expires == null) {
       expires = DEFAULT_PRESIGN_EXPIRES;
     }
 
-    try (S3Presigner presigner = buildPresigner()) {
+    try (S3Presigner presigner = buildPresigner(regionName)) {
 
       GetObjectRequest.Builder getReq = GetObjectRequest.builder().bucket(bucket).key(key);
 
@@ -197,9 +211,14 @@ public class CloudflareR2Utils {
   }
 
   public static S3Presigner buildPresigner() {
+    String region = resolveRegion();
+    return buildPresigner(region);
+  }
+
+  public static S3Presigner buildPresigner(String regionName) {
     validateConfig();
 
-    return S3Presigner.builder().region(Region.of(resolveRegion())).endpointOverride(URI.create(resolveEndpoint()))
+    return S3Presigner.builder().region(Region.of(regionName)).endpointOverride(URI.create(resolveEndpoint()))
         .credentialsProvider(resolveCredentialsProvider()).build();
   }
 

@@ -15,7 +15,6 @@ import com.litongjava.tio.boot.admin.utils.CloudflareR2Utils;
 import com.litongjava.tio.boot.admin.utils.TencentCOSUtils;
 
 public class SystemUploadFileService {
-  
 
   public String getUrl(String platform, String region_name, String bucket_name, String targetName) {
     if (StoragePlatformConst.aws_s3.equals(platform)) {
@@ -35,26 +34,27 @@ public class SystemUploadFileService {
 
     }
   }
-  
-  public String getPresignedDownloadUrl(String platform, String region_name, String bucket_name, String targetName) {
+
+  public String getPresignedDownloadUrl(String platform, String region_name, String bucket_name, String targetName,
+      String downloadFilename) {
     if (StoragePlatformConst.aws_s3.equals(platform)) {
-      return AwsS3Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName);
+      return AwsS3Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
     } else if (StoragePlatformConst.aliyun_oss.equals(platform)) {
-      return AliyunOssUtils.getPresignedDownloadUrl(region_name, bucket_name, targetName);
+      return AliyunOssUtils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
     } else if (StoragePlatformConst.tencent_cos.equals(platform)) {
-      return TencentCOSUtils.getPresignedDownloadUrl(region_name, bucket_name, targetName);
+      return TencentCOSUtils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
     } else if (StoragePlatformConst.cloudflare_r2.equals(platform)) {
-      return CloudflareR2Utils.getPresignedDownloadUrl(bucket_name, targetName);
+      return CloudflareR2Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
     } else {
-      return AwsS3Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName);
+      return AwsS3Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
     }
   }
-  
+
   public UploadResult getUrlById(String id) {
     return getUrlById(Long.parseLong(id));
   }
@@ -75,7 +75,7 @@ public class SystemUploadFileService {
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);
   }
-  
+
   public UploadResult getPresignedDownloadUrl(Long id) {
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoById(id);
     if (record == null) {
@@ -85,16 +85,14 @@ public class SystemUploadFileService {
     String region_name = record.getStr("region_name");
     String bucket_name = record.getStr("bucket_name");
     String target_name = record.getStr("target_name");
-    
+    String name = record.getStr("name");
 
-    String url = this.getPresignedDownloadUrl(platform, region_name, bucket_name, target_name);
+    String url = this.getPresignedDownloadUrl(platform, region_name, bucket_name, target_name, name);
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);
   }
-
-
 
   public UploadResult getUrlByMd5(String md5) {
     Row record = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByMd5(md5);
@@ -114,7 +112,6 @@ public class SystemUploadFileService {
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);
   }
-
 
   public List<UploadResult> getUploadResultByIds(List<Long> ids) {
     List<Row> rows = Aop.get(SystemUploadFileDao.class).getFileBasicInfoByIds(ids);
@@ -137,9 +134,6 @@ public class SystemUploadFileService {
       UploadResult uploadResultVo = new UploadResult(id, originFilename, size, url, md5);
       results.add(uploadResultVo);
     }
-
     return results;
   }
-
-  
 }

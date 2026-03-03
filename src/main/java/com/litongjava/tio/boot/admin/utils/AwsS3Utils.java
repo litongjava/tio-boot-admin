@@ -128,6 +128,20 @@ public class AwsS3Utils {
     return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
+      String downloadFilename, String contentType) {
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
+        contentType);
+  }
+
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
+      String downloadFilename) {
+    String suffix = FilenameUtils.getSuffix(downloadFilename);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
+        contentType);
+  }
+
   /**
    * @param bucket  bucket name
    * @param key     object key (targetUri/targetName)

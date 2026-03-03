@@ -147,6 +147,15 @@ public class TencentCOSUtils {
       String downloadFilename, String contentType) {
     return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
   }
+  
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
+      String downloadFilename) {
+    String suffix = FilenameUtils.getSuffix(downloadFilename);
+    String contentType = ContentTypeUtils.getContentType(suffix);
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
+        contentType);
+  }
+
 
   /**
    * 生成可下载的预签名 URL（GET）。
