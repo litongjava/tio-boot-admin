@@ -107,18 +107,30 @@ public class AliyunOssUtils {
     }
   }
 
+  public static String getUrl(String regionName, String bucket, String objectKey) {
+    if (domain != null) {
+      return "https://" + domain + "/" + objectKey;
+    } else {
+      return String.format(urlFormat, bucket, regionName, objectKey);
+    }
+  }
+
   // -------------------------
   // Presigned Download URL (works for private bucket)
   // -------------------------
   /**
    * 生成可下载的预签名 GET URL（默认 30 分钟）
    */
-  public static String getPresignedDownloadUrl(String objectKey) {
-    return getPresignedDownloadUrl(bucketName, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
+  public static String getPresignedDownloadUrl(String targetUri) {
+    return getPresignedDownloadUrl(regionName, bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
-  public static String getPresignedDownloadUrl(String bucket, String objectKey) {
-    return getPresignedDownloadUrl(bucket, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
+  public static String getPresignedDownloadUrl(String bucket, String targetUri) {
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+  }
+
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri) {
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   /**
@@ -132,6 +144,12 @@ public class AliyunOssUtils {
    */
   public static String getPresignedDownloadUrl(String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {
+    return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
+
+  }
+
+  public static String getPresignedDownloadUrl(String region, String bucket, String objectKey, Duration expires,
+      String downloadFilename, String contentType) {
 
     if (expires == null) {
       expires = DEFAULT_PRESIGN_EXPIRES;
@@ -141,7 +159,7 @@ public class AliyunOssUtils {
 
     OSS client = null;
     try {
-      client = buildClient();
+      client = buildClient(region);
 
       GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucket, objectKey, HttpMethod.GET);
       req.setExpiration(expiration);
@@ -176,10 +194,14 @@ public class AliyunOssUtils {
     }
   }
 
+  public static OSS buildClient() {
+    return buildClient(regionName);
+  }
+
   // -------------------------
   // Client builder
   // -------------------------
-  public static OSS buildClient() {
+  public static OSS buildClient(String regionName) {
     try {
       ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
       conf.setSignatureVersion(SignVersion.V4);
@@ -193,4 +215,5 @@ public class AliyunOssUtils {
       throw new RuntimeException("Failed to build Aliyun OSS client", e);
     }
   }
+
 }

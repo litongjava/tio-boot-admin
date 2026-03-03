@@ -7,7 +7,7 @@ import com.litongjava.model.upload.UploadResult;
 public interface StorageService {
 
   String DEFAULT_CATEGORY = "default";
-  
+
   public RespBodyVo upload(UploadFile uploadFile);
 
   public RespBodyVo upload(String category, UploadFile uploadFile);
@@ -27,5 +27,13 @@ public interface StorageService {
   public UploadResult getUrlById(long id);
 
   public UploadResult getUrlByMd5(String md5);
+
+  public String getPresignedDownloadUrl(String targetName);
+
+  public String getPresignedDownloadUrl(String bucket, String targetName);
+
+  public String getPresignedDownloadUrl(String region, String bucket, String targetName);
+
+  public UploadResult getPresignedDownloadUrl(Long id);
 
 }

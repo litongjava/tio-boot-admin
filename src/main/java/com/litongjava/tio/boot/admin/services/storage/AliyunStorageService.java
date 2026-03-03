@@ -135,4 +135,26 @@ public class AliyunStorageService implements StorageService {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 
+  @Override
+  public String getPresignedDownloadUrl(String targetName) {
+    return AliyunOssUtils.getPresignedDownloadUrl(targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String bucket, String targetName) {
+    return AliyunOssUtils.getPresignedDownloadUrl(bucket, targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
+    return AliyunOssUtils.getPresignedDownloadUrl(region, bucket, targetName);
+  }
+  
+
+  @Override
+  public UploadResult getPresignedDownloadUrl(Long id) {
+    return Aop.get(SystemUploadFileService.class).getPresignedDownloadUrl(id);
+  }
+
+
 }

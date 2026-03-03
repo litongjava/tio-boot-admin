@@ -135,4 +135,25 @@ public class AwsS3StorageService implements StorageService {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
   }
 
+  @Override
+  public String getPresignedDownloadUrl(String targetName) {
+
+    return AwsS3Utils.getPresignedDownloadUrl(targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String bucket, String targetName) {
+    return AwsS3Utils.getPresignedDownloadUrl(bucket, targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
+    return AwsS3Utils.getPresignedDownloadUrl(region, bucket, targetName);
+  }
+
+  @Override
+  public UploadResult getPresignedDownloadUrl(Long id) {
+    return Aop.get(SystemUploadFileService.class).getPresignedDownloadUrl(id);
+  }
+
 }

@@ -101,6 +101,14 @@ public class AwsS3Utils {
     }
   }
 
+  public static String getUrl(String regionName, String bucketName, String targetUri) {
+    if (domain != null) {
+      return "https://" + domain + "/" + targetUri;
+    } else {
+      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
+    }
+  }
+
   // -------------------------
   // Presigned Download URL (works for private bucket)
   // -------------------------
@@ -109,11 +117,15 @@ public class AwsS3Utils {
    * 适用于 bucket 私有的场景。
    */
   public static String getPresignedDownloadUrl(String targetUri) {
-    return getPresignedDownloadUrl(bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(regionName, bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   public static String getPresignedDownloadUrl(String bucket, String targetUri) {
-    return getPresignedDownloadUrl(bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+  }
+
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri) {
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   /**
@@ -123,13 +135,13 @@ public class AwsS3Utils {
    * @param downloadFilename 让浏览器下载时显示的文件名（可选）
    * @param contentType      响应 Content-Type（可选）
    */
-  public static String getPresignedDownloadUrl(String bucket, String key, Duration expires, String downloadFilename,
-      String contentType) {
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String key, Duration expires,
+      String downloadFilename, String contentType) {
     if (expires == null) {
       expires = DEFAULT_PRESIGN_EXPIRES;
     }
 
-    try (S3Presigner presigner = buildPresigner()) {
+    try (S3Presigner presigner = buildPresigner(regionName)) {
 
       GetObjectRequest.Builder getReqBuilder = GetObjectRequest.builder().bucket(bucket).key(key);
 
@@ -173,6 +185,10 @@ public class AwsS3Utils {
   }
 
   public static S3Presigner buildPresigner() {
+    return buildPresigner(regionName);
+  }
+
+  public static S3Presigner buildPresigner(String regionName) {
     Region region = Region.of(regionName);
     AwsCredentialsProvider credentialsProvider = resolveCredentialsProvider();
 

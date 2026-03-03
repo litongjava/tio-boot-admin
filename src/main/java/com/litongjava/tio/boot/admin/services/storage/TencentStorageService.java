@@ -171,4 +171,24 @@ public class TencentStorageService implements StorageService {
     return uploadResultVo;
   }
 
+  @Override
+  public String getPresignedDownloadUrl(String targetName) {
+    return TencentCOSUtils.getPresignedDownloadUrl(targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String bucket, String targetName) {
+    return TencentCOSUtils.getPresignedDownloadUrl(bucket, targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
+    return TencentCOSUtils.getPresignedDownloadUrl(region, bucket, targetName);
+  }
+
+  @Override
+  public UploadResult getPresignedDownloadUrl(Long id) {
+    return Aop.get(SystemUploadFileService.class).getPresignedDownloadUrl(id);
+  }
+
 }

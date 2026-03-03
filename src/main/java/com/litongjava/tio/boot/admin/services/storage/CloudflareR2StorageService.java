@@ -86,7 +86,8 @@ public class CloudflareR2StorageService implements StorageService {
 
     String etag = null;
     try (S3Client client = CloudflareR2Utils.buildClient();) {
-      PutObjectResponse response = CloudflareR2Utils.upload(client, CloudflareR2Utils.bucketName, targetName, fileContent, suffix);
+      PutObjectResponse response = CloudflareR2Utils.upload(client, CloudflareR2Utils.bucketName, targetName,
+          fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
       e.printStackTrace();
@@ -133,6 +134,26 @@ public class CloudflareR2StorageService implements StorageService {
   @Override
   public UploadResult getUrlByMd5(String md5) {
     return Aop.get(SystemUploadFileService.class).getUrlByMd5(md5);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String targetName) {
+    return CloudflareR2Utils.getPresignedDownloadUrl(targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String bucket, String targetName) {
+    return CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
+  }
+
+  @Override
+  public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
+    return CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
+  }
+
+  @Override
+  public UploadResult getPresignedDownloadUrl(Long id) {
+    return Aop.get(SystemUploadFileService.class).getPresignedDownloadUrl(id);
   }
 
 }

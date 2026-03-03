@@ -120,6 +120,13 @@ public class TencentCOSUtils {
     return String.format(urlFormat, bucket, regionName, objectKey);
   }
 
+  public static String getUrl(String regionName, String bucket, String objectKey) {
+    if (domain != null && domain.length() > 0) {
+      return "https://" + domain + "/" + objectKey;
+    }
+    return String.format(urlFormat, bucket, regionName, objectKey);
+  }
+
   // -------------------------
   // Presigned Download URL (私有 bucket 推荐用这个)
   // -------------------------
@@ -132,6 +139,15 @@ public class TencentCOSUtils {
     return getPresignedDownloadUrl(bucket, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
+  public static String getPresignedDownloadUrl(String region_name, String bucket, String targetName) {
+    return getPresignedDownloadUrl(region_name, bucket, targetName, DEFAULT_PRESIGN_EXPIRES, null, null);
+  }
+
+  public static String getPresignedDownloadUrl(String bucket, String objectKey, Duration expires,
+      String downloadFilename, String contentType) {
+    return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
+  }
+
   /**
    * 生成可下载的预签名 URL（GET）。
    *
@@ -141,7 +157,7 @@ public class TencentCOSUtils {
    * @param downloadFilename 下载保存时显示的文件名（可选）
    * @param contentType      响应 Content-Type（可选）
    */
-  public static String getPresignedDownloadUrl(String bucket, String objectKey, Duration expires,
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {
 
     if (expires == null) {
@@ -150,7 +166,7 @@ public class TencentCOSUtils {
 
     COSClient client = null;
     try {
-      client = buildClient();
+      client = buildClient(regionName);
 
       Date expiration = new Date(System.currentTimeMillis() + expires.toMillis());
 
@@ -188,6 +204,10 @@ public class TencentCOSUtils {
   // -------------------------
 
   public static COSClient buildClient() {
+    return buildClient();
+  }
+
+  public static COSClient buildClient(String regionName) {
     if (regionName == null || regionName.length() == 0) {
       throw new IllegalStateException("TENCENT_COS_REGION_NAME is empty");
     }
@@ -206,4 +226,5 @@ public class TencentCOSUtils {
 
     return new COSClient(cred, clientConfig);
   }
+
 }
