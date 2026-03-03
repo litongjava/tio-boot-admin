@@ -1,6 +1,7 @@
 package com.litongjava.tio.boot.admin.utils;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -11,11 +12,11 @@ import com.litongjava.tio.utils.hutool.FilenameUtils;
 
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.ProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.http.apache.ApacheHttpClient;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Configuration;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
@@ -25,22 +26,37 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
-public class AwsS3Utils {
+/**
+ * Cloudflare R2 工具类：S3 兼容，方法风格对齐 AwsS3Utils
+ *
+ * 建议环境变量：
+ * - R2_BUCKET_NAME
+ * - R2_ACCESS_KEY_ID
+ * - R2_SECRET_ACCESS_KEY
+ * - R2_ACCOUNT_ID（可选：不传则用 R2_ENDPOINT）
+ * - R2_ENDPOINT（可选：形如 https://<accountid>.r2.cloudflarestorage.com）
+ * - R2_REGION（可选：建议 "auto"）
+ * - R2_BUCKET_DOMAIN（可选：公开访问域名/CDN 域名）
+ */
+public class CloudflareR2Utils {
 
-  public static final String urlFormat = "https://%s.s3.%s.amazonaws.com/%s";
+  // 若你有自己的公开域名（CDN/自定义域名），优先用它拼接公开 URL
+  public static final String domain = EnvUtils.getStr("R2_BUCKET_DOMAIN");
 
-  public static final String bucketName = EnvUtils.get("AWS_S3_BUCKET_NAME");
-  public static final String regionName = EnvUtils.get("AWS_S3_REGION_NAME");
-  public static final String accessKeyId = EnvUtils.get("AWS_S3_ACCESS_KEY_ID");
-  public static final String secretAccessKey = EnvUtils.get("AWS_S3_SECRET_ACCESS_KEY");
-  public static final String domain = EnvUtils.getStr("AWS_S3_BUCKET_DOMAIN");
-  public static final String AWS_PROFILE = EnvUtils.getStr("AWS_PROFILE");
+  public static final String bucketName = EnvUtils.getStr("R2_BUCKET_NAME");
+  public static final String accessKeyId = EnvUtils.getStr("R2_ACCESS_KEY_ID");
+  public static final String secretAccessKey = EnvUtils.getStr("R2_SECRET_ACCESS_KEY");
+
+  public static final String accountId = EnvUtils.getStr("R2_ACCOUNT_ID");
+  public static final String endpoint = EnvUtils.getStr("R2_ENDPOINT"); // 可直接配置完整 endpoint
+  public static final String regionName = EnvUtils.getStr("R2_REGION"); // 建议 auto
 
   public static final Duration DEFAULT_PRESIGN_EXPIRES = Duration.ofMinutes(30);
 
   // -------------------------
   // Upload
   // -------------------------
+
   public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
       String suffix) {
     try {
@@ -83,31 +99,28 @@ public class AwsS3Utils {
   }
 
   // -------------------------
-  // Public URL (only works if bucket/object is public or via domain/CDN)
+  // Public URL (仅当对象公开/域名放行时可用)
   // -------------------------
+
   public static String getUrl(String targetUri) {
-    if (domain != null) {
-      return "https://" + domain + "/" + targetUri;
-    } else {
-      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
-    }
+    return getUrl(bucketName, targetUri);
   }
 
   public static String getUrl(String bucketName, String targetUri) {
-    if (domain != null) {
+    if (domain != null && domain.length() > 0) {
       return "https://" + domain + "/" + targetUri;
-    } else {
-      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
     }
+    // R2 默认 endpoint 不包含 bucket 子域名；如果你没配置 domain，返回 endpoint + /bucket/key 这种路径形式
+    // 注意：该 URL 不一定“公开可访问”，仅作为展示/记录用；私有桶请用预签名 URL
+    String ep = resolveEndpoint();
+    String base = ep.endsWith("/") ? ep.substring(0, ep.length() - 1) : ep;
+    return base + "/" + bucketName + "/" + targetUri;
   }
 
   // -------------------------
-  // Presigned Download URL (works for private bucket)
+  // Presigned Download URL (私有 bucket 推荐用这个)
   // -------------------------
-  /**
-   * 生成可下载的预签名 GET URL（默认 30 分钟）。
-   * 适用于 bucket 私有的场景。
-   */
+
   public static String getPresignedDownloadUrl(String targetUri) {
     return getPresignedDownloadUrl(bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
@@ -117,38 +130,40 @@ public class AwsS3Utils {
   }
 
   /**
-   * @param bucket  bucket name
-   * @param key     object key (targetUri/targetName)
-   * @param expires 过期时间（S3 限制：最大 7 天）
-   * @param downloadFilename 让浏览器下载时显示的文件名（可选）
+   * 生成可下载的预签名 GET URL
+   *
+   * @param bucket           bucket name
+   * @param key              object key
+   * @param expires          过期时间
+   * @param downloadFilename 下载保存的文件名（可选）
    * @param contentType      响应 Content-Type（可选）
    */
   public static String getPresignedDownloadUrl(String bucket, String key, Duration expires, String downloadFilename,
       String contentType) {
+
     if (expires == null) {
       expires = DEFAULT_PRESIGN_EXPIRES;
     }
 
     try (S3Presigner presigner = buildPresigner()) {
 
-      GetObjectRequest.Builder getReqBuilder = GetObjectRequest.builder().bucket(bucket).key(key);
+      GetObjectRequest.Builder getReq = GetObjectRequest.builder().bucket(bucket).key(key);
 
       if (downloadFilename != null && downloadFilename.length() > 0) {
-        // 同时兼容普通 filename 与 RFC5987 filename*
         String safe = downloadFilename.replace("\"", "");
         String encoded = URLEncoder.encode(downloadFilename, StandardCharsets.UTF_8).replace("+", "%20");
         String disposition = "attachment; filename=\"" + safe + "\"; filename*=UTF-8''" + encoded;
-        getReqBuilder.responseContentDisposition(disposition);
+        getReq.responseContentDisposition(disposition);
       } else {
-        getReqBuilder.responseContentDisposition("attachment");
+        getReq.responseContentDisposition("attachment");
       }
 
       if (contentType != null && contentType.length() > 0) {
-        getReqBuilder.responseContentType(contentType);
+        getReq.responseContentType(contentType);
       }
 
       GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder().signatureDuration(expires)
-          .getObjectRequest(getReqBuilder.build()).build();
+          .getObjectRequest(getReq.build()).build();
 
       PresignedGetObjectRequest presigned = presigner.presignGetObject(presignRequest);
       return presigned.url().toString();
@@ -161,34 +176,63 @@ public class AwsS3Utils {
   // -------------------------
   // Client / Presigner builders
   // -------------------------
+
   public static S3Client buildClient() {
+    validateConfig();
+
     S3ClientBuilder builder = S3Client.builder();
 
-    Region region = Region.of(regionName);
-    builder.region(region);
+    builder.region(Region.of(resolveRegion()));
+    builder.endpointOverride(URI.create(resolveEndpoint()));
+    builder.credentialsProvider(resolveCredentialsProvider());
 
-    AwsCredentialsProvider credentialsProvider = resolveCredentialsProvider();
+    // R2 常见建议：path-style + 关闭 chunked encoding
+    builder.serviceConfiguration(
+        S3Configuration.builder().pathStyleAccessEnabled(true).chunkedEncodingEnabled(false).build());
 
-    return builder.credentialsProvider(credentialsProvider).build();
+    // 显式指定 HTTP client（可选，但更可控）
+    builder.httpClient(ApacheHttpClient.builder().build());
+
+    return builder.build();
   }
 
   public static S3Presigner buildPresigner() {
-    Region region = Region.of(regionName);
-    AwsCredentialsProvider credentialsProvider = resolveCredentialsProvider();
+    validateConfig();
 
-    return S3Presigner.builder().region(region).credentialsProvider(credentialsProvider).build();
+    return S3Presigner.builder().region(Region.of(resolveRegion())).endpointOverride(URI.create(resolveEndpoint()))
+        .credentialsProvider(resolveCredentialsProvider()).build();
   }
 
   private static AwsCredentialsProvider resolveCredentialsProvider() {
-    AwsCredentialsProvider credentialsProvider;
-    if (accessKeyId != null && secretAccessKey != null) {
-      AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
-      credentialsProvider = StaticCredentialsProvider.create(awsCreds);
-    } else if (AWS_PROFILE != null) {
-      credentialsProvider = ProfileCredentialsProvider.create(AWS_PROFILE);
-    } else {
-      credentialsProvider = DefaultCredentialsProvider.create();
+    AwsBasicCredentials creds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
+    return StaticCredentialsProvider.create(creds);
+  }
+
+  private static String resolveEndpoint() {
+    if (endpoint != null && endpoint.length() > 0) {
+      return endpoint;
     }
-    return credentialsProvider;
+    if (accountId != null && accountId.length() > 0) {
+      return "https://" + accountId + ".r2.cloudflarestorage.com";
+    }
+    throw new IllegalStateException("R2_ENDPOINT or R2_ACCOUNT_ID is empty");
+  }
+
+  private static String resolveRegion() {
+    if (regionName != null && regionName.length() > 0) {
+      return regionName;
+    }
+    // R2 常用 region = "auto"
+    return "auto";
+  }
+
+  private static void validateConfig() {
+    if (bucketName == null || bucketName.length() == 0) {
+      throw new IllegalStateException("R2_BUCKET_NAME is empty");
+    }
+    if (accessKeyId == null || accessKeyId.length() == 0 || secretAccessKey == null || secretAccessKey.length() == 0) {
+      throw new IllegalStateException("R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY is empty");
+    }
+    // endpoint/accountId 在 resolveEndpoint() 里校验
   }
 }
