@@ -96,7 +96,7 @@
     <dependency>
       <groupId>com.litongjava</groupId>
       <artifactId>java-openai</artifactId>
-      <version>${java-openai}</version>
+      <version>${java-openai.version}</version>
     </dependency>
 
     <dependency>
