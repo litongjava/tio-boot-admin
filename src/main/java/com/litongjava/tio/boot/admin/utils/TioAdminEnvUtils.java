@@ -7,5 +7,8 @@ public class TioAdminEnvUtils {
   public static String getAdminSecretKey() {
     return EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
   }
-}
 
+  public static String getAdminToken() {
+    return EnvUtils.get(AppConstant.ADMIN_TOKEN);
+  }
+}
