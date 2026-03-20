@@ -8,6 +8,7 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.services.AppUserService;
+import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.boot.admin.vo.UserUpdatePasswordRequest;
@@ -25,7 +26,7 @@ public class AppUserHandler {
     String bodyString = request.getBodyString();
     String refresh_token = FastJson2Utils.parseObject(bodyString).getString("refresh_token");
 
-    String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
+    String key = TioAdminEnvUtils.getAdminSecretKey();
     boolean verify = JwtUtils.verify(key, refresh_token);
     if (verify) {
       String userId = JwtUtils.parseUserIdString(refresh_token);
