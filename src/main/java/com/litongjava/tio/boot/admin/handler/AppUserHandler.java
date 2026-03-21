@@ -6,16 +6,16 @@ import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.litongjava.tio.boot.admin.vo.AppUser;
+import com.litongjava.tio.boot.admin.vo.AppUserRefreshTokenRequest;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.boot.admin.vo.UserUpdatePasswordRequest;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
-import com.litongjava.tio.utils.environment.EnvUtils;
+import com.litongjava.tio.utils.hutool.StrUtil;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.json.JsonUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
@@ -24,7 +24,13 @@ public class AppUserHandler {
   public HttpResponse refresh(HttpRequest request) {
     HttpResponse response = TioRequestContext.getResponse();
     String bodyString = request.getBodyString();
-    String refresh_token = FastJson2Utils.parseObject(bodyString).getString("refresh_token");
+    if(StrUtil.isBlank(bodyString)) {
+      RespBodyVo fail = RespBodyVo.fail("body can not be empty");
+      return response.body(fail);
+    }
+    AppUserRefreshTokenRequest appUserRefreshTokenRequest = JsonUtils.parse(bodyString,
+        AppUserRefreshTokenRequest.class);
+    String refresh_token = appUserRefreshTokenRequest.getRefresh_token();
 
     String key = TioAdminEnvUtils.getAdminSecretKey();
     boolean verify = JwtUtils.verify(key, refresh_token);
@@ -32,7 +38,8 @@ public class AppUserHandler {
       String userId = JwtUtils.parseUserIdString(refresh_token);
       AppUserService appUserService = Aop.get(AppUserService.class);
       // 生成 token，有效期 7 天（604800秒）
-      Long timeout = EnvUtils.getLong("app.token.timeout", 604800L);
+
+      Long timeout = TioAdminEnvUtils.getAppTokenTimeout();
       Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
       String token = appUserService.createToken(userId, tokenTimeout);
       Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue());

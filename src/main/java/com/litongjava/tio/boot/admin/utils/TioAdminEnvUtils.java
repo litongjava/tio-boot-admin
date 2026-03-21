@@ -11,4 +11,9 @@ public class TioAdminEnvUtils {
   public static String getAdminToken() {
     return EnvUtils.get(AppConstant.ADMIN_TOKEN);
   }
+  
+  public static Long getAppTokenTimeout() {
+    return  EnvUtils.getLong(AppConstant.APP_TOKEN_TIMEOUT, 604800L);
+  }
+  
 }
