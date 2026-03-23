@@ -39,7 +39,7 @@ public class AppUserHandler {
       AppUserService appUserService = Aop.get(AppUserService.class);
       // 生成 token，有效期 7 天（604800秒）
 
-      Long timeout = TioAdminEnvUtils.getAppTokenTimeout();
+      Long timeout = TioAdminEnvUtils.getTokenTimeout();
       Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
       String token = appUserService.createToken(userId, tokenTimeout);
       Kv kv = Kv.by("user_id", userId).set("token", token).set("expires_in", tokenTimeout.intValue());
