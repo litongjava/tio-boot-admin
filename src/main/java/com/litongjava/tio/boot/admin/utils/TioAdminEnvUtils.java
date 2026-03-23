@@ -5,11 +5,11 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 
 public class TioAdminEnvUtils {
   public static String getAdminSecretKey() {
-    return EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
+    return EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
   }
 
   public static String getAdminToken() {
-    return EnvUtils.get(AppConstant.ADMIN_TOKEN);
+    return EnvUtils.get(AppConstant.APP_ADMIN_TOKEN);
   }
   
   public static Long getAppTokenTimeout() {

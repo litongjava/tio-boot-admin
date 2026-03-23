@@ -41,7 +41,7 @@ public class AdminLoginHandler {
       long tokenTimeout = (System.currentTimeMillis() + 3600000 * 24 * 7) / 1000;
 
       // 3.创建token
-      String keyValue = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
+      String keyValue = EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
       AuthToken authToken = JwtUtils.createToken(keyValue, new AuthToken(userId.toString(), tokenTimeout));
       TokenManager.login(userId, authToken.getToken());
 

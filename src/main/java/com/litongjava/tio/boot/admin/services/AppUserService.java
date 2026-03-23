@@ -145,12 +145,12 @@ public class AppUserService {
   }
 
   public String createToken(String id, Long timeout) {
-    String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
+    String key = EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
     return JwtUtils.createTokenByUserId(key, id, timeout);
   }
 
   public String createRefreshToken(String id) {
-    String key = EnvUtils.getStr(AppConstant.ADMIN_SECRET_KEY);
+    String key = EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
     return JwtUtils.createTokenByUserId(key, id, -1);
   }
 

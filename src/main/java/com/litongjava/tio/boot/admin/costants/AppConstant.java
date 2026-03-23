@@ -1,10 +1,10 @@
 package com.litongjava.tio.boot.admin.costants;
 
 public interface AppConstant {
-  String STORAGE_PLATFORM = "storage.platform";
-  
-  String ADMIN_SECRET_KEY = "admin.secret.key";
-  String ADMIN_TOKEN = "admin.token";
+
+  String APP_ADMIN_SECRET_KEY = "app.secret.key";
+  String APP_ADMIN_TOKEN = "app.admin.token";
+  String APP_STORAGE_PLATFORM = "app.storage.platform";
   String APP_TOKEN_TIMEOUT = "app.token.timeout";
 
 }
