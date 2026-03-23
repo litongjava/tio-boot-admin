@@ -15,7 +15,7 @@ import com.litongjava.tio.utils.json.Json;
 /**
  * Created by Tong Li <https://github.com/litongjava>
  */
-public class SystemHandler {
+public class SystemUserHandler {
 
   public HttpResponse changeUserPassword(HttpRequest request) {
     HttpResponse response = TioRequestContext.getResponse();

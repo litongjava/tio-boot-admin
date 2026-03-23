@@ -17,7 +17,7 @@ import com.litongjava.tio.boot.admin.handler.system.SystemFileAliyunOssHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileAwsS3Handler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileTencentCosHandler;
-import com.litongjava.tio.boot.admin.handler.system.SystemHandler;
+import com.litongjava.tio.boot.admin.handler.system.SystemUserHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -35,7 +35,7 @@ public class TioAdminHandlerConfiguration {
 
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = new FakeAnalysisChartDataHandler();
     GeographicHandler geographicHandler = new GeographicHandler();
-    SystemHandler systemHandler = new SystemHandler();
+    SystemUserHandler systemHandler = new SystemUserHandler();
     StableDiffusionHandler stableDiffusionHandler = new StableDiffusionHandler();
     SystemFileAwsS3Handler systemFileS3Handler = new SystemFileAwsS3Handler();
 
