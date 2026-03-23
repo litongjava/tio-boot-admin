@@ -13,8 +13,10 @@ import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
 import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
+import com.litongjava.tio.boot.admin.handler.system.SystemCloudFileHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileAliyunOssHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileAwsS3Handler;
+import com.litongjava.tio.boot.admin.handler.system.SystemFileCloudflareR2Handler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileTencentCosHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemUserHandler;
@@ -37,8 +39,6 @@ public class TioAdminHandlerConfiguration {
     GeographicHandler geographicHandler = new GeographicHandler();
     SystemUserHandler systemHandler = new SystemUserHandler();
     StableDiffusionHandler stableDiffusionHandler = new StableDiffusionHandler();
-    SystemFileAwsS3Handler systemFileS3Handler = new SystemFileAwsS3Handler();
-
     AppPreflightHandler appPreflightHandler = new AppPreflightHandler();
     r.add("/preflight", appPreflightHandler);
     // 添加action
@@ -53,23 +53,7 @@ public class TioAdminHandlerConfiguration {
     // r.add("/api/system/file/upload", systemUploadHandler::upload);
     // r.add("/api/system/file/url", systemUploadHandler::getUrl);
 
-    r.add("/api/system/file/s3/upload", systemFileS3Handler::upload);
-    r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
-    r.add("/api/system/file/s3/url", systemFileS3Handler::getUrl);
-
-    SystemFileTencentCosHandler systemFileTencentCosHandler = new SystemFileTencentCosHandler();
-    r.add("/api/system/file/cos/upload", systemFileTencentCosHandler::upload);
-    r.add("/api/system/file/cos/md5", systemFileTencentCosHandler::getUploadRecordByMd5);
-    r.add("/api/system/file/cos/url", systemFileTencentCosHandler::getUrl);
-    
-    SystemFileAliyunOssHandler systemFileAliyunOssHandler = new SystemFileAliyunOssHandler();
-    r.add("/api/system/file/oss/upload", systemFileAliyunOssHandler::upload);
-    r.add("/api/system/file/oss/md5", systemFileAliyunOssHandler::getUploadRecordByMd5);
-    r.add("/api/system/file/oss/url", systemFileAliyunOssHandler::getUrl);
-
-    SystemFileFirebaseHandler systemFileFirebaseHandler = new SystemFileFirebaseHandler();
-    r.add("/api/system/file/firebase/upload", systemFileFirebaseHandler::upload);
-    r.add("/api/system/file/firebase/getUrl", systemFileFirebaseHandler::getUrl);
+    //configUploadFile(r);
 
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
@@ -110,5 +94,39 @@ public class TioAdminHandlerConfiguration {
 
     AppUserGoogleHandler appUserGoogleHandler = new AppUserGoogleHandler();
     r.add("/api/v1/google/login", appUserGoogleHandler::login);
+  }
+
+  @SuppressWarnings("unused")
+  private void configUploadFile(HttpRequestRouter r) {
+
+    SystemCloudFileHandler systemCloudFileHandler = new SystemCloudFileHandler();
+    r.add("/api/system/file/cloud/upload", systemCloudFileHandler::upload);
+    r.add("/api/system/file/cloud/md5", systemCloudFileHandler::getUploadRecordByMd5);
+    r.add("/api/system/file/cloud/url", systemCloudFileHandler::getUrl);
+
+    SystemFileAwsS3Handler systemFileS3Handler = new SystemFileAwsS3Handler();
+
+    r.add("/api/system/file/s3/upload", systemFileS3Handler::upload);
+    r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
+    r.add("/api/system/file/s3/url", systemFileS3Handler::getUrl);
+
+    SystemFileCloudflareR2Handler systemFileCloudflareR2Handler = new SystemFileCloudflareR2Handler();
+    r.add("/api/system/file/r2/upload", systemFileCloudflareR2Handler::upload);
+    r.add("/api/system/file/r2/md5", systemFileCloudflareR2Handler::getUploadRecordByMd5);
+    r.add("/api/system/file/r2/url", systemFileCloudflareR2Handler::getUrl);
+
+    SystemFileTencentCosHandler systemFileTencentCosHandler = new SystemFileTencentCosHandler();
+    r.add("/api/system/file/cos/upload", systemFileTencentCosHandler::upload);
+    r.add("/api/system/file/cos/md5", systemFileTencentCosHandler::getUploadRecordByMd5);
+    r.add("/api/system/file/cos/url", systemFileTencentCosHandler::getUrl);
+
+    SystemFileAliyunOssHandler systemFileAliyunOssHandler = new SystemFileAliyunOssHandler();
+    r.add("/api/system/file/oss/upload", systemFileAliyunOssHandler::upload);
+    r.add("/api/system/file/oss/md5", systemFileAliyunOssHandler::getUploadRecordByMd5);
+    r.add("/api/system/file/oss/url", systemFileAliyunOssHandler::getUrl);
+
+    SystemFileFirebaseHandler systemFileFirebaseHandler = new SystemFileFirebaseHandler();
+    r.add("/api/system/file/firebase/upload", systemFileFirebaseHandler::upload);
+    r.add("/api/system/file/firebase/getUrl", systemFileFirebaseHandler::getUrl);
   }
 }

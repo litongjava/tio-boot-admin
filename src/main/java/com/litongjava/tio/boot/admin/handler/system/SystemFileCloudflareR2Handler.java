@@ -15,7 +15,7 @@ import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
 import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
-import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
+import com.litongjava.tio.boot.admin.services.storage.CloudflareR2StorageService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -24,15 +24,17 @@ import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 
-public class SystemFileAwsS3Handler {
-  AwsS3StorageService storageService = Aop.get(AwsS3StorageService.class);
+public class SystemFileCloudflareR2Handler {
 
+  CloudflareR2StorageService storageService = Aop.get(CloudflareR2StorageService.class);
+  
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
     UploadFile uploadFile = request.getUploadFile("file");
     String category = request.getParam("category");
 
+    
     if (uploadFile != null) {
       RespBodyVo RespBodyVo = storageService.upload(category, uploadFile);
       return Resps.json(httpResponse, RespBodyVo);
@@ -50,8 +52,7 @@ public class SystemFileAwsS3Handler {
     TableResult<Row> jsonBean = ApiTable.get(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     TableResult<Kv> TableResult = TableResultUtils.recordToKv(jsonBean);
 
-    return Resps.json(httpResponse,
-        RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));
+    return Resps.json(httpResponse, RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));
   }
 
   public HttpResponse getUrl(HttpRequest request) throws Exception {
