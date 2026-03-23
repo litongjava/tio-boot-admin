@@ -1,32 +1,11 @@
 package com.litongjava.tio.boot.admin.services;
 
-import java.util.function.Predicate;
-
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
-import com.litongjava.tio.boot.http.TioRequestContext;
+import com.litongjava.tio.boot.token.PredicateResult;
+import com.litongjava.tio.boot.token.TokenPredicate;
 import com.litongjava.tio.utils.jwt.JwtUtils;
 
-public class TioBootAdminTokenPredicate implements Predicate<String> {
-
-  @Override
-  public boolean test(String token) {
-    String adminToken = TioAdminEnvUtils.getAdminToken();
-    // system token
-    if (adminToken != null && adminToken.equals(token)) {
-      TioRequestContext.setUserId(0L);
-      return true;
-    }
-
-    // user and admin token
-    String key = TioAdminEnvUtils.getAdminSecretKey();
-    boolean verify = JwtUtils.verify(key, token);
-    if (verify) {
-      String userId = JwtUtils.parseUserIdString(token);
-      TioRequestContext.setUserId(userId);
-      return true;
-    }
-    return false;
-  }
+public class TioBootAdminTokenPredicate implements TokenPredicate {
 
   public Long parseUserIdLong(String token) {
     boolean verify = JwtUtils.verify(TioAdminEnvUtils.getAdminSecretKey(), token);
@@ -43,5 +22,23 @@ public class TioBootAdminTokenPredicate implements Predicate<String> {
       return JwtUtils.parseUserIdString(token);
     }
     return null;
+  }
+
+  @Override
+  public PredicateResult validate(String token) {
+    String adminToken = TioAdminEnvUtils.getAdminToken();
+    // system token
+    if (adminToken != null && adminToken.equals(token)) {
+      return new PredicateResult(true, "0");
+    }
+
+    // user and admin token
+    String key = TioAdminEnvUtils.getAdminSecretKey();
+    boolean verify = JwtUtils.verify(key, token);
+    if (verify) {
+      String userId = JwtUtils.parseUserIdString(token);
+      return new PredicateResult(true, userId);
+    }
+    return new PredicateResult(false);
   }
 }

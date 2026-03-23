@@ -1,20 +1,19 @@
 package com.litongjava.tio.boot.admin.config;
 
-import java.util.function.Predicate;
-
 import com.litongjava.tio.boot.admin.costants.TioBootAdminUrls;
 import com.litongjava.tio.boot.admin.services.TioBootAdminTokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.boot.token.AuthTokenInterceptor;
+import com.litongjava.tio.boot.token.TokenPredicate;
 import com.litongjava.tio.boot.token.UserTokenInterceptor;
 
 public class TioAdminInterceptorConfiguration {
 
   private String[] permitUrls;
   private boolean alloweStaticFile = true;
-  private Predicate<String> validateTokenLogic;
+  private TokenPredicate validateTokenLogic;
 
   public TioAdminInterceptorConfiguration() {
   }
@@ -23,7 +22,7 @@ public class TioAdminInterceptorConfiguration {
     this.permitUrls = permitUrls;
   }
 
-  public TioAdminInterceptorConfiguration(String[] permitUrls, Predicate<String> validateTokenLogic) {
+  public TioAdminInterceptorConfiguration(String[] permitUrls, TokenPredicate validateTokenLogic) {
     this.permitUrls = permitUrls;
     this.validateTokenLogic = validateTokenLogic;
   }
