@@ -13,7 +13,7 @@ import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
-public class SystemFileHandler {
+public class SystemLocalFileHandler {
 
   public HttpResponse upload(HttpRequest request) throws Exception {
     HttpResponse httpResponse = new HttpResponse(request);
@@ -25,14 +25,6 @@ public class SystemFileHandler {
       byte[] fileData = uploadFile.getData();
       File file = new File(uploadFile.getName());
       FileUtil.writeBytes(fileData, file);
-      long threadId = Thread.currentThread().getId();
-      if (threadId > 31L) {
-        threadId %= 31L;
-      }
-
-      if (threadId < 0L) {
-        threadId = 0L;
-      }
       kv.set("id", SnowflakeIdUtils.id());
     }
 
