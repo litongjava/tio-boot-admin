@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.utils;
+package com.litongjava.tio.boot.admin.utils.storage;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

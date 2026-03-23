@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.utils;
+package com.litongjava.tio.boot.admin.utils.storage;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -41,6 +41,12 @@ public class AwsS3Utils {
   // -------------------------
   // Upload
   // -------------------------
+
+  public static PutObjectResponse upload(S3Client client, String targetName, byte[] fileContent, String suffix) {
+    // TODO Auto-generated method stub
+    return upload(client, bucketName, targetName, fileContent, suffix);
+  }
+
   public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
       String suffix) {
     try {
@@ -221,4 +227,5 @@ public class AwsS3Utils {
     }
     return credentialsProvider;
   }
+
 }

@@ -15,7 +15,8 @@ import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
-import com.litongjava.tio.boot.admin.utils.AwsS3Utils;
+import com.litongjava.tio.boot.admin.utils.storage.AwsS3Utils;
+import com.litongjava.tio.boot.admin.utils.storage.UniStorageUtils;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -84,15 +85,7 @@ public class UniStorageService implements StorageService {
       log.info("not found from cache table:{}", md5);
     }
 
-    String etag = null;
-    try (S3Client client = AwsS3Utils.buildClient();) {
-      PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
-      etag = response.eTag();
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new RuntimeException(e);
-    }
-
+    String etag = UniStorageUtils.upload(targetName, fileContent, suffix);
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
 
