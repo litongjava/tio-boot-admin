@@ -1,7 +1,8 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.handler.AdminLoginHandler;
+import com.litongjava.tio.boot.admin.handler.AdminUserHandler;
+import com.litongjava.tio.boot.admin.handler.AppPreflightHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserAnonymousHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserGoogleHandler;
 import com.litongjava.tio.boot.admin.handler.AppUserHandler;
@@ -12,11 +13,11 @@ import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
 import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
+import com.litongjava.tio.boot.admin.handler.system.SystemFileAliyunOssHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileAwsS3Handler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileFirebaseHandler;
+import com.litongjava.tio.boot.admin.handler.system.SystemFileTencentCosHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemHandler;
-import com.litongjava.tio.boot.admin.handler.AdminUserHandler;
-import com.litongjava.tio.boot.admin.handler.AppPreflightHandler;
 import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.http.server.router.HttpRequestRouter;
 
@@ -28,15 +29,15 @@ public class TioAdminHandlerConfiguration {
       return;
     }
     // 创建controller
-    AdminLoginHandler apiLoginHandler = Aop.get(AdminLoginHandler.class);
-    UserEventHandler userEventHandler = Aop.get(UserEventHandler.class);
-    AdminUserHandler userHandler = Aop.get(AdminUserHandler.class);
+    AdminLoginHandler apiLoginHandler = new AdminLoginHandler();
+    UserEventHandler userEventHandler = new UserEventHandler();
+    AdminUserHandler userHandler = new AdminUserHandler();
 
-    FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = Aop.get(FakeAnalysisChartDataHandler.class);
-    GeographicHandler geographicHandler = Aop.get(GeographicHandler.class);
-    SystemHandler systemHandler = Aop.get(SystemHandler.class);
-    StableDiffusionHandler stableDiffusionHandler = Aop.get(StableDiffusionHandler.class);
-    SystemFileAwsS3Handler systemFileS3Handler = Aop.get(SystemFileAwsS3Handler.class);
+    FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = new FakeAnalysisChartDataHandler();
+    GeographicHandler geographicHandler = new GeographicHandler();
+    SystemHandler systemHandler = new SystemHandler();
+    StableDiffusionHandler stableDiffusionHandler = new StableDiffusionHandler();
+    SystemFileAwsS3Handler systemFileS3Handler = new SystemFileAwsS3Handler();
 
     AppPreflightHandler appPreflightHandler = new AppPreflightHandler();
     r.add("/preflight", appPreflightHandler);
@@ -56,20 +57,30 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/system/file/s3/md5", systemFileS3Handler::getUploadRecordByMd5);
     r.add("/api/system/file/s3/url", systemFileS3Handler::getUrl);
 
-    SystemFileFirebaseHandler systemFileFirebaseHandler = Aop.get(SystemFileFirebaseHandler.class);
-    r.add("/api/system/file/uploadToGoogle", systemFileFirebaseHandler::upload);
+    SystemFileTencentCosHandler systemFileTencentCosHandler = new SystemFileTencentCosHandler();
+    r.add("/api/system/file/cos/upload", systemFileTencentCosHandler::upload);
+    r.add("/api/system/file/cos/md5", systemFileTencentCosHandler::getUploadRecordByMd5);
+    r.add("/api/system/file/cos/url", systemFileTencentCosHandler::getUrl);
+    
+    SystemFileAliyunOssHandler systemFileAliyunOssHandler = new SystemFileAliyunOssHandler();
+    r.add("/api/system/file/oss/upload", systemFileAliyunOssHandler::upload);
+    r.add("/api/system/file/oss/md5", systemFileAliyunOssHandler::getUploadRecordByMd5);
+    r.add("/api/system/file/oss/url", systemFileAliyunOssHandler::getUrl);
+
+    SystemFileFirebaseHandler systemFileFirebaseHandler = new SystemFileFirebaseHandler();
+    r.add("/api/system/file/firebase/upload", systemFileFirebaseHandler::upload);
     r.add("/api/system/file/firebase/getUrl", systemFileFirebaseHandler::getUrl);
 
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
     r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
 
-    AppUserRegisterHandler appUserRegisterHandler = Aop.get(AppUserRegisterHandler.class);
-    AppUserLoginHandler loginHandler = Aop.get(AppUserLoginHandler.class);
-    EmailVerificationHandler emailVerificationHandler = Aop.get(EmailVerificationHandler.class);
-    AppUserHandler appUserHandler = Aop.get(AppUserHandler.class);
+    AppUserRegisterHandler appUserRegisterHandler = new AppUserRegisterHandler();
+    AppUserLoginHandler loginHandler = new AppUserLoginHandler();
+    EmailVerificationHandler emailVerificationHandler = new EmailVerificationHandler();
+    AppUserHandler appUserHandler = new AppUserHandler();
 
-    AppUserAnonymousHandler appUserAnonymousHandler = Aop.get(AppUserAnonymousHandler.class);
+    AppUserAnonymousHandler appUserAnonymousHandler = new AppUserAnonymousHandler();
     // 注册接口
     r.add("/api/v1/register", appUserRegisterHandler::register);
     // 登录接口
@@ -97,7 +108,7 @@ public class TioAdminHandlerConfiguration {
     r.add("/api/v1/verify", emailVerificationHandler::verifyEmail);
     r.add("/verification/email", emailVerificationHandler::verifyEmail);
 
-    AppUserGoogleHandler appUserGoogleHandler = Aop.get(AppUserGoogleHandler.class);
+    AppUserGoogleHandler appUserGoogleHandler = new AppUserGoogleHandler();
     r.add("/api/v1/google/login", appUserGoogleHandler::login);
   }
 }
