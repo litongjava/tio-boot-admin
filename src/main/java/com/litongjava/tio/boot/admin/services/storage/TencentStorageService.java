@@ -1,7 +1,5 @@
 package com.litongjava.tio.boot.admin.services.storage;
 
-import java.io.ByteArrayInputStream;
-
 import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
 import com.litongjava.db.activerecord.Row;
@@ -19,16 +17,12 @@ import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.storage.TencentCOSUtils;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
 import com.litongjava.tio.utils.crypto.Md5Utils;
-import com.litongjava.tio.utils.http.ContentTypeUtils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
 import com.qcloud.cos.auth.COSCredentials;
-import com.qcloud.cos.model.ObjectMetadata;
-import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
 
 import lombok.extern.slf4j.Slf4j;
@@ -70,28 +64,6 @@ public class TencentStorageService implements StorageService {
 
     UploadResult vo = uploadFile(id, targetName, uploadFile, suffix);
     return vo;
-  }
-
-  /**
-   * upload
-   */
-  private String upload(COSClient cosClient, String bucketName, String targetName, byte[] fileContent, String suffix) {
-    PutObjectRequest putObjectRequest = getPutObjectRequest(targetName, fileContent, suffix, bucketName);
-    PutObjectResult putObjectResult = cosClient.putObject(putObjectRequest);
-    return putObjectResult.getETag();
-  }
-
-  /**
-   * getPutObjectRequest
-   */
-  private PutObjectRequest getPutObjectRequest(String targetName, byte[] fileContent, String suffix,
-      String bucketName) {
-    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileContent);
-    ObjectMetadata objectMetadata = new ObjectMetadata();
-    objectMetadata.setContentLength(fileContent.length);
-    objectMetadata.setContentType(ContentTypeUtils.getContentType(suffix));
-
-    return new PutObjectRequest(bucketName, targetName, byteArrayInputStream, objectMetadata);
   }
 
   /**
@@ -144,7 +116,7 @@ public class TencentStorageService implements StorageService {
 
     String etag = null;
     try {
-      etag = upload(cosClient, bucketName, targetName, fileContent, suffix);
+      etag = TencentCOSUtils.upload(cosClient, targetName, fileContent, suffix);
     } catch (Exception e) {
       log.error("Error uploading file to Tencent COS", e);
       throw new RuntimeException(e);

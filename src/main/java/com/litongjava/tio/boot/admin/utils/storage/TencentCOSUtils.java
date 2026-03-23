@@ -51,6 +51,10 @@ public class TencentCOSUtils {
   // Upload
   // -------------------------
 
+  public static String upload(COSClient cosClient, String targetName, byte[] fileContent, String suffix) {
+    return upload(cosClient, bucketName, targetName, fileContent, suffix);
+  }
+
   /**
    * 上传字节数组
    *
@@ -60,7 +64,7 @@ public class TencentCOSUtils {
    * @param bytes     文件内容
    * @param suffix    后缀（用于推断 Content-Type）
    */
-  public static PutObjectResult upload(COSClient client, String bucket, String objectKey, byte[] bytes, String suffix) {
+  public static String upload(COSClient client, String bucket, String objectKey, byte[] bytes, String suffix) {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(bytes.length);
@@ -71,7 +75,8 @@ public class TencentCOSUtils {
 
       ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
       PutObjectRequest req = new PutObjectRequest(bucket, objectKey, inputStream, metadata);
-      return client.putObject(req);
+      PutObjectResult putObject = client.putObject(req);
+      return putObject.getETag();
     } catch (Exception e) {
       throw new RuntimeException("Tencent COS upload error", e);
     }
@@ -147,7 +152,7 @@ public class TencentCOSUtils {
       String downloadFilename, String contentType) {
     return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
   }
-  
+
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
       String downloadFilename) {
     String suffix = FilenameUtils.getSuffix(downloadFilename);
@@ -155,7 +160,6 @@ public class TencentCOSUtils {
     return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
         contentType);
   }
-
 
   /**
    * 生成可下载的预签名 URL（GET）。
