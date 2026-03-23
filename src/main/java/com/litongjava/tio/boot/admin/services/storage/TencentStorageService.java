@@ -20,10 +20,6 @@ import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.auth.COSCredentials;
-import com.qcloud.cos.region.Region;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,15 +62,6 @@ public class TencentStorageService implements StorageService {
     return vo;
   }
 
-  /**
-   * getCosClient
-   */
-  private COSClient getCosClient(SystemTxCosConfigVo systemTxCosConfig) {
-    COSCredentials cred = new BasicCOSCredentials(systemTxCosConfig.getSecretId(), systemTxCosConfig.getSecretKey());
-    ClientConfig clientConfig = new ClientConfig(new Region(systemTxCosConfig.getRegion()));
-    return new COSClient(cred, clientConfig);
-  }
-
   public String getUrl(String bucketName, String targetName) {
     return TencentCOSUtils.getUrl(bucketName, targetName);
   }
@@ -111,17 +98,20 @@ public class TencentStorageService implements StorageService {
     long size = uploadFile.getSize();
     SystemTxCosConfigVo systemTxCosConfig = Aop.get(SysConfigConstantsService.class).getSystemTxCosConfig();
 
-    COSClient cosClient = getCosClient(systemTxCosConfig);
     String bucketName = systemTxCosConfig.getBucketName();
 
     String etag = null;
+    COSClient cosClient = null;
     try {
-      etag = TencentCOSUtils.upload(cosClient, targetName, fileContent, suffix);
+      cosClient = TencentCOSUtils.buildClient();
+      etag = TencentCOSUtils.upload(cosClient, targetName, fileContent, suffix).getETag();
     } catch (Exception e) {
-      log.error("Error uploading file to Tencent COS", e);
+      log.error("Error uploading file", e);
       throw new RuntimeException(e);
     } finally {
-      cosClient.shutdown();
+      if (cosClient != null) {
+        cosClient.shutdown();
+      }
     }
 
     // Log and save to database

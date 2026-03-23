@@ -90,7 +90,7 @@ public class CloudflareR2StorageService implements StorageService {
           fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Error uploading file", e);
       throw new RuntimeException(e);
     }
 

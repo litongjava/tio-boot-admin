@@ -51,7 +51,7 @@ public class TencentCOSUtils {
   // Upload
   // -------------------------
 
-  public static String upload(COSClient cosClient, String targetName, byte[] fileContent, String suffix) {
+  public static PutObjectResult upload(COSClient cosClient, String targetName, byte[] fileContent, String suffix) {
     return upload(cosClient, bucketName, targetName, fileContent, suffix);
   }
 
@@ -64,7 +64,7 @@ public class TencentCOSUtils {
    * @param bytes     文件内容
    * @param suffix    后缀（用于推断 Content-Type）
    */
-  public static String upload(COSClient client, String bucket, String objectKey, byte[] bytes, String suffix) {
+  public static PutObjectResult upload(COSClient client, String bucket, String objectKey, byte[] bytes, String suffix) {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(bytes.length);
@@ -76,7 +76,7 @@ public class TencentCOSUtils {
       ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
       PutObjectRequest req = new PutObjectRequest(bucket, objectKey, inputStream, metadata);
       PutObjectResult putObject = client.putObject(req);
-      return putObject.getETag();
+      return putObject;
     } catch (Exception e) {
       throw new RuntimeException("Tencent COS upload error", e);
     }

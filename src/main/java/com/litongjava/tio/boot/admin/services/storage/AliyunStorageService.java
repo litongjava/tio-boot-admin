@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.services.storage;
 
 import com.aliyun.oss.OSS;
-import com.aliyun.oss.model.PutObjectResult;
 import com.jfinal.kit.Kv;
 import com.jfinal.kit.StrKit;
 import com.litongjava.db.TableInput;
@@ -85,11 +84,9 @@ public class AliyunStorageService implements StorageService {
     OSS client = null;
     try {
       client = AliyunOssUtils.buildClient();
-      PutObjectResult result = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent,
-          suffix);
-      etag = result.getETag();
+      etag = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent, suffix).getETag();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Error uploading file", e);
       throw new RuntimeException(e);
     } finally {
       if (client != null) {
@@ -149,12 +146,10 @@ public class AliyunStorageService implements StorageService {
   public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
     return AliyunOssUtils.getPresignedDownloadUrl(region, bucket, targetName);
   }
-  
 
   @Override
   public UploadResult getPresignedDownloadUrl(Long id) {
     return Aop.get(SystemUploadFileService.class).getPresignedDownloadUrl(id);
   }
-
 
 }

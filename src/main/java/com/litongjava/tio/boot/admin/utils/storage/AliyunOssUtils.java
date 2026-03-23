@@ -54,6 +54,11 @@ public class AliyunOssUtils {
   // -------------------------
   // Upload
   // -------------------------
+
+  public static PutObjectResult upload(OSS client, String targetName, byte[] fileContent, String suffix) {
+    return upload(client, bucketName, targetName, fileContent, suffix);
+  }
+
   public static PutObjectResult upload(OSS client, String bucketName, String objectKey, byte[] bytes, String suffix) {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
@@ -147,7 +152,7 @@ public class AliyunOssUtils {
     return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
 
   }
-  
+
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
       String downloadFilename) {
     String suffix = FilenameUtils.getSuffix(downloadFilename);
@@ -155,7 +160,6 @@ public class AliyunOssUtils {
     return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
         contentType);
   }
-
 
   public static String getPresignedDownloadUrl(String region, String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {

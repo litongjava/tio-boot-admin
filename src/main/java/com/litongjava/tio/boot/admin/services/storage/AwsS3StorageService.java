@@ -89,7 +89,7 @@ public class AwsS3StorageService implements StorageService {
       PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error("Error uploading file", e);
       throw new RuntimeException(e);
     }
 
