@@ -9,9 +9,9 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
-import com.litongjava.tio.boot.admin.utils.CloudflareR2Utils;
 import com.litongjava.tio.boot.admin.utils.storage.AliyunOssUtils;
 import com.litongjava.tio.boot.admin.utils.storage.AwsS3Utils;
+import com.litongjava.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import com.litongjava.tio.boot.admin.utils.storage.TencentCOSUtils;
 
 public class SystemUploadFileService {

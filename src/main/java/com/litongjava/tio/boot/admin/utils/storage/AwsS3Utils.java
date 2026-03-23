@@ -228,4 +228,12 @@ public class AwsS3Utils {
     return credentialsProvider;
   }
 
+  public static String getBucketName() {
+    return bucketName;
+  }
+
+  public static String getRegionName() {
+    return regionName;
+  }
+
 }

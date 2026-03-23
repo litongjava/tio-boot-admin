@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.utils;
+package com.litongjava.tio.boot.admin.utils.storage;
 
 import java.io.File;
 import java.net.URI;
@@ -129,6 +129,10 @@ public class CloudflareR2Utils {
     return getPresignedDownloadUrl(bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri) {
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+  }
+
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
       String downloadFilename) {
     String suffix = FilenameUtils.getSuffix(downloadFilename);
@@ -254,4 +258,13 @@ public class CloudflareR2Utils {
     }
     // endpoint/accountId 在 resolveEndpoint() 里校验
   }
+
+  public static String getBucketName() {
+    return bucketName;
+  }
+
+  public static String getRegionName() {
+    return regionName;
+  }
+
 }

@@ -2,7 +2,6 @@ package com.litongjava.tio.boot.admin.utils.storage;
 
 import com.aliyun.oss.OSS;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
-import com.litongjava.tio.boot.admin.utils.CloudflareR2Utils;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.qcloud.cos.COSClient;
 
@@ -68,38 +67,136 @@ public class UniStorageUtils {
   }
 
   public static String getUrl(String bucketName, String targetName) {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getUrl(bucketName, targetName);
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getUrl(bucketName, targetName);
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getUrl(bucketName, targetName);
+
+    } else {
+      result = CloudflareR2Utils.getUrl(bucketName, targetName);
+    }
+
+    return result;
   }
 
   public static String getUrl(String targetName) {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getUrl(targetName);
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getUrl(targetName);
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getUrl(targetName);
+
+    } else {
+      result = CloudflareR2Utils.getUrl(targetName);
+    }
+
+    return result;
   }
 
   public static String getPresignedDownloadUrl(String targetName) {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getPresignedDownloadUrl(targetName);
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getPresignedDownloadUrl(targetName);
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getPresignedDownloadUrl(targetName);
+
+    } else {
+      result = CloudflareR2Utils.getPresignedDownloadUrl(targetName);
+    }
+
+    return result;
   }
 
   public static String getPresignedDownloadUrl(String bucket, String targetName) {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getPresignedDownloadUrl(bucket, targetName);
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getPresignedDownloadUrl(bucket, targetName);
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getPresignedDownloadUrl(bucket, targetName);
+
+    } else {
+      result = CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
+    }
+
+    return result;
   }
 
   public static String getPresignedDownloadUrl(String region, String bucket, String targetName) {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getPresignedDownloadUrl(region, bucket, targetName);
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getPresignedDownloadUrl(region, bucket, targetName);
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getPresignedDownloadUrl(region, bucket, targetName);
+
+    } else {
+      result = CloudflareR2Utils.getPresignedDownloadUrl(region, bucket, targetName);
+    }
+
+    return result;
   }
 
   public static String getBucketName() {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getBucketName();
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getBucketName();
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getBucketName();
+
+    } else {
+      result = CloudflareR2Utils.getBucketName();
+    }
+
+    return result;
   }
 
   public static String getRegionName() {
-    // TODO Auto-generated method stub
-    return null;
+    String result = null;
+
+    if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
+      result = AwsS3Utils.getRegionName();
+
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      result = TencentCOSUtils.getRegionName();
+
+    } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
+      result = AliyunOssUtils.getRegionName();
+
+    } else {
+      result = CloudflareR2Utils.getRegionName();
+    }
+
+    return result;
   }
 
 }

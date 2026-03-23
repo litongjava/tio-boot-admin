@@ -229,4 +229,12 @@ public class AliyunOssUtils {
     }
   }
 
+  public static String getBucketName() {
+    return bucketName;
+  }
+
+  public static String getRegionName() {
+    return regionName;
+  }
+
 }

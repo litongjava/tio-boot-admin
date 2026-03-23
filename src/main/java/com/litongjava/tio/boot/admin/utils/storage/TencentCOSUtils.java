@@ -240,4 +240,12 @@ public class TencentCOSUtils {
     return new COSClient(cred, clientConfig);
   }
 
+  public static String getBucketName() {
+    return bucketName;
+  }
+
+  public static String getRegionName() {
+    return regionName;
+  }
+
 }
