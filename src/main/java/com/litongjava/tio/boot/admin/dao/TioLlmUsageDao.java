@@ -1,5 +1,6 @@
 package com.litongjava.tio.boot.admin.dao;
 
+import java.util.Iterator;
 import java.util.List;
 
 import com.litongjava.chat.UniChatMessage;
@@ -30,6 +31,13 @@ public class TioLlmUsageDao extends DbBase {
 
     String systemPrompt = uniChatRequest.getSystemPrompt();
     List<UniChatMessage> messages = uniChatRequest.getMessages();
+    Iterator<UniChatMessage> iterator = messages.iterator();
+    while(iterator.hasNext()) {
+      UniChatMessage next = iterator.next();
+      if(next.getFiles()!=null) {
+        next.setContent("Omit image").setFiles(null);
+      }
+    }
 
     String skipNullJson = JsonUtils.toSkipNullJson(messages);
     Row row = Row.by("id", SnowflakeIdUtils.id()).set("group_id", uniChatRequest.getGroupId())
