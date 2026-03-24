@@ -35,4 +35,8 @@ public class TioAdminEnvUtils {
     return 86 == app_area_code;
   }
 
+  public static String getAppWarmNotificationWebhookUrl() {
+    return EnvUtils.getStr(AppConstant.APP_WARM_NOTIFICATION_WEBHOOK_URL);
+  }
+
 }

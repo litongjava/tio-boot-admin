@@ -9,6 +9,7 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.token.AuthToken;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.boot.admin.services.LoginService;
+import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -41,7 +42,7 @@ public class AdminLoginHandler {
       long tokenTimeout = (System.currentTimeMillis() + 3600000 * 24 * 7) / 1000;
 
       // 3.创建token
-      String keyValue = EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
+      String keyValue = TioAdminEnvUtils.getAdminSecretKey();
       AuthToken authToken = JwtUtils.createToken(keyValue, new AuthToken(userId.toString(), tokenTimeout));
       TokenManager.login(userId, authToken.getToken());
 
