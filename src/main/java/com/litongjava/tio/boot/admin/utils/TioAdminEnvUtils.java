@@ -1,5 +1,6 @@
 package com.litongjava.tio.boot.admin.utils;
 
+import com.litongjava.constants.ServerConfigKeys;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.utils.environment.EnvUtils;
@@ -19,6 +20,19 @@ public class TioAdminEnvUtils {
 
   public static String getStoragePlatform() {
     return EnvUtils.getStr(AppConstant.APP_STORAGE_PLATFORM, StoragePlatformConst.cloudflare_r2);
+  }
+
+  public static String getAppName() {
+    return EnvUtils.getStr(ServerConfigKeys.APP_NAME, "tio-boot");
+  }
+
+  public static int getAreaCode() {
+    return EnvUtils.getInt(AppConstant.APP_AREA_CODE);
+  }
+
+  public static boolean isChina() {
+    int app_area_code = getAreaCode();
+    return 86 == app_area_code;
   }
 
 }
