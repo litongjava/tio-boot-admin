@@ -5,7 +5,6 @@ import com.litongjava.tio.boot.admin.services.TioBootAdminTokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
 import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.boot.token.AuthTokenInterceptor;
 import com.litongjava.tio.boot.token.TokenPredicate;
 import com.litongjava.tio.boot.token.UserTokenInterceptor;
 
@@ -38,10 +37,7 @@ public class TioAdminInterceptorConfiguration {
       validateTokenLogic = new TioBootAdminTokenPredicate();
     }
 
-    AuthTokenInterceptor authTokenInterceptor = new AuthTokenInterceptor(validateTokenLogic);
-    TioBootServer.me().setAuthTokenInterceptor(authTokenInterceptor);
-
-    UserTokenInterceptor userTokenInterceptor = new UserTokenInterceptor();
+    UserTokenInterceptor userTokenInterceptor = new UserTokenInterceptor(validateTokenLogic);
     HttpInterceptorModel model = new HttpInterceptorModel();
     model.setInterceptor(userTokenInterceptor);
     // 拦截所有路由
