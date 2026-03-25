@@ -20,26 +20,33 @@ import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
+import com.litongjava.tio.http.common.utils.HttpIpUtils;
 import com.litongjava.tio.http.server.model.HttpCors;
 import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class SystemCloudFileHandler {
 
   UniStorageService storageService = Aop.get(UniStorageService.class);
-  
+
   public HttpResponse upload(HttpRequest request) throws Exception {
+
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
     UploadFile uploadFile = request.getUploadFile("file");
     String category = request.getParam("category");
 
-    
-    if (uploadFile != null) {
-      RespBodyVo RespBodyVo = storageService.upload(category, uploadFile);
-      return Resps.json(httpResponse, RespBodyVo);
+    if (uploadFile == null) {
+      String userAgent = request.getUserAgent();
+      String realIp = HttpIpUtils.getRealIp(request);
+      log.error("from {} {} file is emtpy", realIp, userAgent);
+      return Resps.json(httpResponse, RespBodyVo.fail("file can not be empty"));
     }
-    return Resps.json(httpResponse, RespBodyVo.ok("Fail"));
+    RespBodyVo RespBodyVo = storageService.upload(category, uploadFile);
+    return Resps.json(httpResponse, RespBodyVo);
   }
 
   public HttpResponse getUploadRecordByMd5(HttpRequest request) throws Exception {
@@ -52,14 +59,14 @@ public class SystemCloudFileHandler {
     TableResult<Row> jsonBean = ApiTable.get(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     TableResult<Kv> TableResult = TableResultUtils.recordToKv(jsonBean);
 
-    return Resps.json(httpResponse, RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));
+    return Resps.json(httpResponse,
+        RespBodyVo.ok(TableResult.getData()).code(TableResult.getCode()).msg(TableResult.getMsg()));
   }
 
   public HttpResponse getUrl(HttpRequest request) throws Exception {
     HttpResponse httpResponse = TioRequestContext.getResponse();
     CORSUtils.enableCORS(httpResponse, new HttpCors());
 
-    
     RespBodyVo respBodyVo = null;
     String id = request.getParam("id");
 
