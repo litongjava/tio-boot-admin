@@ -4,243 +4,34 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.litongjava</groupId>
   <artifactId>tio-boot-admin</artifactId>
-  <version>1.1.2</version>
-  <packaging>jar</packaging>
+  <version>${revision}</version>
+  <packaging>pom</packaging>
+
   <name>tio-boot-admin</name>
-  <description>tio-boot admin</description>
+  <description>tio-boot-admin</description>
   <url>https://github.com/litongjava/tio-boot-admin</url>
 
   <properties>
+    <!-- 项目属性 -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>21</java.version>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
-    <graalvm.version>23.1.1</graalvm.version>
+    <revision>2.0.9</revision>
+    <!-- 版本属性 -->
+    <lombok-version>1.18.44</lombok-version>
     <fastjson2.version>2.0.52</fastjson2.version>
-
-    <hotswap-classloader.version>1.2.9</hotswap-classloader.version>
+    <tio-boot-admin.version>1.1.2</tio-boot-admin.version>
     <jfinal-aop.version>1.3.9</jfinal-aop.version>
-    <java-db.version>1.5.8</java-db.version>
+    <java-db.version>1.5.9</java-db.version>
     <tio-boot.version>2.0.9</tio-boot.version>
     <java-openai.version>1.3.0</java-openai.version>
-    <lombok-version>1.18.44</lombok-version>
-
   </properties>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>software.amazon.awssdk</groupId>
-        <artifactId>bom</artifactId>
-        <version>2.25.63</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.projectlombok</groupId>
-      <artifactId>lombok</artifactId>
-      <version>${lombok-version}</version>
-      <optional>true</optional>
-      <scope>provided</scope>
-    </dependency>
-    <!-- FastJSON2 用于 JSON 解析 -->
-    <dependency>
-      <groupId>com.alibaba.fastjson2</groupId>
-      <artifactId>fastjson2</artifactId>
-      <version>${fastjson2.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>tio-boot</artifactId>
-      <version>${tio-boot.version}</version>
-    </dependency>
-    
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>tio-utils</artifactId>
-      <version>${tio-boot.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>hotswap-classloader</artifactId>
-      <version>${hotswap-classloader.version}</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>jfinal-aop</artifactId>
-      <version>${jfinal-aop.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>java-db</artifactId>
-      <version>${java-db.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>api-table</artifactId>
-      <version>${java-db.version}</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-      <version>4.0.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.litongjava</groupId>
-      <artifactId>java-openai</artifactId>
-      <version>${java-openai.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>31.1-jre</version>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <version>1.3.3</version>
-    </dependency>
-
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.maxmind.geoip2</groupId>
-      <artifactId>geoip2</artifactId>
-      <version>2.8.1</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- sqlite-jdbc -->
-    <dependency>
-      <groupId>org.xerial</groupId>
-      <artifactId>sqlite-jdbc</artifactId>
-      <version>3.40.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>mysql</groupId>
-      <artifactId>mysql-connector-java</artifactId>
-      <version>5.1.46</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.postgresql</groupId>
-      <artifactId>postgresql</artifactId>
-      <version>42.2.24</version>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <!-- Jedis，Redis 的 Java 客户端 -->
-    <dependency>
-      <groupId>redis.clients</groupId>
-      <artifactId>jedis</artifactId>
-      <version>3.6.3</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- FST 序列化工具，用于对象和字节流间的转换 -->
-    <dependency>
-      <groupId>de.ruedigermoeller</groupId>
-      <artifactId>fst</artifactId>
-      <version>2.57</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.pdfbox</groupId>
-      <artifactId>pdfbox</artifactId>
-      <version>2.0.24</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.google.firebase</groupId>
-      <artifactId>firebase-admin</artifactId>
-      <version>7.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.mongodb</groupId>
-      <artifactId>mongo-java-driver</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.qcloud</groupId>
-      <artifactId>cos_api</artifactId>
-      <version>5.6.155</version>
-      <scope>provided</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>s3</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>sts</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>sso</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>software.amazon.awssdk</groupId>
-      <artifactId>ssooidc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>com.aliyun.oss</groupId>
-      <artifactId>aliyun-sdk-oss</artifactId>
-      <version>3.17.4</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
+  <modules>
+    <module>tio-boot-admin-base</module>
+    <module>tio-boot-admin-web</module>
+  </modules>
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
@@ -251,8 +42,8 @@
   <developers>
     <developer>
       <id>litongjava</id>
-      <name>Ping E Lee</name>
-      <email>litongjava@qq.com</email>
+      <name>Tong Li</name>
+      <email>litongjava001@gmail.com</email>
       <url>https://github.com/litongjava</url>
     </developer>
   </developers>
@@ -320,6 +111,31 @@
         <configuration>
           <publishingServerId>central</publishingServerId>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>1.1.0</version>
+        <configuration>
+          <updatePomFile>true</updatePomFile>
+          <flattenMode>resolveCiFriendliesOnly</flattenMode>
+        </configuration>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
