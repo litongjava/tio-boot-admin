@@ -203,7 +203,7 @@ public class MongodbJsonService {
   public TableResult<Kv> saveOrUpdate(String tableName, TableInput kv, String[] jsonFields) {
 
     if (tableName.equals("mqtt_user")) {
-      return Aop.get(EmqxService.class).saveOrUpdate(tableName, kv);
+      return Aop.get(EmqxUserMongoService.class).saveOrUpdate(tableName, kv);
     } else {
       return null;
     }

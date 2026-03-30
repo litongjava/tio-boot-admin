@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.costants;
+package com.litongjava.tio.boot.admin.consts;
 
 /**
  * @author Tong Li

@@ -1,8 +1,8 @@
 package com.litongjava.tio.boot.admin.utils;
 
 import com.litongjava.constants.ServerConfigKeys;
+import com.litongjava.tio.boot.admin.consts.AppConstant;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
-import com.litongjava.tio.boot.admin.costants.AppConstant;
 import com.litongjava.tio.utils.environment.EnvUtils;
 
 public class TioAdminEnvUtils {

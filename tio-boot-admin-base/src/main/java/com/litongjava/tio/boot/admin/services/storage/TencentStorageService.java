@@ -9,7 +9,7 @@ import com.litongjava.model.upload.UploadFile;
 import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.SysConfigConstantsService;
@@ -24,7 +24,7 @@ import com.qcloud.cos.COSClient;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li
  */
 @Slf4j
 public class TencentStorageService implements StorageService {

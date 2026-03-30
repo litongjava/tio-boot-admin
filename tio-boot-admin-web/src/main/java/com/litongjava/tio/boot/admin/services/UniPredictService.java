@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services.precit;
+package com.litongjava.tio.boot.admin.services;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

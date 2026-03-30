@@ -7,10 +7,10 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li 
  */
 public class SystemUserService {
 

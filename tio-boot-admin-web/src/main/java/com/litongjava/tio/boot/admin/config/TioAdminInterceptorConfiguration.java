@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.config;
 
-import com.litongjava.tio.boot.admin.costants.TioBootAdminUrls;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminUrls;
 import com.litongjava.tio.boot.admin.services.TioBootAdminTokenPredicate;
 import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
 import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;

@@ -7,7 +7,7 @@ import org.postgresql.util.PGobject;
 import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;

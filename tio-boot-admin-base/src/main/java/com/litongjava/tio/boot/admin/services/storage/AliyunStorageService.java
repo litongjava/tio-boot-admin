@@ -12,7 +12,7 @@ import com.litongjava.model.upload.UploadFile;
 import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;

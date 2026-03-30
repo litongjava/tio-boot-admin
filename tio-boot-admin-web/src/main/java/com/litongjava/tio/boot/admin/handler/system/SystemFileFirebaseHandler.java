@@ -3,7 +3,7 @@ package com.litongjava.tio.boot.admin.handler.system;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.upload.UploadFile;
-import com.litongjava.tio.boot.admin.services.GoogleStorageService;
+import com.litongjava.tio.boot.admin.services.storage.GoogleStorageService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;

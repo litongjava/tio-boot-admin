@@ -11,7 +11,8 @@ import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.upload.UploadFile;
 import com.litongjava.sd.StableDiffusionClient;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.services.storage.GoogleStorageService;
 import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.thread.TioThreadUtils;
 

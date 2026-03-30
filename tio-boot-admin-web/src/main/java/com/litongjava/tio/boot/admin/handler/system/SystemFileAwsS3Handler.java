@@ -14,7 +14,7 @@ import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.table.utils.TableInputUtils;
 import com.litongjava.table.utils.TableResultUtils;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.boot.utils.TioRequestParamUtils;

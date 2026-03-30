@@ -19,7 +19,7 @@ import com.mongodb.client.model.Filters;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class EmqxService {
+public class EmqxUserMongoService {
 
   public Document getNewUserDocument(String userId, String username, String password) {
     // 1. 随机生成一个盐字符串

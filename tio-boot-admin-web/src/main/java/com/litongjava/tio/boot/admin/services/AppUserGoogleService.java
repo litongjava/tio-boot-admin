@@ -8,7 +8,7 @@ import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.http.response.ResponseVo;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginVo;
 import com.litongjava.tio.boot.admin.vo.GoogleJwtPayload;
 import com.litongjava.tio.boot.admin.vo.GoogleToken;

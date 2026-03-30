@@ -11,11 +11,11 @@ import com.litongjava.model.upload.UploadFile;
 import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
-import com.litongjava.tio.boot.admin.utils.storage.CloudflareR2Utils;
+import com.litongjava.tio.boot.admin.utils.storage.AwsS3Utils;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -25,7 +25,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
-public class CloudflareR2StorageService implements StorageService {
+public class AwsS3StorageService implements StorageService {
   @Override
   public RespBodyVo upload(UploadFile uploadFile) {
     return upload(DEFAULT_CATEGORY, uploadFile);
@@ -85,9 +85,8 @@ public class CloudflareR2StorageService implements StorageService {
     }
 
     String etag = null;
-    try (S3Client client = CloudflareR2Utils.buildClient();) {
-      PutObjectResponse response = CloudflareR2Utils.upload(client, CloudflareR2Utils.bucketName, targetName,
-          fileContent, suffix);
+    try (S3Client client = AwsS3Utils.buildClient();) {
+      PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
       etag = response.eTag();
     } catch (Exception e) {
       log.error("Error uploading file", e);
@@ -99,13 +98,13 @@ public class CloudflareR2StorageService implements StorageService {
 
     TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
-        .set("platform", StoragePlatformConst.cloudflare_r2).set("region_name", CloudflareR2Utils.regionName)
-        .set("bucket_name", CloudflareR2Utils.bucketName)
+        .set("platform", StoragePlatformConst.aws_s3).set("region_name", AwsS3Utils.regionName)
+        .set("bucket_name", AwsS3Utils.bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
-    String downloadUrl = getUrl(CloudflareR2Utils.bucketName, targetName);
+    String downloadUrl = getUrl(AwsS3Utils.bucketName, targetName);
 
     return new UploadResult(save.getData().getLong("id"), name, Long.valueOf(size), downloadUrl, md5);
 
@@ -113,12 +112,12 @@ public class CloudflareR2StorageService implements StorageService {
 
   @Override
   public String getUrl(String bucketName, String targetName) {
-    return CloudflareR2Utils.getUrl(bucketName, targetName);
+    return AwsS3Utils.getUrl(bucketName, targetName);
   }
 
   @Override
   public String getUrl(String targetName) {
-    return CloudflareR2Utils.getUrl(targetName);
+    return AwsS3Utils.getUrl(targetName);
   }
 
   @Override
@@ -138,17 +137,18 @@ public class CloudflareR2StorageService implements StorageService {
 
   @Override
   public String getPresignedDownloadUrl(String targetName) {
-    return CloudflareR2Utils.getPresignedDownloadUrl(targetName);
+
+    return AwsS3Utils.getPresignedDownloadUrl(targetName);
   }
 
   @Override
   public String getPresignedDownloadUrl(String bucket, String targetName) {
-    return CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
+    return AwsS3Utils.getPresignedDownloadUrl(bucket, targetName);
   }
 
   @Override
   public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
-    return CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
+    return AwsS3Utils.getPresignedDownloadUrl(region, bucket, targetName);
   }
 
   @Override

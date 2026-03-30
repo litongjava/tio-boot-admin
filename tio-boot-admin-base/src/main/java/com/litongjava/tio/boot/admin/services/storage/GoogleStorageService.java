@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.storage;
 
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobId;
@@ -14,7 +14,7 @@ import com.litongjava.db.activerecord.Row;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.upload.UploadFile;
 import com.litongjava.table.services.ApiTable;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.http.ContentTypeUtils;

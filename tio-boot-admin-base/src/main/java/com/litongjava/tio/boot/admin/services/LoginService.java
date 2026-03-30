@@ -1,7 +1,7 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.db.activerecord.Db;
-import com.litongjava.tio.boot.admin.costants.TioBootAdminTableNames;
+import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
 import com.litongjava.tio.utils.digest.Sha256Utils;
 
