@@ -8,6 +8,9 @@
     <version>${revision}</version>
   </parent>
   <artifactId>tio-boot-admin-base</artifactId>
+    <name>tio-boot-admin-web</name>
+  <description>tio-boot admin base</description>
+  <url>https://github.com/litongjava/tio-boot-admin</url>
   <dependencies>
     <dependency>
       <groupId>org.projectlombok</groupId>

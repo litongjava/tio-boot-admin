@@ -1,4 +1,4 @@
-package com.litongjava.tio.boot.admin.services;
+package com.litongjava.tio.boot.admin.services.ai;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,8 +19,8 @@ import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.dao.TioLlmGenerateFailedDao;
 import com.litongjava.tio.boot.admin.dao.TioLlmUsageDao;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
-import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.utils.SystemTimer;
+import com.litongjava.tio.utils.context.TioAppCan;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.notification.NotifactionWarmModel;
@@ -142,12 +142,13 @@ public class UniPredictService {
 
         // 其他异常（网络、序列化等），可告警 + 默认退避重试
         String warningName = "UniPredictService Generic Exception";
-        NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
+
+        NotificationSender notificationSender = TioAppCan.me().getNotificationSender();
         if (notificationSender != null) {
           NotifactionWarmModel warmModel = NotifactionWarmModel.fromException(warningName, "I", e.getMessage(), e);
           notificationSender.send(warmModel);
         }
-        
+
         log.error("Generic exception. taskId={}, platform={}, model={}, attempt={}/{}", taskId, platform, model,
             attempt, MAX_ATTEMPTS, e);
 
@@ -366,11 +367,13 @@ public class UniPredictService {
 
   private void sendWarm(String warningName, String urlPrefix, String request, Integer statusCode, String responseBody,
       String stackTrace) {
-    
-    NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
-    if(notificationSender!=null) {
-      NotifactionWarmModel warmModel = NotifactionWarmModel.fromException(warningName, "I", "Failed to requst model", stackTrace);
-      warmModel.setRequestUrl(urlPrefix).setRequestBody(request).setStatusCode(statusCode).setResponseBody(responseBody);
+
+    NotificationSender notificationSender = TioAppCan.me().getNotificationSender();
+    if (notificationSender != null) {
+      NotifactionWarmModel warmModel = NotifactionWarmModel.fromException(warningName, "I", "Failed to requst model",
+          stackTrace);
+      warmModel.setRequestUrl(urlPrefix).setRequestBody(request).setStatusCode(statusCode)
+          .setResponseBody(responseBody);
       notificationSender.send(warmModel);
     }
   }

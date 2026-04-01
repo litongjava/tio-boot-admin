@@ -3,9 +3,9 @@ package com.litongjava.tio.boot.admin.handler;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.exception.TioBootExceptionHandler;
 import com.litongjava.tio.boot.sender.NotifactionWarmUtils;
-import com.litongjava.tio.boot.server.TioBootServer;
 import com.litongjava.tio.core.ChannelContext;
 import com.litongjava.tio.http.common.HttpRequest;
+import com.litongjava.tio.utils.context.TioAppCan;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.notification.NotifactionWarmModel;
 import com.litongjava.tio.utils.notification.NotificationSender;
@@ -42,13 +42,13 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
 
     if (EnvUtils.isDev()) {
       if (sendIfDev) {
-        NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
+        NotificationSender notificationSender = TioAppCan.me().getNotificationSender();
         if (notificationSender != null) {
           notificationSender.send(model);
         }
       }
     } else {
-      NotificationSender notificationSender = TioBootServer.me().getNotificationSender();
+      NotificationSender notificationSender = TioAppCan.me().getNotificationSender();
       if (notificationSender != null) {
         notificationSender.send(model);
       }
