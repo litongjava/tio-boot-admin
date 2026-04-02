@@ -11,7 +11,6 @@ import com.litongjava.tio.boot.admin.handler.AppUserRegisterHandler;
 import com.litongjava.tio.boot.admin.handler.EmailVerificationHandler;
 import com.litongjava.tio.boot.admin.handler.FakeAnalysisChartDataHandler;
 import com.litongjava.tio.boot.admin.handler.GeographicHandler;
-import com.litongjava.tio.boot.admin.handler.StableDiffusionHandler;
 import com.litongjava.tio.boot.admin.handler.UserEventHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemCloudFileHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileAliyunOssHandler;
@@ -38,7 +37,6 @@ public class TioAdminHandlerConfiguration {
     FakeAnalysisChartDataHandler fakeAnalysisChartDataHandler = new FakeAnalysisChartDataHandler();
     GeographicHandler geographicHandler = new GeographicHandler();
     SystemUserHandler systemHandler = new SystemUserHandler();
-    StableDiffusionHandler stableDiffusionHandler = new StableDiffusionHandler();
     AppPreflightHandler appPreflightHandler = new AppPreflightHandler();
     r.add("/preflight", appPreflightHandler);
     // 添加action
@@ -57,7 +55,6 @@ public class TioAdminHandlerConfiguration {
 
     r.add("/api/system/changeUserPassword", systemHandler::changeUserPassword);
     r.add("/api/geographic/province", geographicHandler::province);
-    r.add("/api/sd/generateSd3", stableDiffusionHandler::generateSd3);
 
     AppUserRegisterHandler appUserRegisterHandler = new AppUserRegisterHandler();
     AppUserLoginHandler loginHandler = new AppUserLoginHandler();

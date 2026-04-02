@@ -3,6 +3,7 @@ package com.litongjava.tio.boot.admin.handler.system;
 import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.model.upload.UploadFile;
+import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.services.storage.GoogleStorageService;
 import com.litongjava.tio.boot.http.TioRequestContext;
 import com.litongjava.tio.http.common.HttpRequest;
@@ -25,7 +26,7 @@ public class SystemFileFirebaseHandler {
     UploadFile uploadFile = request.getUploadFile("file");
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
     if (uploadFile != null) {
-      RespBodyVo respVo = googleStorageService.uploadImageToGoogle(uploadFile);
+      RespBodyVo respVo = googleStorageService.upload(uploadFile);
       return Resps.json(httpResponse, respVo);
 
     }
@@ -43,7 +44,8 @@ public class SystemFileFirebaseHandler {
 
     long fileId = Long.parseLong(request.getParam("id"));
     GoogleStorageService googleStorageService = Aop.get(GoogleStorageService.class);
-    String url = googleStorageService.getUrlByFileId(fileId);
+    UploadResult result = googleStorageService.getUrlById(fileId);
+    String url = result.getUrl();
     return Resps.json(httpResponse, RespBodyVo.ok(url));
   }
 }
