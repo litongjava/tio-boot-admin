@@ -87,6 +87,7 @@ public class TencentStorageService implements StorageService {
     Long size = record.getLong("size");
     
     UploadResult uploadResult = new UploadResult(id, originFilename, size, url, md5);
+    uploadResult.setTargetName(target_name);
     return uploadResult;
   }
 

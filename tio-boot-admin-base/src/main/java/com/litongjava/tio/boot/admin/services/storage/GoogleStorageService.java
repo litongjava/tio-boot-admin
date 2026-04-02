@@ -70,7 +70,8 @@ public class GoogleStorageService implements StorageService {
       log.info("select table result: {}", record.toMap());
       id = record.getLong("id");
 
-      String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+      String str = record.getStr("target_name");
+      String url = this.getUrl(record.getStr("bucket_name"), str);
 
       Kv kv = record.toKv();
       kv.remove("target_name");
@@ -78,7 +79,9 @@ public class GoogleStorageService implements StorageService {
       kv.set("url", url);
       kv.set("md5", md5);
 
-      return new UploadResult(id, name, size, url, md5);
+      UploadResult uploadResult = new UploadResult(id, name, size, url, md5);
+      uploadResult.setTargetName(targetName);
+      return uploadResult;
     } else {
       log.info("not found from cache table: {}", md5);
     }
