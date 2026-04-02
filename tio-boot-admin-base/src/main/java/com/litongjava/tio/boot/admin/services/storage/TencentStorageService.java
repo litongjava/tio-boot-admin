@@ -80,11 +80,14 @@ public class TencentStorageService implements StorageService {
     if (record == null) {
       return null;
     }
-    String url = this.getUrl(record.getStr("bucket_name"), record.getStr("target_name"));
+    String target_name = record.getStr("target_name");
+    String url = this.getUrl(record.getStr("bucket_name"), target_name);
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
-    return new UploadResult(id, originFilename, size, url, md5);
+    
+    UploadResult uploadResult = new UploadResult(id, originFilename, size, url, md5);
+    return uploadResult;
   }
 
   public UploadResult getUrlByMd5(String md5) {

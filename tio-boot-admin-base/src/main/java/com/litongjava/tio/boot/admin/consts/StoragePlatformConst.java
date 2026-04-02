@@ -5,4 +5,5 @@ public interface StoragePlatformConst {
   String tencent_cos = "tencent_cos";
   String aliyun_oss = "aliyun_oss";
   String cloudflare_r2 = "cloudflare_r2";
+  String google = "google";
 }

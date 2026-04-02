@@ -107,7 +107,10 @@ public class CloudflareR2StorageService implements StorageService {
     TableResult<Kv> save = ApiTable.save(TioBootAdminTableNames.tio_boot_admin_system_upload_file, kv);
     String downloadUrl = getUrl(CloudflareR2Utils.bucketName, targetName);
 
-    return new UploadResult(save.getData().getLong("id"), name, Long.valueOf(size), downloadUrl, md5);
+    UploadResult uploadResult = new UploadResult(save.getData().getLong("id"), name, Long.valueOf(size), downloadUrl,
+        md5);
+    uploadResult.setTargetName(targetName);
+    return uploadResult;
 
   }
 
