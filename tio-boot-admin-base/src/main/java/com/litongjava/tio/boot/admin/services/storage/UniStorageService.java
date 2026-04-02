@@ -14,7 +14,7 @@ import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.services.StorageService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
-import com.litongjava.tio.boot.admin.utils.storage.UniStorageUploadUtils;
+import com.litongjava.tio.boot.admin.utils.storage.UniStorageUtils;
 import com.litongjava.tio.utils.crypto.Md5Utils;
 import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
@@ -81,15 +81,15 @@ public class UniStorageService implements StorageService {
       log.info("not found from cache table:{}", md5);
     }
 
-    String etag = UniStorageUploadUtils.upload(targetName, fileContent, suffix);
+    String etag = UniStorageUtils.upload(targetName, fileContent, suffix);
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
 
-    String regionName = UniStorageUploadUtils.getRegionName();
-    String bucketName = UniStorageUploadUtils.getBucketName();
+    String regionName = UniStorageUtils.getRegionName();
+    String bucketName = UniStorageUtils.getBucketName();
     TableInput kv = TableInput.create().set("name", name).set("size", size).set("md5", md5)
         //
-        .set("platform", UniStorageUploadUtils.storagePlatform).set("region_name", regionName).set("bucket_name", bucketName)
+        .set("platform", UniStorageUtils.storagePlatform).set("region_name", regionName).set("bucket_name", bucketName)
         //
         .set("target_name", targetName).set("file_id", etag);
 
@@ -102,12 +102,12 @@ public class UniStorageService implements StorageService {
 
   @Override
   public String getUrl(String bucketName, String targetName) {
-    return UniStorageUploadUtils.getUrl(bucketName, targetName);
+    return UniStorageUtils.getUrl(bucketName, targetName);
   }
 
   @Override
   public String getUrl(String targetName) {
-    return UniStorageUploadUtils.getUrl(targetName);
+    return UniStorageUtils.getUrl(targetName);
   }
 
   @Override
@@ -127,17 +127,17 @@ public class UniStorageService implements StorageService {
 
   @Override
   public String getPresignedDownloadUrl(String targetName) {
-    return UniStorageUploadUtils.getPresignedDownloadUrl(targetName);
+    return UniStorageUtils.getPresignedDownloadUrl(targetName);
   }
 
   @Override
   public String getPresignedDownloadUrl(String bucket, String targetName) {
-    return UniStorageUploadUtils.getPresignedDownloadUrl(bucket, targetName);
+    return UniStorageUtils.getPresignedDownloadUrl(bucket, targetName);
   }
 
   @Override
   public String getPresignedDownloadUrl(String region, String bucket, String targetName) {
-    return UniStorageUploadUtils.getPresignedDownloadUrl(region, bucket, targetName);
+    return UniStorageUtils.getPresignedDownloadUrl(region, bucket, targetName);
   }
 
   @Override

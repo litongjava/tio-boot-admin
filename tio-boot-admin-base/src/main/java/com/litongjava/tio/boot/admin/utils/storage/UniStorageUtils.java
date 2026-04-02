@@ -10,7 +10,7 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
-public class UniStorageUploadUtils {
+public class UniStorageUtils {
 
   public static final String storagePlatform = TioAdminEnvUtils.getStoragePlatform();
 
