@@ -1,12 +1,13 @@
 package com.litongjava.tio.boot.admin.dao;
 
 import com.litongjava.chat.UniChatRequest;
-import com.litongjava.db.DbJsonObject;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.db.base.DbBase;
 import com.litongjava.exception.GenerateException;
 import com.litongjava.tio.boot.admin.dto.TioLlmGenerateFailed;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
+
+import nexus.io.db.DbJsonObject;
 
 public class TioLlmGenerateFailedDao extends DbBase {
 

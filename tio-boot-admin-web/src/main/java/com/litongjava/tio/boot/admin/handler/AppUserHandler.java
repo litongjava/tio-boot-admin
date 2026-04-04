@@ -5,7 +5,6 @@ import java.util.Map;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.litongjava.tio.boot.admin.vo.AppUser;
@@ -19,6 +18,8 @@ import com.litongjava.tio.utils.hutool.StrUtil;
 import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.json.JsonUtils;
 import com.litongjava.tio.utils.jwt.JwtUtils;
+
+import nexus.io.model.body.RespBodyVo;
 
 public class AppUserHandler {
   public HttpResponse refresh(HttpRequest request) {

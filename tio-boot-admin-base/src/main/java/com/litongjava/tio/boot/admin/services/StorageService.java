@@ -1,8 +1,8 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.upload.UploadFile;
-import com.litongjava.model.upload.UploadResult;
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.upload.UploadFile;
+import nexus.io.model.upload.UploadResult;
 
 public interface StorageService {
 

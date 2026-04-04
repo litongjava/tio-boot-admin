@@ -6,13 +6,14 @@ import java.util.List;
 import com.jfinal.kit.Kv;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.dao.SystemUploadFileDao;
 import com.litongjava.tio.boot.admin.utils.storage.AliyunOssUtils;
 import com.litongjava.tio.boot.admin.utils.storage.AwsS3Utils;
 import com.litongjava.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import com.litongjava.tio.boot.admin.utils.storage.TencentCOSUtils;
+
+import nexus.io.model.upload.UploadResult;
 
 public class SystemUploadFileService {
 

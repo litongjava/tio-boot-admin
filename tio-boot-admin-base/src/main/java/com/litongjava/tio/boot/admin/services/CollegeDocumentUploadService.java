@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.TableInput;
-import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.db.TableInput;
+import nexus.io.db.TableResult;
 
 @Slf4j
 public class CollegeDocumentUploadService {

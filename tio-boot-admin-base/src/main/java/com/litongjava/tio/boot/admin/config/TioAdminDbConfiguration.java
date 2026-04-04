@@ -14,12 +14,13 @@ import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
 import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
 import com.litongjava.db.activerecord.dialect.Sqlite3Dialect;
 import com.litongjava.db.hikaricp.DsContainer;
-import com.litongjava.hook.HookCan;
 import com.litongjava.openai.client.OpenAiClient;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import nexus.io.hook.HookCan;
 
 public class TioAdminDbConfiguration {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

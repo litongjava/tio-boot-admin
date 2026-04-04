@@ -9,7 +9,6 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 
-import com.litongjava.hook.HookCan;
 import com.litongjava.tio.boot.admin.kafaka.KafkaConsumerRunner;
 import com.litongjava.tio.boot.admin.kafaka.KafkaProducerUtils;
 import com.litongjava.tio.boot.admin.utils.AwsProfileUtils;
@@ -17,6 +16,7 @@ import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.hutool.StrUtil;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.hook.HookCan;
 
 @Slf4j
 public class TioAdminKafkaMskClientConfig {

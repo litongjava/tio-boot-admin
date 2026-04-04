@@ -8,8 +8,6 @@ import org.apache.commons.codec.digest.DigestUtils;
 import com.litongjava.db.activerecord.Db;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.validate.ValidateResult;
 import com.litongjava.tio.boot.admin.consts.AppConstant;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.sql.AppUsersSql;
@@ -23,6 +21,9 @@ import com.litongjava.tio.utils.jwt.JwtUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.litongjava.tio.utils.validator.EmailValidator;
 import com.litongjava.tio.utils.validator.PasswordValidator;
+
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.validate.ValidateResult;
 
 public class AppUserService {
 

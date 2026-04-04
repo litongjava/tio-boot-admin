@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.validate.ValidateResult;
 import com.litongjava.tio.boot.admin.services.AppEmailService;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
@@ -16,6 +14,9 @@ import com.litongjava.tio.utils.hutool.StrUtil;
 import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.validator.EmailValidator;
 import com.litongjava.tio.utils.validator.PasswordValidator;
+
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.validate.ValidateResult;
 
 public class AppUserRegisterHandler {
   AppUserService appUserService = Aop.get(AppUserService.class);

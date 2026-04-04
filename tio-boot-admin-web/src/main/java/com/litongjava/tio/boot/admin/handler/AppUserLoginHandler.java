@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.handler;
 
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginRequest;
@@ -11,6 +10,8 @@ import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.litongjava.tio.utils.json.JsonUtils;
+
+import nexus.io.model.body.RespBodyVo;
 
 public class AppUserLoginHandler {
   public HttpResponse login(HttpRequest request) {

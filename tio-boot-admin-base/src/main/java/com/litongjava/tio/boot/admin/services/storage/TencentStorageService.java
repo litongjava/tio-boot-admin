@@ -1,12 +1,8 @@
 package com.litongjava.tio.boot.admin.services.storage;
 
 import com.jfinal.kit.StrKit;
-import com.litongjava.db.TableInput;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.upload.UploadFile;
-import com.litongjava.model.upload.UploadResult;
 import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
@@ -22,6 +18,10 @@ import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.db.TableInput;
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.upload.UploadFile;
+import nexus.io.model.upload.UploadResult;
 
 /**
  * Created by Tong Li

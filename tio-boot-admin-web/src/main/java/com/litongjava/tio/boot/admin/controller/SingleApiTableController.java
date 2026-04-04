@@ -3,11 +3,12 @@ package com.litongjava.tio.boot.admin.controller;
 import java.io.IOException;
 import java.sql.SQLException;
 
-import com.litongjava.annotation.RequestPath;
-import com.litongjava.model.body.RespBodyVo;
 import com.litongjava.tio.boot.admin.utils.ApiTableUtils;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
+
+import nexus.io.annotation.RequestPath;
+import nexus.io.model.body.RespBodyVo;
 
 public abstract class SingleApiTableController {
 

@@ -12,11 +12,8 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.TableInput;
-import com.litongjava.db.TableResult;
 import com.litongjava.db.activerecord.Row;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.page.DbPage;
 import com.litongjava.mongo.MongoDb;
 import com.litongjava.table.model.DataPageRequest;
 import com.litongjava.table.model.DataQueryRequest;
@@ -26,6 +23,10 @@ import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.DeleteResult;
+
+import nexus.io.db.TableInput;
+import nexus.io.db.TableResult;
+import nexus.io.model.page.DbPage;
 
 public class MongodbJsonService {
 

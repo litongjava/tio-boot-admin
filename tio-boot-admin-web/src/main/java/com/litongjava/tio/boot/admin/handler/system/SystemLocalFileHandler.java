@@ -3,8 +3,6 @@ package com.litongjava.tio.boot.admin.handler.system;
 import java.io.File;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.model.body.RespBodyVo;
-import com.litongjava.model.upload.UploadFile;
 import com.litongjava.tio.http.common.HttpRequest;
 import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.http.server.model.HttpCors;
@@ -12,6 +10,9 @@ import com.litongjava.tio.http.server.util.CORSUtils;
 import com.litongjava.tio.http.server.util.Resps;
 import com.litongjava.tio.utils.hutool.FileUtil;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
+
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.model.upload.UploadFile;
 
 public class SystemLocalFileHandler {
 

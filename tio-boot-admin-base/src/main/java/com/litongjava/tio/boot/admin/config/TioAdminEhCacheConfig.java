@@ -3,7 +3,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.litongjava.ehcache.EhCachePlugin;
-import com.litongjava.hook.HookCan;
+
+import nexus.io.hook.HookCan;
 
 public class TioAdminEhCacheConfig {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

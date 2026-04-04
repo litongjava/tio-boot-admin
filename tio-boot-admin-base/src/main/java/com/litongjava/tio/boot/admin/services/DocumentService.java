@@ -4,13 +4,14 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.TableInput;
 import com.litongjava.jfinal.aop.Aop;
-import com.litongjava.model.upload.UploadFile;
-import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.utils.PDDocumentUtils;
 import com.litongjava.tio.utils.http.HttpDownloadUtils;
+
+import nexus.io.db.TableInput;
+import nexus.io.model.upload.UploadFile;
+import nexus.io.model.upload.UploadResult;
 
 public class DocumentService {
 

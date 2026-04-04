@@ -6,13 +6,13 @@ import java.util.List;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.PutObjectResult;
-import com.litongjava.model.upload.UploadResult;
 import com.litongjava.tio.boot.admin.consts.StoragePlatformConst;
 import com.litongjava.tio.boot.admin.utils.storage.AliyunOssUtils;
 import com.litongjava.tio.boot.admin.utils.storage.AwsS3Utils;
 import com.litongjava.tio.boot.admin.vo.UploadInput;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.model.upload.UploadResult;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
