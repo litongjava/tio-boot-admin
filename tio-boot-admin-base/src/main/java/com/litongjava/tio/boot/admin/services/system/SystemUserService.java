@@ -5,9 +5,9 @@ import java.util.Map;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.db.activerecord.Db;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 
+import nexus.io.db.activerecord.Db;
 import nexus.io.model.body.RespBodyVo;
 
 /**

@@ -9,13 +9,6 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.litongjava.api.ApiCooldownManager;
-import com.litongjava.chat.UniChatClient;
-import com.litongjava.chat.UniChatRequest;
-import com.litongjava.chat.UniChatResponse;
-import com.litongjava.consts.ModelPlatformName;
-import com.litongjava.exception.GenerateException;
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.dao.TioLlmGenerateFailedDao;
 import com.litongjava.tio.boot.admin.dao.TioLlmUsageDao;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
@@ -26,6 +19,13 @@ import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.notification.NotifactionWarmModel;
 import com.litongjava.tio.utils.notification.NotificationSender;
 
+import nexus.io.api.ApiCooldownManager;
+import nexus.io.chat.UniChatClient;
+import nexus.io.chat.UniChatRequest;
+import nexus.io.chat.UniChatResponse;
+import nexus.io.consts.ModelPlatformName;
+import nexus.io.exception.GenerateException;
+import nexus.io.jfinal.aop.Aop;
 import okhttp3.sse.EventSource;
 import okhttp3.sse.EventSourceListener;
 

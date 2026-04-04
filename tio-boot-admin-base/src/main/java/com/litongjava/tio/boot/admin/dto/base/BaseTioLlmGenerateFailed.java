@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.dto.base;
 
-import com.litongjava.db.activerecord.Model;
-
+import nexus.io.db.activerecord.Model;
 import nexus.io.model.db.IBean;
 
 /**

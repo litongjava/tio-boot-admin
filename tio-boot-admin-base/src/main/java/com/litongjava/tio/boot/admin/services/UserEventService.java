@@ -5,12 +5,12 @@ import java.sql.SQLException;
 import org.postgresql.util.PGobject;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
 
 /**
  * Created by litonglinux@qq.com on 3/25/2024_7:26 PM

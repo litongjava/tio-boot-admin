@@ -19,8 +19,9 @@ import com.litongjava.tio.boot.admin.handler.system.SystemFileCloudflareR2Handle
 import com.litongjava.tio.boot.admin.handler.system.SystemFileFirebaseHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemFileTencentCosHandler;
 import com.litongjava.tio.boot.admin.handler.system.SystemUserHandler;
-import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.http.server.router.HttpRequestRouter;
+
+import nexus.io.tio.boot.server.TioBootServer;
+import nexus.io.tio.http.server.router.HttpRequestRouter;
 
 public class TioAdminHandlerConfiguration {
 

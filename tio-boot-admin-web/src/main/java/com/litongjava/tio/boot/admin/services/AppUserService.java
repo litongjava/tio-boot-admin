@@ -5,9 +5,6 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.consts.AppConstant;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.sql.AppUsersSql;
@@ -22,6 +19,9 @@ import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.litongjava.tio.utils.validator.EmailValidator;
 import com.litongjava.tio.utils.validator.PasswordValidator;
 
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.validate.ValidateResult;
 

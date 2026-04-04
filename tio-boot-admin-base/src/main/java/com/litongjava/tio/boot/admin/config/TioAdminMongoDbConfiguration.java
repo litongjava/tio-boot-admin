@@ -6,7 +6,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.litongjava.mongo.MongoDb;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoCredential;
@@ -14,6 +13,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.client.MongoDatabase;
 
 import nexus.io.hook.HookCan;
+import nexus.io.mongo.MongoDb;
 
 public class TioAdminMongoDbConfiguration {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

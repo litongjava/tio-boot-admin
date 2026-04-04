@@ -2,8 +2,7 @@ package com.litongjava.tio.boot.admin.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.litongjava.ehcache.EhCachePlugin;
-
+import nexus.io.ehcache.EhCachePlugin;
 import nexus.io.hook.HookCan;
 
 public class TioAdminEhCacheConfig {

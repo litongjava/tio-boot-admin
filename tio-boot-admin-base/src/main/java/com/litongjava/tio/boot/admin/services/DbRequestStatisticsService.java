@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.db.activerecord.Db;
+import nexus.io.db.activerecord.Db;
 
 public class DbRequestStatisticsService {
   public static final String sql = "INSERT INTO sys_http_request_statistics (id,channel_id,ip,user_id,method,uri,user_agent,header,body) values(?,?,?,?,?,?,?,?,?)";

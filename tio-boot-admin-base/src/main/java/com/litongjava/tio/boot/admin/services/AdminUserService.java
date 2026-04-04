@@ -1,10 +1,10 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminSql;
 
 import nexus.io.db.SqlPara;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
 import nexus.io.model.body.RespBodyVo;
 
 /**

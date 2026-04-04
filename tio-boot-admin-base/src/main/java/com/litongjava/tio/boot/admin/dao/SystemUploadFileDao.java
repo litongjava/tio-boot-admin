@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
 
 public class SystemUploadFileDao {
   public static final String tableName = "tio_boot_admin_system_upload_file";

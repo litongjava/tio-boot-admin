@@ -2,11 +2,12 @@ package com.litongjava.tio.boot.admin.config;
 
 import com.litongjava.tio.boot.admin.consts.TioBootAdminUrls;
 import com.litongjava.tio.boot.admin.services.TioBootAdminTokenPredicate;
-import com.litongjava.tio.boot.http.interceptor.HttpInteceptorConfigure;
-import com.litongjava.tio.boot.http.interceptor.HttpInterceptorModel;
-import com.litongjava.tio.boot.server.TioBootServer;
-import com.litongjava.tio.boot.token.TokenPredicate;
-import com.litongjava.tio.boot.token.UserTokenInterceptor;
+
+import nexus.io.tio.boot.http.interceptor.HttpInteceptorConfigure;
+import nexus.io.tio.boot.http.interceptor.HttpInterceptorModel;
+import nexus.io.tio.boot.server.TioBootServer;
+import nexus.io.tio.boot.token.TokenPredicate;
+import nexus.io.tio.boot.token.UserTokenInterceptor;
 
 public class TioAdminInterceptorConfiguration {
 

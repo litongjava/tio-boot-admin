@@ -3,9 +3,6 @@ package com.litongjava.tio.boot.admin.services;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginVo;
 import com.litongjava.tio.boot.admin.vo.GoogleJwtPayload;
@@ -16,6 +13,9 @@ import com.litongjava.tio.utils.json.FastJson2Utils;
 import com.litongjava.tio.utils.json.JsonUtils;
 import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.http.response.ResponseVo;
 import okhttp3.FormBody;

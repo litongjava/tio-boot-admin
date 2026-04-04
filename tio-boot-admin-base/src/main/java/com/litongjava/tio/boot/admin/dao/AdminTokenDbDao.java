@@ -2,9 +2,9 @@ package com.litongjava.tio.boot.admin.dao;
 
 import java.util.List;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
-import com.litongjava.satoken.SaJdkSerializer;
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
+import nexus.io.satoken.SaJdkSerializer;
 
 public class AdminTokenDbDao {
 

@@ -9,18 +9,18 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.litongjava.db.activerecord.ActiveRecordPlugin;
-import com.litongjava.db.activerecord.OrderedFieldContainerFactory;
-import com.litongjava.db.activerecord.dialect.PostgreSqlDialect;
-import com.litongjava.db.activerecord.dialect.Sqlite3Dialect;
-import com.litongjava.db.hikaricp.DsContainer;
-import com.litongjava.openai.client.OpenAiClient;
-import com.litongjava.table.services.ApiTable;
 import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import nexus.io.db.activerecord.ActiveRecordPlugin;
+import nexus.io.db.activerecord.OrderedFieldContainerFactory;
+import nexus.io.db.activerecord.dialect.PostgreSqlDialect;
+import nexus.io.db.activerecord.dialect.Sqlite3Dialect;
+import nexus.io.db.hikaricp.DsContainer;
 import nexus.io.hook.HookCan;
+import nexus.io.openai.client.OpenAiClient;
+import nexus.io.table.services.ApiTable;
 
 public class TioAdminDbConfiguration {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

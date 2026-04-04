@@ -9,7 +9,6 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 
 import com.jfinal.kit.Kv;
-import com.litongjava.mongo.MongoDb;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -17,6 +16,7 @@ import com.mongodb.client.model.Filters;
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.db.TableInput;
 import nexus.io.db.TableResult;
+import nexus.io.mongo.MongoDb;
 
 @Slf4j
 public class EmqxUserMongoService {

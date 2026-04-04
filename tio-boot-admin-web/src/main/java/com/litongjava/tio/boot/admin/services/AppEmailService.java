@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-import com.litongjava.db.activerecord.Db;
 import com.litongjava.tio.boot.admin.vo.EmailVerification;
-import com.litongjava.tio.boot.email.EmailSender;
-import com.litongjava.tio.boot.server.TioBootServer;
+
+import nexus.io.db.activerecord.Db;
+import nexus.io.tio.boot.email.EmailSender;
+import nexus.io.tio.boot.server.TioBootServer;
 
 public class AppEmailService {
 

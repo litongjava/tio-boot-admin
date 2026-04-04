@@ -1,8 +1,9 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.db.activerecord.Db;
-import com.litongjava.db.activerecord.Row;
 import com.litongjava.tio.utils.mcid.McIdUtils;
+
+import nexus.io.db.activerecord.Db;
+import nexus.io.db.activerecord.Row;
 
 public class DbRequestResponseStatisticsService {
   public void save(long channelId, long requestId, String requestIp, String requestUri, String requestHeader, String contentType,

@@ -3,20 +3,20 @@ package com.litongjava.tio.boot.admin.handler;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.litongjava.jfinal.aop.Aop;
 import com.litongjava.tio.boot.admin.services.AppEmailService;
 import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
-import com.litongjava.tio.boot.http.TioRequestContext;
-import com.litongjava.tio.http.common.HttpRequest;
-import com.litongjava.tio.http.common.HttpResponse;
 import com.litongjava.tio.utils.hutool.StrUtil;
 import com.litongjava.tio.utils.json.Json;
 import com.litongjava.tio.utils.validator.EmailValidator;
 import com.litongjava.tio.utils.validator.PasswordValidator;
 
+import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.validate.ValidateResult;
+import nexus.io.tio.boot.http.TioRequestContext;
+import nexus.io.tio.http.common.HttpRequest;
+import nexus.io.tio.http.common.HttpResponse;
 
 public class AppUserRegisterHandler {
   AppUserService appUserService = Aop.get(AppUserService.class);

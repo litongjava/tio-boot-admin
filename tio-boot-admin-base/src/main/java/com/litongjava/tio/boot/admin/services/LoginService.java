@@ -1,11 +1,11 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.db.activerecord.Db;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
 import com.litongjava.tio.utils.digest.Sha256Utils;
 
 import lombok.extern.slf4j.Slf4j;
+import nexus.io.db.activerecord.Db;
 
 @Slf4j
 public class LoginService {
