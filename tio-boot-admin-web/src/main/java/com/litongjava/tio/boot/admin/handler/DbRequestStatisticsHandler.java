@@ -1,8 +1,6 @@
 package com.litongjava.tio.boot.admin.handler;
 
 import com.litongjava.tio.boot.admin.services.DbRequestStatisticsService;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
-import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.jfinal.aop.Aop;
@@ -11,6 +9,8 @@ import nexus.io.tio.http.common.HttpMethod;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.RequestLine;
 import nexus.io.tio.http.common.utils.HttpIpUtils;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
+import nexus.io.tio.utils.thread.TioThreadUtils;
 
 @Slf4j
 public class DbRequestStatisticsHandler implements RequestStatisticsHandler {

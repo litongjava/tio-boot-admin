@@ -9,7 +9,6 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.litongjava.tio.utils.environment.EnvUtils;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -21,6 +20,7 @@ import nexus.io.db.hikaricp.DsContainer;
 import nexus.io.hook.HookCan;
 import nexus.io.openai.client.OpenAiClient;
 import nexus.io.table.services.ApiTable;
+import nexus.io.tio.utils.environment.EnvUtils;
 
 public class TioAdminDbConfiguration {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

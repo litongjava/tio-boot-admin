@@ -3,12 +3,11 @@ package com.litongjava.tio.boot.admin.config;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.litongjava.tio.utils.environment.EnvUtils;
-
 import nexus.io.hook.HookCan;
 import nexus.io.redis.Redis;
 import nexus.io.redis.RedisDb;
 import nexus.io.redis.RedisPlugin;
+import nexus.io.tio.utils.environment.EnvUtils;
 
 public class TioAdminRedisDbConfiguration {
   private final Logger log = LoggerFactory.getLogger(this.getClass());

@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.utils;
 
-import com.litongjava.tio.utils.json.JsonUtils;
+import nexus.io.tio.utils.json.JsonUtils;
 
 public class PrintlnUtils {
 

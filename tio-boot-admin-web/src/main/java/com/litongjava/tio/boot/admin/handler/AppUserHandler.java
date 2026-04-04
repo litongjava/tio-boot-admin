@@ -9,10 +9,6 @@ import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.AppUserRefreshTokenRequest;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.boot.admin.vo.UserUpdatePasswordRequest;
-import com.litongjava.tio.utils.hutool.StrUtil;
-import com.litongjava.tio.utils.json.FastJson2Utils;
-import com.litongjava.tio.utils.json.JsonUtils;
-import com.litongjava.tio.utils.jwt.JwtUtils;
 
 import nexus.io.db.activerecord.Row;
 import nexus.io.jfinal.aop.Aop;
@@ -20,6 +16,10 @@ import nexus.io.model.body.RespBodyVo;
 import nexus.io.tio.boot.http.TioRequestContext;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.HttpResponse;
+import nexus.io.tio.utils.hutool.StrUtil;
+import nexus.io.tio.utils.json.FastJson2Utils;
+import nexus.io.tio.utils.json.JsonUtils;
+import nexus.io.tio.utils.jwt.JwtUtils;
 
 public class AppUserHandler {
   public HttpResponse refresh(HttpRequest request) {

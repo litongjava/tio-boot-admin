@@ -1,10 +1,10 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
-import com.litongjava.tio.utils.jwt.JwtUtils;
 
 import nexus.io.tio.boot.token.PredicateResult;
 import nexus.io.tio.boot.token.TokenPredicate;
+import nexus.io.tio.utils.jwt.JwtUtils;
 
 public class TioBootAdminTokenPredicate implements TokenPredicate {
 

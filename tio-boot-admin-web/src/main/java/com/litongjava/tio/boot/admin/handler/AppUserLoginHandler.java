@@ -4,14 +4,14 @@ import com.litongjava.tio.boot.admin.services.AppUserService;
 import com.litongjava.tio.boot.admin.vo.AppUser;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginRequest;
 import com.litongjava.tio.boot.admin.vo.AppUserLoginVo;
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.json.JsonUtils;
 
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.tio.boot.http.TioRequestContext;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.HttpResponse;
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.json.JsonUtils;
 
 public class AppUserLoginHandler {
   public HttpResponse login(HttpRequest request) {

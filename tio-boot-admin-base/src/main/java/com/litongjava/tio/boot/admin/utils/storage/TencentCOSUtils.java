@@ -8,9 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.hutool.FilenameUtils;
 import com.qcloud.cos.COSClient;
 import com.qcloud.cos.ClientConfig;
 import com.qcloud.cos.auth.BasicCOSCredentials;
@@ -22,6 +19,10 @@ import com.qcloud.cos.model.ObjectMetadata;
 import com.qcloud.cos.model.PutObjectRequest;
 import com.qcloud.cos.model.PutObjectResult;
 import com.qcloud.cos.region.Region;
+
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.http.ContentTypeUtils;
+import nexus.io.tio.utils.hutool.FilenameUtils;
 
 /**
  * Tencent COS 工具类

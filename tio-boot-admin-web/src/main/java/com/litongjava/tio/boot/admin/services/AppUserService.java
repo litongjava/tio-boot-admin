@@ -13,17 +13,17 @@ import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
 import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
 import com.litongjava.tio.boot.admin.vo.UserToken;
 import com.litongjava.tio.boot.admin.vo.UserUpdatePasswordRequest;
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.jwt.JwtUtils;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
-import com.litongjava.tio.utils.validator.EmailValidator;
-import com.litongjava.tio.utils.validator.PasswordValidator;
 
 import nexus.io.db.activerecord.Db;
 import nexus.io.db.activerecord.Row;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.validate.ValidateResult;
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.jwt.JwtUtils;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
+import nexus.io.tio.utils.validator.EmailValidator;
+import nexus.io.tio.utils.validator.PasswordValidator;
 
 public class AppUserService {
 

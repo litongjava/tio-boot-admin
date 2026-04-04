@@ -2,9 +2,8 @@ package com.litongjava.tio.boot.admin.services;
 
 import org.junit.Test;
 
-import com.litongjava.tio.utils.url.UrlUtils;
-
 import nexus.io.jfinal.aop.Aop;
+import nexus.io.tio.utils.url.UrlUtils;
 
 public class AppUserGoogleServiceTest {
 

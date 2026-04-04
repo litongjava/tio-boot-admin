@@ -6,10 +6,10 @@ import java.io.InputStream;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.hutool.ResourceUtil;
 
 import nexus.io.hook.HookCan;
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.hutool.ResourceUtil;
 
 public class TioAdminFirebaseAppConfiguration {
 

@@ -19,9 +19,10 @@ import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.hutool.FilenameUtils;
+
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.http.ContentTypeUtils;
+import nexus.io.tio.utils.hutool.FilenameUtils;
 
 /**
  * Aliyun OSS 工具类（对齐 AwsS3Utils 的能力）

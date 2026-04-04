@@ -6,12 +6,12 @@ import java.io.ByteArrayOutputStream;
 import com.jfinal.kit.Kv;
 import com.litongjava.tio.boot.admin.services.storage.AwsS3StorageService;
 import com.litongjava.tio.boot.admin.utils.PDDocumentUtils;
-import com.litongjava.tio.utils.http.HttpDownloadUtils;
 
 import nexus.io.db.TableInput;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.upload.UploadFile;
 import nexus.io.model.upload.UploadResult;
+import nexus.io.tio.utils.http.HttpDownloadUtils;
 
 public class DocumentService {
 

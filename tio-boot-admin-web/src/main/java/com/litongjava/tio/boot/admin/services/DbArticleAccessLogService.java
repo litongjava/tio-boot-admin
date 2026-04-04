@@ -1,12 +1,12 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.tio.boot.admin.vo.AccessLogVo;
-import com.litongjava.tio.utils.thread.TioThreadUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.db.activerecord.Db;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.tio.http.common.HttpRequest;
+import nexus.io.tio.utils.thread.TioThreadUtils;
 
 @Slf4j
 public class DbArticleAccessLogService {

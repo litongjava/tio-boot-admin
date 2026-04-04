@@ -12,11 +12,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import com.litongjava.tio.boot.admin.kafaka.KafkaConsumerRunner;
 import com.litongjava.tio.boot.admin.kafaka.KafkaProducerUtils;
 import com.litongjava.tio.boot.admin.utils.AwsProfileUtils;
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.hutool.StrUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.hook.HookCan;
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.hutool.StrUtil;
 
 @Slf4j
 public class TioAdminKafkaMskClientConfig {

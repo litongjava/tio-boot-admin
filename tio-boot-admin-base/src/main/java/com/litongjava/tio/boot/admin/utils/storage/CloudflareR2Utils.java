@@ -6,10 +6,9 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-import com.litongjava.tio.utils.environment.EnvUtils;
-import com.litongjava.tio.utils.http.ContentTypeUtils;
-import com.litongjava.tio.utils.hutool.FilenameUtils;
-
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.http.ContentTypeUtils;
+import nexus.io.tio.utils.hutool.FilenameUtils;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;

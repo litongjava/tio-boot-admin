@@ -6,11 +6,11 @@ import org.postgresql.util.PGobject;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.db.activerecord.Db;
 import nexus.io.db.activerecord.Row;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
 
 /**
  * Created by litonglinux@qq.com on 3/25/2024_7:26 PM

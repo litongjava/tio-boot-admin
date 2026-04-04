@@ -2,9 +2,9 @@ package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
-import com.litongjava.tio.utils.json.Json;
 
 import nexus.io.db.activerecord.Db;
+import nexus.io.tio.utils.json.Json;
 
 public class SysConfigConstantsService {
 

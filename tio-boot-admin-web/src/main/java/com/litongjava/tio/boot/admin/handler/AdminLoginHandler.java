@@ -7,9 +7,6 @@ import com.jfinal.kit.Kv;
 import com.litongjava.tio.boot.admin.services.LoginService;
 import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
 import com.litongjava.tio.boot.admin.vo.LoginAccountVo;
-import com.litongjava.tio.utils.json.Json;
-import com.litongjava.tio.utils.jwt.JwtUtils;
-import com.litongjava.tio.utils.token.TokenManager;
 
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
@@ -20,6 +17,9 @@ import nexus.io.tio.http.common.HttpResponse;
 import nexus.io.tio.http.server.model.HttpCors;
 import nexus.io.tio.http.server.util.CORSUtils;
 import nexus.io.tio.http.server.util.Resps;
+import nexus.io.tio.utils.json.Json;
+import nexus.io.tio.utils.jwt.JwtUtils;
+import nexus.io.tio.utils.token.TokenManager;
 
 public class AdminLoginHandler {
   public HttpResponse account(HttpRequest request) {

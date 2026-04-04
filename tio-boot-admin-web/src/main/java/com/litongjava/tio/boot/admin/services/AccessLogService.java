@@ -1,12 +1,12 @@
 package com.litongjava.tio.boot.admin.services;
 
 import com.litongjava.tio.boot.admin.vo.AccessLogVo;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 
 import nexus.io.tio.http.common.HttpMethod;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.RequestLine;
 import nexus.io.tio.http.common.utils.HttpIpUtils;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
 
 public class AccessLogService {
 

@@ -9,9 +9,6 @@ import com.litongjava.tio.boot.admin.services.SysConfigConstantsService;
 import com.litongjava.tio.boot.admin.services.system.SystemUploadFileService;
 import com.litongjava.tio.boot.admin.utils.storage.TencentCOSUtils;
 import com.litongjava.tio.boot.admin.vo.SystemTxCosConfigVo;
-import com.litongjava.tio.utils.crypto.Md5Utils;
-import com.litongjava.tio.utils.hutool.FilenameUtils;
-import com.litongjava.tio.utils.snowflake.SnowflakeIdUtils;
 import com.qcloud.cos.COSClient;
 
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +19,9 @@ import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.upload.UploadFile;
 import nexus.io.model.upload.UploadResult;
 import nexus.io.table.services.ApiTable;
+import nexus.io.tio.utils.crypto.Md5Utils;
+import nexus.io.tio.utils.hutool.FilenameUtils;
+import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
 
 /**
  * Created by Tong Li

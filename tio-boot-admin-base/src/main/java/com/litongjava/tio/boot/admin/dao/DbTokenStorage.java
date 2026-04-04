@@ -1,6 +1,6 @@
 package com.litongjava.tio.boot.admin.dao;
 
-import com.litongjava.tio.utils.token.ITokenStorage;
+import nexus.io.tio.utils.token.ITokenStorage;
 
 public class DbTokenStorage implements ITokenStorage {
 
