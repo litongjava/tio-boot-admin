@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.tio.boot.admin.utils.TioAdminEnvUtils;
-
+import nexus.io.tio.boot.admin.utils.TioAdminEnvUtils;
 import nexus.io.tio.boot.token.PredicateResult;
 import nexus.io.tio.boot.token.TokenPredicate;
 import nexus.io.tio.utils.jwt.JwtUtils;

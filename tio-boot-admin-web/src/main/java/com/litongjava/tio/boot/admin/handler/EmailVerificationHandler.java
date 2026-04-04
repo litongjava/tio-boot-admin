@@ -1,10 +1,10 @@
 package com.litongjava.tio.boot.admin.handler;
 
 import com.litongjava.tio.boot.admin.services.AppEmailService;
-import com.litongjava.tio.boot.admin.vo.EmailRequest;
 
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
+import nexus.io.tio.boot.admin.vo.EmailRequest;
 import nexus.io.tio.boot.http.TioRequestContext;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.HttpResponse;

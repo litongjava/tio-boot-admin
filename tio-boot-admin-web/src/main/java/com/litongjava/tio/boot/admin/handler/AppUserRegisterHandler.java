@@ -5,11 +5,11 @@ import java.util.List;
 
 import com.litongjava.tio.boot.admin.services.AppEmailService;
 import com.litongjava.tio.boot.admin.services.AppUserService;
-import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
 
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.validate.ValidateResult;
+import nexus.io.tio.boot.admin.vo.AppUserRegisterRequest;
 import nexus.io.tio.boot.http.TioRequestContext;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.HttpResponse;

@@ -1,0 +1,45 @@
+package nexus.io.tio.boot.admin.services;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+
+import com.jfinal.kit.Kv;
+
+import nexus.io.db.TableInput;
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.model.upload.UploadFile;
+import nexus.io.model.upload.UploadResult;
+import nexus.io.tio.boot.admin.services.storage.AwsS3StorageService;
+import nexus.io.tio.boot.admin.utils.PDDocumentUtils;
+import nexus.io.tio.utils.http.HttpDownloadUtils;
+
+public class DocumentService {
+
+  public Kv generateAndSavePDFthumbnail(String category, TableInput inputParam) {
+    String url = inputParam.getStr("url");
+
+    ByteArrayOutputStream stream = HttpDownloadUtils.download(url, null);
+    byte[] pdfBytes = stream.toByteArray();
+
+    ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(pdfBytes);
+    ByteArrayOutputStream thumbnailStream = PDDocumentUtils.extraThumbnail(byteArrayInputStream);
+    byte[] imageBytes = thumbnailStream.toByteArray();
+
+    long currentTimeMillis = System.currentTimeMillis();
+
+    String filename = currentTimeMillis + ".png";
+    UploadFile uploadFile = new UploadFile(filename, imageBytes);
+    UploadResult resultVo = Aop.get(AwsS3StorageService.class).uploadFile(category, uploadFile);
+
+    Kv resultKv = Kv.create()
+        //
+        .set("id", resultVo.getId()).set("uid", "rc-upload-" + System.currentTimeMillis() + "-2")
+        //
+        .set("url", resultVo.getUrl()).set("name", filename)
+        //
+        .set("size", imageBytes.length).set("type", "image/png").set("status", "done");
+
+    return resultKv;
+  }
+
+}

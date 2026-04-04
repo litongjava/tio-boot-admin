@@ -1,7 +1,6 @@
 package com.litongjava.tio.boot.admin.services;
 
-import com.litongjava.tio.boot.admin.vo.AccessLogVo;
-
+import nexus.io.tio.boot.admin.vo.AccessLogVo;
 import nexus.io.tio.http.common.HttpMethod;
 import nexus.io.tio.http.common.HttpRequest;
 import nexus.io.tio.http.common.RequestLine;

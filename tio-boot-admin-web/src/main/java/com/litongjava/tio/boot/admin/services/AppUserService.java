@@ -5,20 +5,19 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
-import com.litongjava.tio.boot.admin.consts.AppConstant;
-import com.litongjava.tio.boot.admin.consts.TioBootAdminTableNames;
-import com.litongjava.tio.boot.admin.sql.AppUsersSql;
-import com.litongjava.tio.boot.admin.vo.AppUser;
-import com.litongjava.tio.boot.admin.vo.AppUserRegisterRequest;
-import com.litongjava.tio.boot.admin.vo.UserResetPasswordRequest;
-import com.litongjava.tio.boot.admin.vo.UserToken;
-import com.litongjava.tio.boot.admin.vo.UserUpdatePasswordRequest;
-
 import nexus.io.db.activerecord.Db;
 import nexus.io.db.activerecord.Row;
 import nexus.io.jfinal.aop.Aop;
 import nexus.io.model.body.RespBodyVo;
 import nexus.io.model.validate.ValidateResult;
+import nexus.io.tio.boot.admin.consts.AppConstant;
+import nexus.io.tio.boot.admin.consts.TioBootAdminTableNames;
+import nexus.io.tio.boot.admin.sql.AppUsersSql;
+import nexus.io.tio.boot.admin.vo.AppUser;
+import nexus.io.tio.boot.admin.vo.AppUserRegisterRequest;
+import nexus.io.tio.boot.admin.vo.UserResetPasswordRequest;
+import nexus.io.tio.boot.admin.vo.UserToken;
+import nexus.io.tio.boot.admin.vo.UserUpdatePasswordRequest;
 import nexus.io.tio.utils.environment.EnvUtils;
 import nexus.io.tio.utils.jwt.JwtUtils;
 import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;

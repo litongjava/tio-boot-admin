@@ -1,0 +1,21 @@
+package nexus.io.tio.boot.admin.dao;
+
+import nexus.io.tio.utils.token.ITokenStorage;
+
+public class DbTokenStorage implements ITokenStorage {
+
+  @Override
+  public void put(Object userId, String tokenValue) {
+
+  }
+
+  @Override
+  public boolean containsKey(Object userId) {
+    return false;
+  }
+
+  @Override
+  public String remove(Object userId) {
+    return null;
+  }
+}
