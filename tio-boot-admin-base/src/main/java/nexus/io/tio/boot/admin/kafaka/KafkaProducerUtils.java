@@ -14,6 +14,10 @@ public class KafkaProducerUtils {
   private static KafkaProducer<String, String> producer;
   private static String topic;
 
+  public static void init(KafkaProducer<String, String> kafkaProducer) {
+    producer = kafkaProducer;
+  }
+
   public static void init(KafkaProducer<String, String> kafkaProducer, String topicName) {
     producer = kafkaProducer;
     topic = topicName;
@@ -38,4 +42,5 @@ public class KafkaProducerUtils {
       log.error("Kafka send message failed", e);
     }
   }
+
 }

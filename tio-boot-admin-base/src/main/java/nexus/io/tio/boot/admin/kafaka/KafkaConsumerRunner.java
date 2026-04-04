@@ -2,6 +2,7 @@ package nexus.io.tio.boot.admin.kafaka;
 
 import java.time.Duration;
 import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -14,25 +15,39 @@ import lombok.extern.slf4j.Slf4j;
 public class KafkaConsumerRunner implements Runnable {
 
   private final KafkaConsumer<String, String> consumer;
-  private final String topic;
+  private final KafkaTopicConsumer topicConsumer;
+  private String topic;
   private final AtomicBoolean running = new AtomicBoolean(true);
 
-  public KafkaConsumerRunner(KafkaConsumer<String, String> consumer, String topic) {
+  public KafkaConsumerRunner(KafkaConsumer<String, String> consumer, String topic, KafkaTopicConsumer topicConsumer) {
     this.consumer = consumer;
     this.topic = topic;
+    this.topicConsumer = topicConsumer;
+  }
+
+  public KafkaConsumerRunner(KafkaConsumer<String, String> consumer, KafkaTopicConsumer topicConsumer) {
+    this.consumer = consumer;
+    this.topicConsumer = topicConsumer;
   }
 
   @Override
   public void run() {
-    consumer.subscribe(Collections.singletonList(topic));
-    log.info("Kafka consumer subscribed topic: {}", topic);
+    if (topic != null) {
+      List<String> singletonList = Collections.singletonList(topic);
+      consumer.subscribe(singletonList);
+      log.info("Kafka consumer subscribed topic: {}", topic);
+    }
 
     try {
       while (running.get()) {
         ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(1000));
         for (ConsumerRecord<String, String> record : records) {
-          log.info("Received message, topic:{}, partition:{}, offset:{}, key:{}, value:{}", record.topic(),
-              record.partition(), record.offset(), record.key(), record.value());
+          if (topicConsumer != null) {
+            topicConsumer.consume(record);
+          } else {
+            log.info("Received message, topic:{}, partition:{}, offset:{}, key:{}, value:{}", record.topic(),
+                record.partition(), record.offset(), record.key(), record.value());
+          }
         }
       }
     } catch (Exception e) {

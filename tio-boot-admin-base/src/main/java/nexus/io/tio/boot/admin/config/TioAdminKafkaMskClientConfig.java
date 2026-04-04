@@ -13,16 +13,26 @@ import lombok.extern.slf4j.Slf4j;
 import nexus.io.hook.HookCan;
 import nexus.io.tio.boot.admin.kafaka.KafkaConsumerRunner;
 import nexus.io.tio.boot.admin.kafaka.KafkaProducerUtils;
+import nexus.io.tio.boot.admin.kafaka.KafkaTopicConsumer;
 import nexus.io.tio.boot.admin.utils.AwsProfileUtils;
 import nexus.io.tio.utils.environment.EnvUtils;
 import nexus.io.tio.utils.hutool.StrUtil;
 
 @Slf4j
 public class TioAdminKafkaMskClientConfig {
-
+  private KafkaTopicConsumer topicConsumer;
   private KafkaConsumerRunner consumerRunner;
   private Thread consumerThread;
   private KafkaProducer<String, String> producer;
+
+  public TioAdminKafkaMskClientConfig() {
+
+  }
+
+  public TioAdminKafkaMskClientConfig(KafkaTopicConsumer topicConsumer) {
+    this.topicConsumer = topicConsumer;
+
+  }
 
   public void config() {
     String bootstrapServers = EnvUtils.get("aws.msk.bootstrap-servers");
@@ -85,7 +95,8 @@ public class TioAdminKafkaMskClientConfig {
     });
   }
 
-  private void initProducer(String bootstrapServers, String producerTopicName, String acks, int retries, String jaasConfig) {
+  private void initProducer(String bootstrapServers, String producerTopicName, String acks, int retries,
+      String jaasConfig) {
     Properties producerProps = new Properties();
     producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
     producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
@@ -104,17 +115,13 @@ public class TioAdminKafkaMskClientConfig {
       KafkaProducerUtils.init(producer, producerTopicName);
       log.info("Kafka producer initialized, default topicName:{}", producerTopicName);
     } else {
+      KafkaProducerUtils.init(producer);
       log.info("Kafka producer initialized without default topic, dynamic topic mode");
     }
   }
 
   private void initConsumer(String bootstrapServers, String consumerTopicName, String groupId, String autoOffsetReset,
       boolean enableAutoCommit, String jaasConfig) {
-
-    if (StrUtil.isBlank(consumerTopicName)) {
-      log.info("aws.msk.consumer.topic-name is blank, skip Kafka consumer initialization");
-      return;
-    }
 
     if (StrUtil.isBlank(groupId)) {
       log.info("aws.msk.group-id is blank, skip Kafka consumer initialization");
@@ -136,7 +143,13 @@ public class TioAdminKafkaMskClientConfig {
 
     KafkaConsumer<String, String> consumer = new KafkaConsumer<>(consumerProps);
 
-    consumerRunner = new KafkaConsumerRunner(consumer, consumerTopicName);
+    if (StrUtil.isBlank(consumerTopicName)) {
+      log.info("aws.msk.consumer.topic-name is blank");
+      consumerRunner = new KafkaConsumerRunner(consumer, topicConsumer);
+    } else {
+      consumerRunner = new KafkaConsumerRunner(consumer, consumerTopicName, topicConsumer);
+    }
+
     consumerThread = new Thread(consumerRunner, "msk-consumer-thread");
     consumerThread.start();
 
