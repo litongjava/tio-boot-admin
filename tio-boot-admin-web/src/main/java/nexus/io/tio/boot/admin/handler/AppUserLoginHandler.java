@@ -1,0 +1,66 @@
+package nexus.io.tio.boot.admin.handler;
+
+import nexus.io.jfinal.aop.Aop;
+import nexus.io.model.body.RespBodyVo;
+import nexus.io.tio.boot.admin.services.AppUserService;
+import nexus.io.tio.boot.admin.vo.AppUser;
+import nexus.io.tio.boot.admin.vo.AppUserLoginRequest;
+import nexus.io.tio.boot.admin.vo.AppUserLoginVo;
+import nexus.io.tio.boot.http.TioRequestContext;
+import nexus.io.tio.http.common.HttpRequest;
+import nexus.io.tio.http.common.HttpResponse;
+import nexus.io.tio.utils.environment.EnvUtils;
+import nexus.io.tio.utils.json.JsonUtils;
+
+public class AppUserLoginHandler {
+  public HttpResponse login(HttpRequest request) {
+    HttpResponse response = TioRequestContext.getResponse();
+    String body = request.getBodyString();
+    AppUserLoginRequest req = JsonUtils.parse(body, AppUserLoginRequest.class);
+
+    AppUserService appUserService = Aop.get(AppUserService.class);
+    String username = req.getUsername();
+    String email = req.getEmail();
+    if (username == null && email == null) {
+      return response.setJson(RespBodyVo.fail("username and password cannot both be empty"));
+    }
+
+    AppUser user = null;
+    if (username != null) {
+      user = appUserService.getUserByUsername(username);
+    } else if (email != null) {
+      user = appUserService.getUserByEmail(email);
+    }
+
+    // 此处允许未验证邮箱的用户登录
+    if (user != null && appUserService.verifyPassword(user, req.getPassword())) {
+      // 生成 token，有效期 7 天（604800秒）
+      Long timeout = EnvUtils.getLong("app.token.timeout", 604800L);
+      Long tokenTimeout = System.currentTimeMillis() / 1000 + timeout;
+      String userId = user.getId();
+      String token = appUserService.createToken(userId, tokenTimeout);
+      String refreshToken = appUserService.createRefreshToken(userId);
+
+      AppUserLoginVo appUserLoginVo = new AppUserLoginVo(userId, user.getDisplayName(), email, refreshToken, token,
+          tokenTimeout.intValue());
+
+      return response.setJson(RespBodyVo.ok(appUserLoginVo));
+    }
+    return response.setJson(RespBodyVo.fail("username or password is not correct"));
+  }
+
+  public HttpResponse logout(HttpRequest request) {
+    HttpResponse response = TioRequestContext.getResponse();
+    String userId = TioRequestContext.getUserIdString();
+
+    AppUserService appUserService = Aop.get(AppUserService.class);
+    boolean logout = appUserService.logout(userId);
+    if (logout) {
+      response.setJson(RespBodyVo.ok());
+    } else {
+      response.setJson(RespBodyVo.fail());
+    }
+    return response;
+
+  }
+}
