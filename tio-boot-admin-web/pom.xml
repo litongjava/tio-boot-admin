@@ -3,7 +3,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>com.litongjava</groupId>
+    <groupId>nexus.io</groupId>
     <artifactId>tio-boot-admin</artifactId>
     <version>${revision}</version>
   </parent>
@@ -16,7 +16,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-boot-admin-base</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -28,43 +28,43 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-core</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-http-common</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-http-server</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-websocket-client</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
 
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-websocket-server</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>tio-boot</artifactId>
       <version>${tio-boot.version}</version>
     </dependency>
 
 
     <dependency>
-      <groupId>com.litongjava</groupId>
+      <groupId>nexus.io</groupId>
       <artifactId>hotswap-classloader</artifactId>
       <version>${hotswap-classloader.version}</version>
     </dependency>

@@ -13,7 +13,7 @@ import nexus.io.tio.http.server.util.CORSUtils;
 import nexus.io.tio.utils.json.Json;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li
  */
 public class SystemUserHandler {
 

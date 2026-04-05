@@ -11,7 +11,7 @@ import nexus.io.tio.http.server.util.CORSUtils;
 import nexus.io.tio.http.server.util.Resps;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li
  */
 public class AdminUserHandler {
 

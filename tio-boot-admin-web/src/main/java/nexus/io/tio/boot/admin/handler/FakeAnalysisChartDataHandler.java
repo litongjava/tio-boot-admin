@@ -10,7 +10,7 @@ import nexus.io.tio.http.server.util.CORSUtils;
 import nexus.io.tio.utils.hutool.ResourceUtil;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li
  */
 public class FakeAnalysisChartDataHandler {
 

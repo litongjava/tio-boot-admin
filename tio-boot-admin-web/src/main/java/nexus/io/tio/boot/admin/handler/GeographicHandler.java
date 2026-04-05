@@ -8,7 +8,7 @@ import nexus.io.tio.http.server.model.HttpCors;
 import nexus.io.tio.http.server.util.CORSUtils;
 
 /**
- * Created by Tong Li <https://github.com/litongjava>
+ * Created by Tong Li
  */
 public class GeographicHandler {
 
