@@ -39,7 +39,9 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
  */
 public class CloudflareR2Utils {
 
-  // 若你有自己的公开域名（CDN/自定义域名），优先用它拼接公开 URL
+  /**
+   * 若你有自己的公开域名（CDN/自定义域名），优先用它拼接公开 URL
+   */
   public static final String domain = EnvUtils.getStr("R2_BUCKET_DOMAIN");
 
   public static final String bucketName = EnvUtils.getStr("R2_BUCKET_NAME");
@@ -47,53 +49,61 @@ public class CloudflareR2Utils {
   public static final String secretAccessKey = EnvUtils.getStr("R2_SECRET_ACCESS_KEY");
 
   public static final String accountId = EnvUtils.getStr("R2_ACCOUNT_ID");
-  public static final String endpoint = EnvUtils.getStr("R2_ENDPOINT"); // 可直接配置完整 endpoint
-  public static final String regionName = EnvUtils.getStr("R2_REGION"); // 建议 auto
+  public static final String endpoint = EnvUtils.getStr("R2_ENDPOINT");
+  public static final String regionName = EnvUtils.getStr("R2_REGION");
 
   public static final Duration DEFAULT_PRESIGN_EXPIRES = Duration.ofMinutes(30);
+
+  private static final String DEFAULT_REGION = resolveRegion(regionName);
+  private static final String DEFAULT_ENDPOINT = resolveEndpoint();
+
+  private static final AwsCredentialsProvider CREDENTIALS_PROVIDER = resolveCredentialsProvider();
+
+  private static final S3Client S3_CLIENT = createClient(DEFAULT_REGION, DEFAULT_ENDPOINT);
+  private static final S3Presigner PRESIGNER = createPresigner(DEFAULT_REGION, DEFAULT_ENDPOINT);
 
   // -------------------------
   // Upload
   // -------------------------
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
-      String suffix) {
+  public static PutObjectResponse upload(String targetName, byte[] fileContent, String suffix) {
+    return upload(bucketName, targetName, fileContent, suffix);
+  }
+
+  public static PutObjectResponse upload(String bucketName, String targetName, byte[] fileContent, String suffix) {
     try {
       String contentType = ContentTypeUtils.getContentType(suffix);
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
+      PutObjectRequest putOb = PutObjectRequest.builder()
+          .bucket(bucketName)
+          .key(targetName)
+          .contentType(contentType)
           .build();
 
-      return client.putObject(putOb, RequestBody.fromBytes(fileContent));
+      return S3_CLIENT.putObject(putOb, RequestBody.fromBytes(fileContent));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Cloudflare R2 upload failed, bucket=" + bucketName + ", key=" + targetName, e);
     }
   }
 
-  public static PutObjectResponse upload(S3Client client, String targetName, File file) {
-    String name = file.getName();
-    String suffix = FilenameUtils.getSuffix(name);
-    String contentType = ContentTypeUtils.getContentType(suffix);
-    try {
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
-          .build();
-
-      return client.putObject(putOb, RequestBody.fromFile(file));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  public static PutObjectResponse upload(String targetName, File file) {
+    return upload(bucketName, targetName, file);
   }
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, File file) {
+  public static PutObjectResponse upload(String bucketName, String targetName, File file) {
     String name = file.getName();
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
+
     try {
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
+      PutObjectRequest putOb = PutObjectRequest.builder()
+          .bucket(bucketName)
+          .key(targetName)
+          .contentType(contentType)
           .build();
 
-      return client.putObject(putOb, RequestBody.fromFile(file));
+      return S3_CLIENT.putObject(putOb, RequestBody.fromFile(file));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Cloudflare R2 upload failed, bucket=" + bucketName + ", key=" + targetName, e);
     }
   }
 
@@ -106,11 +116,20 @@ public class CloudflareR2Utils {
   }
 
   public static String getUrl(String bucketName, String targetUri) {
-    if (domain != null && domain.length() > 0) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + targetUri;
     }
-    // R2 默认 endpoint 不包含 bucket 子域名；如果你没配置 domain，返回 endpoint + /bucket/key 这种路径形式
-    // 注意：该 URL 不一定“公开可访问”，仅作为展示/记录用；私有桶请用预签名 URL
+
+    String base = DEFAULT_ENDPOINT.endsWith("/") ? DEFAULT_ENDPOINT.substring(0, DEFAULT_ENDPOINT.length() - 1)
+        : DEFAULT_ENDPOINT;
+    return base + "/" + bucketName + "/" + targetUri;
+  }
+
+  public static String getUrl(String regionName, String bucketName, String targetUri) {
+    if (isNotBlank(domain)) {
+      return "https://" + domain + "/" + targetUri;
+    }
+
     String ep = resolveEndpoint();
     String base = ep.endsWith("/") ? ep.substring(0, ep.length() - 1) : ep;
     return base + "/" + bucketName + "/" + targetUri;
@@ -121,11 +140,11 @@ public class CloudflareR2Utils {
   // -------------------------
 
   public static String getPresignedDownloadUrl(String targetUri) {
-    return getPresignedDownloadUrl(bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(DEFAULT_REGION, bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   public static String getPresignedDownloadUrl(String bucket, String targetUri) {
-    return getPresignedDownloadUrl(bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(DEFAULT_REGION, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri) {
@@ -142,18 +161,18 @@ public class CloudflareR2Utils {
 
   public static String getPresignedDownloadUrl(String bucket, String key, Duration expires, String downloadFilename,
       String contentType) {
-    String region = resolveRegion();
-    return getPresignedDownloadUrl(region, bucket, key, expires, downloadFilename, contentType);
+    return getPresignedDownloadUrl(DEFAULT_REGION, bucket, key, expires, downloadFilename, contentType);
   }
 
   /**
    * 生成可下载的预签名 GET URL
    *
-   * @param bucket           bucket name
-   * @param key              object key
-   * @param expires          过期时间
+   * @param regionName region
+   * @param bucket bucket name
+   * @param key object key
+   * @param expires 过期时间
    * @param downloadFilename 下载保存的文件名（可选）
-   * @param contentType      响应 Content-Type（可选）
+   * @param contentType 响应 Content-Type（可选）
    */
   public static String getPresignedDownloadUrl(String regionName, String bucket, String key, Duration expires,
       String downloadFilename, String contentType) {
@@ -162,11 +181,25 @@ public class CloudflareR2Utils {
       expires = DEFAULT_PRESIGN_EXPIRES;
     }
 
-    try (S3Presigner presigner = buildPresigner(regionName)) {
+    String resolvedRegion = resolveRegion(regionName);
+    String resolvedEndpoint = resolveEndpoint();
 
-      GetObjectRequest.Builder getReq = GetObjectRequest.builder().bucket(bucket).key(key);
+    S3Presigner presigner = null;
+    boolean shouldClose = false;
 
-      if (downloadFilename != null && downloadFilename.length() > 0) {
+    try {
+      if (DEFAULT_REGION.equals(resolvedRegion) && DEFAULT_ENDPOINT.equals(resolvedEndpoint)) {
+        presigner = PRESIGNER;
+      } else {
+        presigner = createPresigner(resolvedRegion, resolvedEndpoint);
+        shouldClose = true;
+      }
+
+      GetObjectRequest.Builder getReq = GetObjectRequest.builder()
+          .bucket(bucket)
+          .key(key);
+
+      if (isNotBlank(downloadFilename)) {
         String safe = downloadFilename.replace("\"", "");
         String encoded = URLEncoder.encode(downloadFilename, StandardCharsets.UTF_8).replace("+", "%20");
         String disposition = "attachment; filename=\"" + safe + "\"; filename*=UTF-8''" + encoded;
@@ -175,18 +208,30 @@ public class CloudflareR2Utils {
         getReq.responseContentDisposition("attachment");
       }
 
-      if (contentType != null && contentType.length() > 0) {
+      if (isNotBlank(contentType)) {
         getReq.responseContentType(contentType);
       }
 
-      GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder().signatureDuration(expires)
-          .getObjectRequest(getReq.build()).build();
+      GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+          .signatureDuration(expires)
+          .getObjectRequest(getReq.build())
+          .build();
 
       PresignedGetObjectRequest presigned = presigner.presignGetObject(presignRequest);
       return presigned.url().toString();
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+          "Generate Cloudflare R2 presigned download url failed, region=" + resolvedRegion + ", bucket=" + bucket
+              + ", key=" + key,
+          e);
+    } finally {
+      if (shouldClose && presigner != null) {
+        try {
+          presigner.close();
+        } catch (Exception ignored) {
+        }
+      }
     }
   }
 
@@ -195,67 +240,93 @@ public class CloudflareR2Utils {
   // -------------------------
 
   public static S3Client buildClient() {
+    return S3_CLIENT;
+  }
+
+  public static S3Client buildClient(String regionName) {
+    String resolvedRegion = resolveRegion(regionName);
+    if (DEFAULT_REGION.equals(resolvedRegion)) {
+      return S3_CLIENT;
+    }
+    return createClient(resolvedRegion, DEFAULT_ENDPOINT);
+  }
+
+  public static S3Presigner buildPresigner() {
+    return PRESIGNER;
+  }
+
+  public static S3Presigner buildPresigner(String regionName) {
+    String resolvedRegion = resolveRegion(regionName);
+    if (DEFAULT_REGION.equals(resolvedRegion)) {
+      return PRESIGNER;
+    }
+    return createPresigner(resolvedRegion, DEFAULT_ENDPOINT);
+  }
+
+  private static S3Client createClient(String regionName, String endpoint) {
     validateConfig();
 
     S3ClientBuilder builder = S3Client.builder();
 
-    builder.region(Region.of(resolveRegion()));
-    builder.endpointOverride(URI.create(resolveEndpoint()));
-    builder.credentialsProvider(resolveCredentialsProvider());
+    builder.region(Region.of(regionName));
+    builder.endpointOverride(URI.create(endpoint));
+    builder.credentialsProvider(CREDENTIALS_PROVIDER);
 
-    // R2 常见建议：path-style + 关闭 chunked encoding
     builder.serviceConfiguration(
-        S3Configuration.builder().pathStyleAccessEnabled(true).chunkedEncodingEnabled(false).build());
+        S3Configuration.builder()
+            .pathStyleAccessEnabled(true)
+            .chunkedEncodingEnabled(false)
+            .build());
 
-    // 显式指定 HTTP client（可选，但更可控）
     builder.httpClient(ApacheHttpClient.builder().build());
 
     return builder.build();
   }
 
-  public static S3Presigner buildPresigner() {
-    String region = resolveRegion();
-    return buildPresigner(region);
-  }
-
-  public static S3Presigner buildPresigner(String regionName) {
+  private static S3Presigner createPresigner(String regionName, String endpoint) {
     validateConfig();
 
-    return S3Presigner.builder().region(Region.of(regionName)).endpointOverride(URI.create(resolveEndpoint()))
-        .credentialsProvider(resolveCredentialsProvider()).build();
+    return S3Presigner.builder()
+        .region(Region.of(regionName))
+        .endpointOverride(URI.create(endpoint))
+        .credentialsProvider(CREDENTIALS_PROVIDER)
+        .build();
   }
 
   private static AwsCredentialsProvider resolveCredentialsProvider() {
+    validateConfig();
     AwsBasicCredentials creds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
     return StaticCredentialsProvider.create(creds);
   }
 
   private static String resolveEndpoint() {
-    if (endpoint != null && endpoint.length() > 0) {
+    if (isNotBlank(endpoint)) {
       return endpoint;
     }
-    if (accountId != null && accountId.length() > 0) {
+    if (isNotBlank(accountId)) {
       return "https://" + accountId + ".r2.cloudflarestorage.com";
     }
     throw new IllegalStateException("R2_ENDPOINT or R2_ACCOUNT_ID is empty");
   }
 
-  private static String resolveRegion() {
-    if (regionName != null && regionName.length() > 0) {
+  private static String resolveRegion(String regionName) {
+    if (isNotBlank(regionName)) {
       return regionName;
     }
-    // R2 常用 region = "auto"
     return "auto";
   }
 
   private static void validateConfig() {
-    if (bucketName == null || bucketName.length() == 0) {
+    if (!isNotBlank(bucketName)) {
       throw new IllegalStateException("R2_BUCKET_NAME is empty");
     }
-    if (accessKeyId == null || accessKeyId.length() == 0 || secretAccessKey == null || secretAccessKey.length() == 0) {
+    if (!isNotBlank(accessKeyId) || !isNotBlank(secretAccessKey)) {
       throw new IllegalStateException("R2_ACCESS_KEY_ID / R2_SECRET_ACCESS_KEY is empty");
     }
-    // endpoint/accountId 在 resolveEndpoint() 里校验
+  }
+
+  private static boolean isNotBlank(String str) {
+    return str != null && !str.trim().isEmpty();
   }
 
   public static String getBucketName() {
@@ -266,4 +337,15 @@ public class CloudflareR2Utils {
     return regionName;
   }
 
+  public static void shutdown() {
+    try {
+      PRESIGNER.close();
+    } catch (Exception ignored) {
+    }
+
+    try {
+      S3_CLIENT.close();
+    } catch (Exception ignored) {
+    }
+  }
 }

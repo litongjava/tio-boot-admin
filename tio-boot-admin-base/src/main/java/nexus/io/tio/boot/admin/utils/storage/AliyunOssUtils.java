@@ -21,92 +21,96 @@ import com.aliyun.oss.model.PutObjectResult;
 import com.aliyun.oss.model.ResponseHeaderOverrides;
 
 import nexus.io.tio.utils.environment.EnvUtils;
-import nexus.io.tio.utils.http.ContentTypeUtils;
 import nexus.io.tio.utils.hutool.FilenameUtils;
+import nexus.io.tio.utils.http.ContentTypeUtils;
 
 /**
- * Aliyun OSS 工具类（对齐 AwsS3Utils 的能力）
- * - upload（byte[] / File）
- * - getUrl（公开 URL，仅当 bucket/object 允许公开访问或走自定义域名/CDN）
- * - getPresignedDownloadUrl（私有桶可下载：预签名 GET URL）
- * - buildClient（统一凭证/region/endpoint 构建）
+ * Aliyun OSS 工具类
  */
 public class AliyunOssUtils {
 
   /**
    * URL 模板: https://<bucket>.oss-<region>.aliyuncs.com/<objectKey>
-   * 说明：regionName 一般是类似 cn-hangzhou；endpoint 一般是 https://oss-cn-hangzhou.aliyuncs.com
+   * regionName 一般形如 cn-hangzhou
    */
   public static final String urlFormat = "https://%s.oss-%s.aliyuncs.com/%s";
 
-  // Config
   public static final String bucketName = EnvUtils.get("OSS_BUCKET_NAME");
-  public static final String regionName = EnvUtils.get("OSS_REGION_NAME"); // e.g. cn-hangzhou
-  public static final String endpoint = EnvUtils.get("OSS_ENDPOINT"); // e.g. https://oss-cn-hangzhou.aliyuncs.com
+  public static final String regionName = EnvUtils.get("OSS_REGION_NAME");
+  public static final String endpoint = EnvUtils.get("OSS_ENDPOINT");
   public static final String accessKeyId = EnvUtils.get("OSS_ACCESS_KEY_ID");
   public static final String accessKeySecret = EnvUtils.get("OSS_ACCESS_KEY_SECRET");
 
-  /** 可选：自定义域名 / CDN 域名（和 AwsS3Utils 的 domain 对齐） */
-  public static final String domain = EnvUtils.getStr("OSS_BUCKET_DOMAIN"); // e.g. cdn.example.com
+  /**
+   * 可选：自定义域名 / CDN 域名
+   */
+  public static final String domain = EnvUtils.getStr("OSS_BUCKET_DOMAIN");
 
-  /** 默认预签名有效期（可按需调整） */
+  /**
+   * 默认预签名有效期
+   */
   public static final Duration DEFAULT_PRESIGN_EXPIRES = Duration.ofMinutes(30);
+
+  private static final OSS OSS_CLIENT = createClient(regionName);
 
   // -------------------------
   // Upload
   // -------------------------
 
-  public static PutObjectResult upload(OSS client, String targetName, byte[] fileContent, String suffix) {
-    return upload(client, bucketName, targetName, fileContent, suffix);
+  public static PutObjectResult upload(String targetName, byte[] fileContent, String suffix) {
+    return upload(bucketName, targetName, fileContent, suffix);
   }
 
-  public static PutObjectResult upload(OSS client, String bucketName, String objectKey, byte[] bytes, String suffix) {
+  public static PutObjectResult upload(String bucketName, String objectKey, byte[] bytes, String suffix) {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(bytes.length);
-      if (suffix != null) {
+
+      if (isNotBlank(suffix)) {
         metadata.setContentType(ContentTypeUtils.getContentType(suffix));
       }
 
       PutObjectRequest req = new PutObjectRequest(bucketName, objectKey, new ByteArrayInputStream(bytes), metadata);
-      return client.putObject(req);
+      return OSS_CLIENT.putObject(req);
     } catch (Exception e) {
-      throw new RuntimeException("Aliyun OSS upload error", e);
+      throw new RuntimeException("Aliyun OSS upload failed, bucket=" + bucketName + ", key=" + objectKey, e);
     }
   }
 
-  public static PutObjectResult upload(OSS client, String objectKey, File file) {
-    return upload(client, bucketName, objectKey, file);
+  public static PutObjectResult upload(String objectKey, File file) {
+    return upload(bucketName, objectKey, file);
   }
 
-  public static PutObjectResult upload(OSS client, String bucketName, String objectKey, File file) {
+  public static PutObjectResult upload(String bucketName, String objectKey, File file) {
     String name = file.getName();
-    long length = file.length();
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
+
     try {
       ObjectMetadata metadata = new ObjectMetadata();
-      metadata.setContentLength(length);
-      if (suffix != null) {
+      metadata.setContentLength(file.length());
+
+      if (isNotBlank(suffix)) {
         metadata.setContentType(contentType);
       }
 
       PutObjectRequest req = new PutObjectRequest(bucketName, objectKey, file, metadata);
-      return client.putObject(req);
+      return OSS_CLIENT.putObject(req);
     } catch (Exception e) {
-      throw new RuntimeException("Aliyun OSS upload error", e);
+      throw new RuntimeException("Aliyun OSS upload failed, bucket=" + bucketName + ", key=" + objectKey, e);
     }
   }
 
   // -------------------------
-  // Public URL (only works if bucket/object is public or via domain/CDN)
+  // Public URL
   // -------------------------
+
   public static String getUrl(String objectKey) {
     return getUrl(bucketName, objectKey);
   }
 
   public static String getUrl(String bucket, String objectKey) {
-    if (domain != null) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + objectKey;
     } else {
       return String.format(urlFormat, bucket, regionName, objectKey);
@@ -114,7 +118,7 @@ public class AliyunOssUtils {
   }
 
   public static String getUrl(String regionName, String bucket, String objectKey) {
-    if (domain != null) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + objectKey;
     } else {
       return String.format(urlFormat, bucket, regionName, objectKey);
@@ -122,11 +126,9 @@ public class AliyunOssUtils {
   }
 
   // -------------------------
-  // Presigned Download URL (works for private bucket)
+  // Presigned Download URL
   // -------------------------
-  /**
-   * 生成可下载的预签名 GET URL（默认 30 分钟）
-   */
+
   public static String getPresignedDownloadUrl(String targetUri) {
     return getPresignedDownloadUrl(regionName, bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
@@ -139,19 +141,9 @@ public class AliyunOssUtils {
     return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
-  /**
-   * 生成可下载的预签名 URL（GET）。
-   *
-   * @param bucket           bucket name
-   * @param objectKey        object key（你的 targetName/targetUri）
-   * @param expires          过期时间
-   * @param downloadFilename 下载保存时显示的文件名（可选）
-   * @param contentType      响应 Content-Type（可选）
-   */
   public static String getPresignedDownloadUrl(String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {
     return getPresignedDownloadUrl(regionName, bucket, objectKey, expires, downloadFilename, contentType);
-
   }
 
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
@@ -162,7 +154,17 @@ public class AliyunOssUtils {
         contentType);
   }
 
-  public static String getPresignedDownloadUrl(String region, String bucket, String objectKey, Duration expires,
+  /**
+   * 生成可下载的预签名 URL（GET）
+   *
+   * @param regionName OSS region
+   * @param bucket bucket 名称
+   * @param objectKey 对象 key
+   * @param expires 过期时间
+   * @param downloadFilename 下载保存时显示的文件名，可选
+   * @param contentType 响应 Content-Type，可选
+   */
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {
 
     if (expires == null) {
@@ -172,16 +174,22 @@ public class AliyunOssUtils {
     Date expiration = new Date(System.currentTimeMillis() + expires.toMillis());
 
     OSS client = null;
+    boolean shouldShutdown = false;
+
     try {
-      client = buildClient(region);
+      if (AliyunOssUtils.regionName.equals(regionName)) {
+        client = OSS_CLIENT;
+      } else {
+        client = createClient(regionName);
+        shouldShutdown = true;
+      }
 
       GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucket, objectKey, HttpMethod.GET);
       req.setExpiration(expiration);
 
-      // 设置响应头覆盖：Content-Disposition / Content-Type
       ResponseHeaderOverrides overrides = new ResponseHeaderOverrides();
 
-      if (downloadFilename != null && downloadFilename.length() > 0) {
+      if (isNotBlank(downloadFilename)) {
         String safe = downloadFilename.replace("\"", "");
         String encoded = URLEncoder.encode(downloadFilename, StandardCharsets.UTF_8).replace("+", "%20");
         String disposition = "attachment; filename=\"" + safe + "\"; filename*=UTF-8''" + encoded;
@@ -190,7 +198,7 @@ public class AliyunOssUtils {
         overrides.setContentDisposition("attachment");
       }
 
-      if (contentType != null && contentType.length() > 0) {
+      if (isNotBlank(contentType)) {
         overrides.setContentType(contentType);
       }
 
@@ -200,34 +208,69 @@ public class AliyunOssUtils {
       return url.toString();
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+          "Generate Aliyun OSS presigned download url failed, region=" + regionName + ", bucket=" + bucket + ", key="
+              + objectKey,
+          e);
     } finally {
-      if (client != null) {
-        client.shutdown();
+      if (shouldShutdown && client != null) {
+        try {
+          client.shutdown();
+        } catch (Exception ignored) {
+        }
       }
     }
-  }
-
-  public static OSS buildClient() {
-    return buildClient(regionName);
   }
 
   // -------------------------
   // Client builder
   // -------------------------
+
+  public static OSS buildClient() {
+    return OSS_CLIENT;
+  }
+
   public static OSS buildClient(String regionName) {
+    if (AliyunOssUtils.regionName.equals(regionName)) {
+      return OSS_CLIENT;
+    }
+    return createClient(regionName);
+  }
+
+  private static OSS createClient(String regionName) {
+    if (!isNotBlank(regionName)) {
+      throw new IllegalStateException("OSS_REGION_NAME is empty");
+    }
+    if (!isNotBlank(bucketName)) {
+      throw new IllegalStateException("OSS_BUCKET_NAME is empty");
+    }
+    if (!isNotBlank(endpoint)) {
+      throw new IllegalStateException("OSS_ENDPOINT is empty");
+    }
+    if (!isNotBlank(accessKeyId) || !isNotBlank(accessKeySecret)) {
+      throw new IllegalStateException("OSS_ACCESS_KEY_ID / OSS_ACCESS_KEY_SECRET is empty");
+    }
+
     try {
       ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
       conf.setSignatureVersion(SignVersion.V4);
 
       DefaultCredentialProvider credentialProvider = new DefaultCredentialProvider(accessKeyId, accessKeySecret);
 
-      return OSSClientBuilder.create().endpoint(endpoint).credentialsProvider(credentialProvider)
-          .clientConfiguration(conf).region(regionName).build();
+      return OSSClientBuilder.create()
+          .endpoint(endpoint)
+          .credentialsProvider(credentialProvider)
+          .clientConfiguration(conf)
+          .region(regionName)
+          .build();
 
     } catch (Exception e) {
-      throw new RuntimeException("Failed to build Aliyun OSS client", e);
+      throw new RuntimeException("Failed to build Aliyun OSS client, region=" + regionName, e);
     }
+  }
+
+  private static boolean isNotBlank(String str) {
+    return str != null && !str.trim().isEmpty();
   }
 
   public static String getBucketName() {
@@ -238,4 +281,10 @@ public class AliyunOssUtils {
     return regionName;
   }
 
+  public static void shutdown() {
+    try {
+      OSS_CLIENT.shutdown();
+    } catch (Exception ignored) {
+    }
+  }
 }

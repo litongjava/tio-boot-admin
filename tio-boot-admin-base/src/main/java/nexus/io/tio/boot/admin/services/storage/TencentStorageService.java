@@ -1,7 +1,6 @@
 package nexus.io.tio.boot.admin.services.storage;
 
 import com.jfinal.kit.StrKit;
-import com.qcloud.cos.COSClient;
 
 import lombok.extern.slf4j.Slf4j;
 import nexus.io.db.TableInput;
@@ -85,7 +84,7 @@ public class TencentStorageService implements StorageService {
     String originFilename = record.getStr("fielename");
     String md5 = record.getStr("md5");
     Long size = record.getLong("size");
-    
+
     UploadResult uploadResult = new UploadResult(id, originFilename, size, url, md5);
     uploadResult.setTargetName(target_name);
     return uploadResult;
@@ -105,18 +104,7 @@ public class TencentStorageService implements StorageService {
     String bucketName = systemTxCosConfig.getBucketName();
 
     String etag = null;
-    COSClient cosClient = null;
-    try {
-      cosClient = TencentCOSUtils.buildClient();
-      etag = TencentCOSUtils.upload(cosClient, targetName, fileContent, suffix).getETag();
-    } catch (Exception e) {
-      log.error("Error uploading file", e);
-      throw new RuntimeException(e);
-    } finally {
-      if (cosClient != null) {
-        cosClient.shutdown();
-      }
-    }
+    etag = TencentCOSUtils.upload(targetName, fileContent, suffix).getETag();
 
     // Log and save to database
     log.info("Uploaded to COS with ETag: {}", etag);

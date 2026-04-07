@@ -48,49 +48,49 @@ public class TencentCOSUtils {
   /** 默认预签名有效期 */
   public static final Duration DEFAULT_PRESIGN_EXPIRES = Duration.ofMinutes(30);
 
+  private static final COSClient COS_CLIENT = createClient(regionName);
+
   // -------------------------
   // Upload
   // -------------------------
 
-  public static PutObjectResult upload(COSClient cosClient, String targetName, byte[] fileContent, String suffix) {
-    return upload(cosClient, bucketName, targetName, fileContent, suffix);
+  public static PutObjectResult upload(String targetName, byte[] fileContent, String suffix) {
+    return upload(bucketName, targetName, fileContent, suffix);
   }
 
   /**
    * 上传字节数组
    *
-   * @param client    COSClient
-   * @param bucket    bucket 名称（注意：腾讯 COS bucket 通常包含 appid 后缀，如 xxx-1250000000）
+   * @param bucket    bucket 名称（通常包含 appid 后缀，如 xxx-1250000000）
    * @param objectKey 对象 key
    * @param bytes     文件内容
    * @param suffix    后缀（用于推断 Content-Type）
    */
-  public static PutObjectResult upload(COSClient client, String bucket, String objectKey, byte[] bytes, String suffix) {
+  public static PutObjectResult upload(String bucket, String objectKey, byte[] bytes, String suffix) {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(bytes.length);
 
-      if (suffix != null && suffix.length() > 0) {
+      if (isNotBlank(suffix)) {
         metadata.setContentType(ContentTypeUtils.getContentType(suffix));
       }
 
       ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
       PutObjectRequest req = new PutObjectRequest(bucket, objectKey, inputStream, metadata);
-      PutObjectResult putObject = client.putObject(req);
-      return putObject;
+      return COS_CLIENT.putObject(req);
     } catch (Exception e) {
-      throw new RuntimeException("Tencent COS upload error", e);
+      throw new RuntimeException("Tencent COS upload failed, bucket=" + bucket + ", key=" + objectKey, e);
     }
   }
 
   /**
    * 上传 File
    */
-  public static PutObjectResult upload(COSClient client, String objectKey, File file) {
-    return upload(client, bucketName, objectKey, file);
+  public static PutObjectResult upload(String objectKey, File file) {
+    return upload(bucketName, objectKey, file);
   }
 
-  public static PutObjectResult upload(COSClient client, String bucket, String objectKey, File file) {
+  public static PutObjectResult upload(String bucket, String objectKey, File file) {
     String name = file.getName();
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
@@ -98,16 +98,17 @@ public class TencentCOSUtils {
     try {
       ObjectMetadata metadata = new ObjectMetadata();
       metadata.setContentLength(file.length());
-      if (suffix != null && suffix.length() > 0) {
+
+      if (isNotBlank(suffix)) {
         metadata.setContentType(contentType);
       }
 
       PutObjectRequest req = new PutObjectRequest(bucket, objectKey, file);
       req.setMetadata(metadata);
 
-      return client.putObject(req);
+      return COS_CLIENT.putObject(req);
     } catch (Exception e) {
-      throw new RuntimeException("Tencent COS upload error", e);
+      throw new RuntimeException("Tencent COS upload failed, bucket=" + bucket + ", key=" + objectKey, e);
     }
   }
 
@@ -120,14 +121,14 @@ public class TencentCOSUtils {
   }
 
   public static String getUrl(String bucket, String objectKey) {
-    if (domain != null && domain.length() > 0) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + objectKey;
     }
     return String.format(urlFormat, bucket, regionName, objectKey);
   }
 
   public static String getUrl(String regionName, String bucket, String objectKey) {
-    if (domain != null && domain.length() > 0) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + objectKey;
     }
     return String.format(urlFormat, bucket, regionName, objectKey);
@@ -138,15 +139,15 @@ public class TencentCOSUtils {
   // -------------------------
 
   public static String getPresignedDownloadUrl(String objectKey) {
-    return getPresignedDownloadUrl(bucketName, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(regionName, bucketName, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   public static String getPresignedDownloadUrl(String bucket, String objectKey) {
-    return getPresignedDownloadUrl(bucket, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
+    return getPresignedDownloadUrl(regionName, bucket, objectKey, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
-  public static String getPresignedDownloadUrl(String region_name, String bucket, String targetName) {
-    return getPresignedDownloadUrl(region_name, bucket, targetName, DEFAULT_PRESIGN_EXPIRES, null, null);
+  public static String getPresignedDownloadUrl(String regionName, String bucket, String targetName) {
+    return getPresignedDownloadUrl(regionName, bucket, targetName, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
 
   public static String getPresignedDownloadUrl(String bucket, String objectKey, Duration expires,
@@ -165,6 +166,7 @@ public class TencentCOSUtils {
   /**
    * 生成可下载的预签名 URL（GET）。
    *
+   * @param regionName       COS region
    * @param bucket           bucket 名称
    * @param objectKey        对象 key
    * @param expires          过期时间
@@ -179,16 +181,22 @@ public class TencentCOSUtils {
     }
 
     COSClient client = null;
+    boolean shouldShutdown = false;
+
     try {
-      client = buildClient(regionName);
+      if (TencentCOSUtils.regionName.equals(regionName)) {
+        client = COS_CLIENT;
+      } else {
+        client = createClient(regionName);
+        shouldShutdown = true;
+      }
 
       Date expiration = new Date(System.currentTimeMillis() + expires.toMillis());
 
       GeneratePresignedUrlRequest req = new GeneratePresignedUrlRequest(bucket, objectKey, HttpMethodName.GET);
       req.setExpiration(expiration);
 
-      // 让浏览器下载，并兼容中文文件名
-      if (downloadFilename != null && downloadFilename.length() > 0) {
+      if (isNotBlank(downloadFilename)) {
         String safe = downloadFilename.replace("\"", "");
         String encoded = URLEncoder.encode(downloadFilename, StandardCharsets.UTF_8).replace("+", "%20");
         String disposition = "attachment; filename=\"" + safe + "\"; filename*=UTF-8''" + encoded;
@@ -197,7 +205,7 @@ public class TencentCOSUtils {
         req.putCustomRequestHeader("response-content-disposition", "attachment");
       }
 
-      if (contentType != null && contentType.length() > 0) {
+      if (isNotBlank(contentType)) {
         req.putCustomRequestHeader("response-content-type", contentType);
       }
 
@@ -205,10 +213,16 @@ public class TencentCOSUtils {
       return url.toString();
 
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+          "Generate Tencent COS presigned download url failed, region=" + regionName + ", bucket=" + bucket
+              + ", key=" + objectKey,
+          e);
     } finally {
-      if (client != null) {
-        client.shutdown();
+      if (shouldShutdown && client != null) {
+        try {
+          client.shutdown();
+        } catch (Exception ignored) {
+        }
       }
     }
   }
@@ -218,17 +232,24 @@ public class TencentCOSUtils {
   // -------------------------
 
   public static COSClient buildClient() {
-    return buildClient();
+    return COS_CLIENT;
   }
 
   public static COSClient buildClient(String regionName) {
-    if (regionName == null || regionName.length() == 0) {
+    if (TencentCOSUtils.regionName.equals(regionName)) {
+      return COS_CLIENT;
+    }
+    return createClient(regionName);
+  }
+
+  private static COSClient createClient(String regionName) {
+    if (!isNotBlank(regionName)) {
       throw new IllegalStateException("TENCENT_COS_REGION_NAME is empty");
     }
-    if (bucketName == null || bucketName.length() == 0) {
+    if (!isNotBlank(bucketName)) {
       throw new IllegalStateException("TENCENT_COS_BUCKET_NAME is empty");
     }
-    if (secretId == null || secretId.length() == 0 || secretKey == null || secretKey.length() == 0) {
+    if (!isNotBlank(secretId) || !isNotBlank(secretKey)) {
       throw new IllegalStateException("TENCENT_COS_SECRET_ID / TENCENT_COS_SECRET_KEY is empty");
     }
 
@@ -241,6 +262,10 @@ public class TencentCOSUtils {
     return new COSClient(cred, clientConfig);
   }
 
+  private static boolean isNotBlank(String str) {
+    return str != null && !str.trim().isEmpty();
+  }
+
   public static String getBucketName() {
     return bucketName;
   }
@@ -249,4 +274,10 @@ public class TencentCOSUtils {
     return regionName;
   }
 
+  public static void shutdown() {
+    try {
+      COS_CLIENT.shutdown();
+    } catch (Exception ignored) {
+    }
+  }
 }

@@ -24,31 +24,16 @@ public class StorageUploadService {
     String downloadUrl = null;
     String etag = null;
     if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
-      try (S3Client client = AwsS3Utils.buildClient();) {
-        PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, new File(localFile));
-        etag = response.eTag();
-        downloadUrl = AwsS3Utils.getUrl(AwsS3Utils.bucketName, targetName);
-        uploadResultVo.setEtag(etag).setUrl(downloadUrl);
-      } catch (Exception e) {
-        log.error(e.getMessage(), e);
-      }
+      PutObjectResponse response = AwsS3Utils.upload(AwsS3Utils.bucketName, targetName, new File(localFile));
+      etag = response.eTag();
+      downloadUrl = AwsS3Utils.getUrl(AwsS3Utils.bucketName, targetName);
+      uploadResultVo.setEtag(etag).setUrl(downloadUrl);
 
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
-      OSS client = null;
-      try {
-        client = AliyunOssUtils.buildClient();
-        PutObjectResult response = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, new File(localFile));
-        etag = response.getETag();
-        downloadUrl = AliyunOssUtils.getUrl(AliyunOssUtils.bucketName, targetName);
-        uploadResultVo.setEtag(etag).setUrl(downloadUrl);
-
-      } catch (Exception e) {
-        log.error(e.getMessage(), e);
-      } finally {
-        if (client != null) {
-          client.shutdown();
-        }
-      }
+      PutObjectResult response = AliyunOssUtils.upload(AliyunOssUtils.bucketName, targetName, new File(localFile));
+      etag = response.getETag();
+      downloadUrl = AliyunOssUtils.getUrl(AliyunOssUtils.bucketName, targetName);
+      uploadResultVo.setEtag(etag).setUrl(downloadUrl);
 
     }
 
@@ -64,7 +49,8 @@ public class StorageUploadService {
       try (S3Client client = AwsS3Utils.buildClient();) {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
-          PutObjectResponse response = AwsS3Utils.upload(client, uploadInput.targetName, new File(uploadInput.localFilePath));
+          PutObjectResponse response = AwsS3Utils.upload(client, uploadInput.targetName,
+              new File(uploadInput.localFilePath));
           etag = response.eTag();
           downloadUrl = AwsS3Utils.getUrl(uploadInput.targetName);
           UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
@@ -81,7 +67,8 @@ public class StorageUploadService {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
           client = AliyunOssUtils.buildClient();
-          PutObjectResult response = AliyunOssUtils.upload(client, uploadInput.targetName, new File(uploadInput.localFilePath));
+          PutObjectResult response = AliyunOssUtils.upload(client, uploadInput.targetName,
+              new File(uploadInput.localFilePath));
           etag = response.getETag();
           downloadUrl = AliyunOssUtils.getUrl(uploadInput.targetName);
           UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);

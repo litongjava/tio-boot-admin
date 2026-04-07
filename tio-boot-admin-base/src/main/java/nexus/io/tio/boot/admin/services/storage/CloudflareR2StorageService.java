@@ -21,7 +21,6 @@ import nexus.io.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import nexus.io.tio.utils.crypto.Md5Utils;
 import nexus.io.tio.utils.hutool.FilenameUtils;
 import nexus.io.tio.utils.snowflake.SnowflakeIdUtils;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
@@ -87,15 +86,9 @@ public class CloudflareR2StorageService implements StorageService {
       log.info("not found from cache table:{}", md5);
     }
 
-    String etag = null;
-    try (S3Client client = CloudflareR2Utils.buildClient();) {
-      PutObjectResponse response = CloudflareR2Utils.upload(client, CloudflareR2Utils.bucketName, targetName,
-          fileContent, suffix);
-      etag = response.eTag();
-    } catch (Exception e) {
-      log.error("Error uploading file", e);
-      throw new RuntimeException(e);
-    }
+    PutObjectResponse response = CloudflareR2Utils.upload(CloudflareR2Utils.bucketName, targetName, fileContent,
+        suffix);
+    String etag = response.eTag();
 
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);

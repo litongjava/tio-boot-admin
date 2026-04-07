@@ -16,7 +16,6 @@ import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.S3ClientBuilder;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -24,6 +23,9 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequest;
 
+/**
+ * Tong Li
+ */
 public class AwsS3Utils {
 
   public static final String urlFormat = "https://%s.s3.%s.amazonaws.com/%s";
@@ -37,90 +39,86 @@ public class AwsS3Utils {
 
   public static final Duration DEFAULT_PRESIGN_EXPIRES = Duration.ofMinutes(30);
 
+  private static final Region REGION = Region.of(regionName);
+  private static final AwsCredentialsProvider CREDENTIALS_PROVIDER = resolveCredentialsProvider();
+
+  private static final S3Client S3_CLIENT = S3Client.builder().region(REGION).credentialsProvider(CREDENTIALS_PROVIDER)
+      .build();
+
+  private static final S3Presigner PRESIGNER = S3Presigner.builder().region(REGION)
+      .credentialsProvider(CREDENTIALS_PROVIDER).build();
+
   // -------------------------
   // Upload
   // -------------------------
 
-  public static PutObjectResponse upload(S3Client client, String targetName, byte[] fileContent, String suffix) {
-    // TODO Auto-generated method stub
-    return upload(client, bucketName, targetName, fileContent, suffix);
+  public static PutObjectResponse upload(String targetName, byte[] fileContent, String suffix) {
+    return upload(bucketName, targetName, fileContent, suffix);
   }
 
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, byte[] fileContent,
-      String suffix) {
+  public static PutObjectResponse upload(String bucketName, String targetName, byte[] fileContent, String suffix) {
     try {
       String contentType = ContentTypeUtils.getContentType(suffix);
       PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
           .build();
 
-      return client.putObject(putOb, RequestBody.fromBytes(fileContent));
+      return S3_CLIENT.putObject(putOb, RequestBody.fromBytes(fileContent));
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("S3 upload failed, bucket=" + bucketName + ", key=" + targetName, e);
     }
   }
 
-  public static PutObjectResponse upload(S3Client client, String targetName, File file) {
+  public static PutObjectResponse upload(String targetName, File file) {
+    return upload(bucketName, targetName, file);
+  }
+
+  public static PutObjectResponse upload(String bucketName, String targetName, File file) {
     String name = file.getName();
     String suffix = FilenameUtils.getSuffix(name);
     String contentType = ContentTypeUtils.getContentType(suffix);
+
     try {
       PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
           .build();
 
-      return client.putObject(putOb, RequestBody.fromFile(file));
+      return S3_CLIENT.putObject(putOb, RequestBody.fromFile(file));
     } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public static PutObjectResponse upload(S3Client client, String bucketName, String targetName, File file) {
-    String name = file.getName();
-    String suffix = FilenameUtils.getSuffix(name);
-    String contentType = ContentTypeUtils.getContentType(suffix);
-    try {
-      PutObjectRequest putOb = PutObjectRequest.builder().bucket(bucketName).key(targetName).contentType(contentType)
-          .build();
-
-      return client.putObject(putOb, RequestBody.fromFile(file));
-    } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("S3 upload failed, bucket=" + bucketName + ", key=" + targetName, e);
     }
   }
 
   // -------------------------
-  // Public URL (only works if bucket/object is public or via domain/CDN)
+  // Public URL
   // -------------------------
+
   public static String getUrl(String targetUri) {
-    if (domain != null) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + targetUri;
     } else {
-      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
+      return String.format(urlFormat, bucketName, regionName, targetUri);
     }
   }
 
   public static String getUrl(String bucketName, String targetUri) {
-    if (domain != null) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + targetUri;
     } else {
-      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
+      return String.format(urlFormat, bucketName, regionName, targetUri);
     }
   }
 
   public static String getUrl(String regionName, String bucketName, String targetUri) {
-    if (domain != null) {
+    if (isNotBlank(domain)) {
       return "https://" + domain + "/" + targetUri;
     } else {
-      return String.format(AwsS3Utils.urlFormat, bucketName, regionName, targetUri);
+      return String.format(urlFormat, bucketName, regionName, targetUri);
     }
   }
 
   // -------------------------
-  // Presigned Download URL (works for private bucket)
+  // Presigned Download URL
   // -------------------------
-  /**
-   * 生成可下载的预签名 GET URL（默认 30 分钟）。
-   * 适用于 bucket 私有的场景。
-   */
+
   public static String getPresignedDownloadUrl(String targetUri) {
     return getPresignedDownloadUrl(regionName, bucketName, targetUri, DEFAULT_PRESIGN_EXPIRES, null, null);
   }
@@ -148,11 +146,12 @@ public class AwsS3Utils {
   }
 
   /**
-   * @param bucket  bucket name
-   * @param key     object key (targetUri/targetName)
-   * @param expires 过期时间（S3 限制：最大 7 天）
-   * @param downloadFilename 让浏览器下载时显示的文件名（可选）
-   * @param contentType      响应 Content-Type（可选）
+   * @param regionName       AWS region
+   * @param bucket           bucket name
+   * @param key              object key
+   * @param expires          过期时间（S3 限制最大 7 天）
+   * @param downloadFilename 下载文件名，可选
+   * @param contentType      响应 Content-Type，可选
    */
   public static String getPresignedDownloadUrl(String regionName, String bucket, String key, Duration expires,
       String downloadFilename, String contentType) {
@@ -160,12 +159,10 @@ public class AwsS3Utils {
       expires = DEFAULT_PRESIGN_EXPIRES;
     }
 
-    try (S3Presigner presigner = buildPresigner(regionName)) {
-
+    try {
       GetObjectRequest.Builder getReqBuilder = GetObjectRequest.builder().bucket(bucket).key(key);
 
-      if (downloadFilename != null && downloadFilename.length() > 0) {
-        // 同时兼容普通 filename 与 RFC5987 filename*
+      if (isNotBlank(downloadFilename)) {
         String safe = downloadFilename.replace("\"", "");
         String encoded = URLEncoder.encode(downloadFilename, StandardCharsets.UTF_8).replace("+", "%20");
         String disposition = "attachment; filename=\"" + safe + "\"; filename*=UTF-8''" + encoded;
@@ -174,57 +171,54 @@ public class AwsS3Utils {
         getReqBuilder.responseContentDisposition("attachment");
       }
 
-      if (contentType != null && contentType.length() > 0) {
+      if (isNotBlank(contentType)) {
         getReqBuilder.responseContentType(contentType);
       }
 
       GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder().signatureDuration(expires)
           .getObjectRequest(getReqBuilder.build()).build();
 
-      PresignedGetObjectRequest presigned = presigner.presignGetObject(presignRequest);
+      PresignedGetObjectRequest presigned = PRESIGNER.presignGetObject(presignRequest);
       return presigned.url().toString();
-
     } catch (Exception e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException(
+          "Generate presigned download url failed, region=" + regionName + ", bucket=" + bucket + ", key=" + key, e);
     }
   }
 
   // -------------------------
   // Client / Presigner builders
   // -------------------------
+
   public static S3Client buildClient() {
-    S3ClientBuilder builder = S3Client.builder();
-
-    Region region = Region.of(regionName);
-    builder.region(region);
-
-    AwsCredentialsProvider credentialsProvider = resolveCredentialsProvider();
-
-    return builder.credentialsProvider(credentialsProvider).build();
+    return S3_CLIENT;
   }
 
   public static S3Presigner buildPresigner() {
-    return buildPresigner(regionName);
+    return PRESIGNER;
   }
 
   public static S3Presigner buildPresigner(String regionName) {
-    Region region = Region.of(regionName);
-    AwsCredentialsProvider credentialsProvider = resolveCredentialsProvider();
+    if (AwsS3Utils.regionName.equals(regionName)) {
+      return PRESIGNER;
+    }
 
-    return S3Presigner.builder().region(region).credentialsProvider(credentialsProvider).build();
+    return S3Presigner.builder().region(Region.of(regionName)).credentialsProvider(CREDENTIALS_PROVIDER).build();
   }
 
   private static AwsCredentialsProvider resolveCredentialsProvider() {
-    AwsCredentialsProvider credentialsProvider;
-    if (accessKeyId != null && secretAccessKey != null) {
+    if (isNotBlank(accessKeyId) && isNotBlank(secretAccessKey)) {
       AwsBasicCredentials awsCreds = AwsBasicCredentials.create(accessKeyId, secretAccessKey);
-      credentialsProvider = StaticCredentialsProvider.create(awsCreds);
-    } else if (AWS_PROFILE != null) {
-      credentialsProvider = ProfileCredentialsProvider.create(AWS_PROFILE);
+      return StaticCredentialsProvider.create(awsCreds);
+    } else if (isNotBlank(AWS_PROFILE)) {
+      return ProfileCredentialsProvider.create(AWS_PROFILE);
     } else {
-      credentialsProvider = DefaultCredentialsProvider.create();
+      return DefaultCredentialsProvider.create();
     }
-    return credentialsProvider;
+  }
+
+  private static boolean isNotBlank(String str) {
+    return str != null && !str.trim().isEmpty();
   }
 
   public static String getBucketName() {
@@ -235,4 +229,15 @@ public class AwsS3Utils {
     return regionName;
   }
 
+  public static void shutdown() {
+    try {
+      PRESIGNER.close();
+    } catch (Exception ignored) {
+    }
+
+    try {
+      S3_CLIENT.close();
+    } catch (Exception ignored) {
+    }
+  }
 }

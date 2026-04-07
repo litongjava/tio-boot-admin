@@ -81,18 +81,7 @@ public class AliyunStorageService implements StorageService {
 
     String etag = null;
 
-    OSS client = null;
-    try {
-      client = AliyunOssUtils.buildClient();
-      etag = AliyunOssUtils.upload(client, AliyunOssUtils.bucketName, targetName, fileContent, suffix).getETag();
-    } catch (Exception e) {
-      log.error("Error uploading file", e);
-      throw new RuntimeException(e);
-    } finally {
-      if (client != null) {
-        client.shutdown();
-      }
-    }
+    etag = AliyunOssUtils.upload(AliyunOssUtils.bucketName, targetName, fileContent, suffix).getETag();
 
     // 记录入库
     log.info("Uploaded to Aliyun OSS with ETag: {}", etag);

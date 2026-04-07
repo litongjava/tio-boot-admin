@@ -88,13 +88,8 @@ public class AwsS3StorageService implements StorageService {
     }
 
     String etag = null;
-    try (S3Client client = AwsS3Utils.buildClient();) {
-      PutObjectResponse response = AwsS3Utils.upload(client, AwsS3Utils.bucketName, targetName, fileContent, suffix);
-      etag = response.eTag();
-    } catch (Exception e) {
-      log.error("Error uploading file", e);
-      throw new RuntimeException(e);
-    }
+    PutObjectResponse response = AwsS3Utils.upload(AwsS3Utils.bucketName, targetName, fileContent, suffix);
+    etag = response.eTag();
 
     // Log and save to database
     log.info("Uploaded with ETag: {}", etag);
