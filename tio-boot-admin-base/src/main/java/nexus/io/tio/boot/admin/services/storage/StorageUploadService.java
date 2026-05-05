@@ -12,6 +12,8 @@ import nexus.io.model.upload.UploadResult;
 import nexus.io.tio.boot.admin.consts.StoragePlatformConst;
 import nexus.io.tio.boot.admin.utils.storage.AliyunOssUtils;
 import nexus.io.tio.boot.admin.utils.storage.AwsS3Utils;
+import nexus.io.tio.boot.admin.utils.storage.CloudflareR2Utils;
+import nexus.io.tio.boot.admin.utils.storage.TencentCOSUtils;
 import nexus.io.tio.boot.admin.vo.UploadInput;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
@@ -35,6 +37,21 @@ public class StorageUploadService {
       downloadUrl = AliyunOssUtils.getUrl(AliyunOssUtils.bucketName, targetName);
       uploadResultVo.setEtag(etag).setUrl(downloadUrl);
 
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+
+      com.qcloud.cos.model.PutObjectResult response = TencentCOSUtils.upload(TencentCOSUtils.bucketName, targetName,
+          new File(localFile));
+      etag = response.getETag();
+      downloadUrl = AliyunOssUtils.getUrl(TencentCOSUtils.bucketName, targetName);
+      uploadResultVo.setEtag(etag).setUrl(downloadUrl);
+
+    } else if (StoragePlatformConst.cloudflare_r2.equals(storagePlatform)) {
+      PutObjectResponse response = CloudflareR2Utils.upload(CloudflareR2Utils.bucketName, targetName,
+          new File(localFile));
+      etag = response.eTag();
+      downloadUrl = AliyunOssUtils.getUrl(CloudflareR2Utils.bucketName, targetName);
+      uploadResultVo.setEtag(etag).setUrl(downloadUrl);
+
     }
 
     return uploadResultVo;
@@ -49,8 +66,7 @@ public class StorageUploadService {
       try (S3Client client = AwsS3Utils.buildClient();) {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
-          PutObjectResponse response = AwsS3Utils.upload(client, uploadInput.targetName,
-              new File(uploadInput.localFilePath));
+          PutObjectResponse response = AwsS3Utils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
           etag = response.eTag();
           downloadUrl = AwsS3Utils.getUrl(uploadInput.targetName);
           UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
@@ -66,9 +82,7 @@ public class StorageUploadService {
       try {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
-          client = AliyunOssUtils.buildClient();
-          PutObjectResult response = AliyunOssUtils.upload(client, uploadInput.targetName,
-              new File(uploadInput.localFilePath));
+          PutObjectResult response = AliyunOssUtils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
           etag = response.getETag();
           downloadUrl = AliyunOssUtils.getUrl(uploadInput.targetName);
           UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
@@ -76,12 +90,37 @@ public class StorageUploadService {
         }
       } catch (Exception e) {
         log.error(e.getMessage(), e);
-      } finally {
-        if (client != null) {
-          client.shutdown();
-        }
       }
-
+    } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
+      try {
+        for (int i = 0; i < uploadFiles.size(); i++) {
+          UploadInput uploadInput = uploadFiles.get(i);
+          
+          com.qcloud.cos.model.PutObjectResult response = TencentCOSUtils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
+          etag = response.getETag();
+          downloadUrl = TencentCOSUtils.getUrl(uploadInput.targetName);
+          UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
+          result.add(uploadResultVo);
+        }
+      } catch (Exception e) {
+        log.error(e.getMessage(), e);
+      }
+      
+    } else if (StoragePlatformConst.cloudflare_r2.equals(storagePlatform)) {
+      try {
+        for (int i = 0; i < uploadFiles.size(); i++) {
+          UploadInput uploadInput = uploadFiles.get(i);
+          
+          
+          PutObjectResponse response = CloudflareR2Utils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
+          etag = response.eTag();
+          downloadUrl = CloudflareR2Utils.getUrl(uploadInput.targetName);
+          UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
+          result.add(uploadResultVo);
+        }
+      } catch (Exception e) {
+        log.error(e.getMessage(), e);
+      }
     }
     return result;
   }
