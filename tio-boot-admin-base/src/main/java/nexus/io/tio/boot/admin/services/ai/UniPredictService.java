@@ -49,12 +49,8 @@ public class UniPredictService {
     Exception lastException = null;
 
     // 1) 选择全局冷却 key：沿用 PredictService 的思路（apiKey 维度）
-    // 若 apiKey 为空，可降级为 platform 维度，避免 NPE
     String serviceKey = uniChatRequest.getApiKey();
     String platform = uniChatRequest.getPlatform();
-    if (serviceKey == null || serviceKey.isEmpty()) {
-      serviceKey = platform;
-    }
 
     Long taskId = uniChatRequest.getTaskId();
     String taskName = uniChatRequest.getTaskName();
@@ -62,7 +58,7 @@ public class UniPredictService {
       String model = uniChatRequest.getModel();
       try {
         // 2) 全局冷却：避免并发场景下的 429 风暴
-        if (isNeedCooldown(platform)) {
+        if (serviceKey != null) {
           apiCooldownManager.enforceCooldown(serviceKey);
         }
 
@@ -121,7 +117,7 @@ public class UniPredictService {
 
         // 9) 如果是 Gemini 429：更新全局冷却
         if (ModelPlatformName.GOOGLE.equals(platform) && statusCode != null && statusCode == 429) {
-          if (isNeedCooldown(platform)) {
+          if (serviceKey != null) {
             apiCooldownManager.recordCooldown(serviceKey, retryDelayMillis);
           }
         }
@@ -166,19 +162,6 @@ public class UniPredictService {
       throw new RuntimeException("Failed to generate after retries. taskId=" + taskId, lastException);
     }
     return null;
-  }
-
-  private boolean isNeedCooldown(String platform) {
-    if (ModelPlatformName.OPENROUTER.equals(platform)) {
-      return false;
-    } else if (ModelPlatformName.EXCHANGE_TOKEN.equals(platform)
-        //
-        || ModelPlatformName.EXCHANGE_TOKEN_GOOGLE.equals(platform)
-        //
-        || ModelPlatformName.EXCHANGE_TOKEN_US.equals(platform)) {
-      return false;
-    }
-    return true;
   }
 
   private void applyChinaProxyIfNeeded(UniChatRequest uniChatRequest) {
