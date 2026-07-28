@@ -12,6 +12,7 @@ import com.alibaba.fastjson2.JSONObject;
 
 import nexus.io.api.ApiCooldownManager;
 import nexus.io.chat.UniChatClient;
+import nexus.io.chat.UniChatEventListener;
 import nexus.io.chat.UniChatRequest;
 import nexus.io.chat.UniChatResponse;
 import nexus.io.consts.ModelPlatformName;
@@ -344,6 +345,11 @@ public class UniPredictService {
   }
 
   public EventSource stream(UniChatRequest uniChatRequest, EventSourceListener listener) {
+    applyChinaProxyIfNeeded(uniChatRequest);
+    return UniChatClient.stream(uniChatRequest, listener);
+  }
+  
+  public EventSource stream(UniChatRequest uniChatRequest, UniChatEventListener listener) {
     applyChinaProxyIfNeeded(uniChatRequest);
     return UniChatClient.stream(uniChatRequest, listener);
   }
