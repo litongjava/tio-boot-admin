@@ -148,10 +148,8 @@ public class AliyunOssUtils {
 
   public static String getPresignedDownloadUrl(String regionName, String bucket, String targetUri,
       String downloadFilename) {
-    String suffix = FilenameUtils.getSuffix(downloadFilename);
-    String contentType = ContentTypeUtils.getContentType(suffix);
-    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename,
-        contentType);
+    // Use the object Content-Type stored at upload; OSS rejects response-content-type.
+    return getPresignedDownloadUrl(regionName, bucket, targetUri, DEFAULT_PRESIGN_EXPIRES, downloadFilename, null);
   }
 
   /**
@@ -162,7 +160,7 @@ public class AliyunOssUtils {
    * @param objectKey 对象 key
    * @param expires 过期时间
    * @param downloadFilename 下载保存时显示的文件名，可选
-   * @param contentType 响应 Content-Type，可选
+   * @param contentType 保留用于兼容旧调用；OSS GET 不支持覆盖 Content-Type，此参数不再使用
    */
   public static String getPresignedDownloadUrl(String regionName, String bucket, String objectKey, Duration expires,
       String downloadFilename, String contentType) {
@@ -198,9 +196,7 @@ public class AliyunOssUtils {
         overrides.setContentDisposition("attachment");
       }
 
-      if (isNotBlank(contentType)) {
-        overrides.setContentType(contentType);
-      }
+      // OSS GET does not support response-content-type overrides.
 
       req.setResponseHeaders(overrides);
 

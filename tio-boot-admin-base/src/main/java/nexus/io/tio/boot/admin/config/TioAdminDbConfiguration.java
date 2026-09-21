@@ -58,6 +58,8 @@ public class TioAdminDbConfiguration {
     config.setUsername(jdbcUser);
     config.setPassword(jdbcPswd);
     config.setMaximumPoolSize(maximumPoolSize);
+    String connectionInitSql = EnvUtils.get("jdbc.connectionInitSql");
+    if (connectionInitSql != null && !connectionInitSql.trim().isEmpty()) config.setConnectionInitSql(connectionInitSql);
 
     HikariDataSource hikariDataSource = new HikariDataSource(config);
 

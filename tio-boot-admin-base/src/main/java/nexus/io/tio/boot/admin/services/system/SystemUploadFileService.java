@@ -109,7 +109,7 @@ public class SystemUploadFileService {
     Kv kv = record.toKv();
     kv.set("url", url);
     kv.set("md5", md5);
-    String originFilename = record.getStr("filename");
+    String originFilename = record.getStr("name");
     Long size = record.getLong("size");
     return new UploadResult(id, originFilename, size, url, md5);
   }
@@ -129,7 +129,7 @@ public class SystemUploadFileService {
       String target_name = record.getStr("target_name");
 
       String url = this.getUrl(platform, region_name, bucket_name, target_name);
-      String originFilename = record.getStr("fielename");
+      String originFilename = record.getStr("name");
       String md5 = record.getStr("md5");
       Long size = record.getLong("size");
       UploadResult uploadResultVo = new UploadResult(id, originFilename, size, url, md5);

@@ -39,6 +39,7 @@ public class TioAdminInterceptorConfiguration {
 
     UserTokenInterceptor userTokenInterceptor = new UserTokenInterceptor(validateTokenLogic);
     HttpInterceptorModel model = new HttpInterceptorModel();
+    model.setName("tio-admin-token");
     model.setInterceptor(userTokenInterceptor);
     // 拦截所有路由
     model.addBlockUrl("/**");
@@ -51,7 +52,8 @@ public class TioAdminInterceptorConfiguration {
     }
     model.setAlloweStaticFile(alloweStaticFile);
 
-    HttpInteceptorConfigure inteceptorConfigure = new HttpInteceptorConfigure();
+    HttpInteceptorConfigure inteceptorConfigure = TioBootServer.me().getHttpInteceptorConfigure();
+    if (inteceptorConfigure == null) inteceptorConfigure = new HttpInteceptorConfigure();
     inteceptorConfigure.add(model);
     // 将拦截器配置添加到 Tio 服务器
     TioBootServer.me().setHttpInteceptorConfigure(inteceptorConfigure);
