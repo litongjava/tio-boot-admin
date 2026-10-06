@@ -7,7 +7,12 @@ import nexus.io.tio.utils.environment.EnvUtils;
 
 public class TioAdminEnvUtils {
   public static String getAdminSecretKey() {
-    return EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
+    String secretKey = EnvUtils.getStr(AppConstant.APP_ADMIN_SECRET_KEY);
+    if (secretKey == null || secretKey.trim().isEmpty()) {
+      // Fail fast with an actionable message; otherwise token creation fails later with an unrelated NPE.
+      throw new IllegalStateException(AppConstant.APP_ADMIN_SECRET_KEY + " is not configured");
+    }
+    return secretKey;
   }
 
   public static String getAdminToken() {
