@@ -41,7 +41,7 @@
     <dependency>
       <groupId>nexus.io</groupId>
       <artifactId>api-table</artifactId>
-      <version>${java-db.version}</version>
+      <version>${api-table.version}</version>
     </dependency>
 
 
