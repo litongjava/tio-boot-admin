@@ -1,6 +1,8 @@
 package nexus.io.tio.boot.admin.services;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.HexFormat;
 import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -32,6 +34,8 @@ public class AppUserService {
   // 仅查询密码盐与哈希
   private static final String SQL_SELECT_PASSWORD = "SELECT id, password_salt, password_hash FROM app_users WHERE id = ? AND deleted = 0";
 
+  private static final SecureRandom PASSWORD_SALT_RANDOM = new SecureRandom();
+
   public boolean registerUserByUserId(AppUserRegisterRequest req, String origin) {
     String password = req.getPassword();
     String email = req.getEmail();
@@ -57,10 +61,9 @@ public class AppUserService {
     if (exists) {
       return false;
     }
-    // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
-    String salt = String.valueOf(System.currentTimeMillis());
-    // 生成密码哈希（密码+盐）
-    String passwordHash = DigestUtils.sha256Hex(password + salt);
+    // Salt and hash are generated per user; see createPasswordSalt() and hashPassword()
+    String salt = createPasswordSalt();
+    String passwordHash = hashPassword(password, salt);
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
     long id = SnowflakeIdUtils.id();
@@ -89,10 +92,9 @@ public class AppUserService {
       }
     }
 
-    // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
-    String salt = String.valueOf(System.currentTimeMillis());
-    // 生成密码哈希（密码+盐）
-    String passwordHash = DigestUtils.sha256Hex(password + salt);
+    // Salt and hash are generated per user; see createPasswordSalt() and hashPassword()
+    String salt = createPasswordSalt();
+    String passwordHash = hashPassword(password, salt);
 
     // 插入用户记录（id 这里简单采用 email 作为唯一标识）
     long id = SnowflakeIdUtils.id();
@@ -128,8 +130,12 @@ public class AppUserService {
 
   // 校验用户密码
   public boolean verifyPassword(AppUser user, String password) {
+    // Reject missing input before hashing, so a null password can never match a stored hash
+    if (user == null || password == null || user.getPasswordHash() == null) {
+      return false;
+    }
     String salt = user.getPasswordSalt();
-    String hash = DigestUtils.sha256Hex(password + salt);
+    String hash = hashPassword(password, salt);
     return hash.equals(user.getPasswordHash());
   }
 
@@ -206,10 +212,9 @@ public class AppUserService {
       return RespBodyVo.fail("Failed to verify code");
     }
 
-    // 生成加盐字符串（示例中直接使用随机数，实际可使用更复杂逻辑）
-    String salt = String.valueOf(System.currentTimeMillis());
-    // 生成密码哈希（密码+盐）
-    String passwordHash = DigestUtils.sha256Hex(password + salt);
+    // Salt and hash are generated per user; see createPasswordSalt() and hashPassword()
+    String salt = createPasswordSalt();
+    String passwordHash = hashPassword(password, salt);
 
     String updateSql = "update app_users set password_salt=?, password_hash=? where email=?";
     Db.updateBySql(updateSql, salt, passwordHash, email);
@@ -262,24 +267,46 @@ public class AppUserService {
     return Db.update(TioBootAdminTableNames.app_users, row);
   }
 
+  /**
+   * Changes the password after checking the old one. The new password is stored with a new salt, using the same rule
+   * as {@link #verifyPassword(AppUser, String)}, so the user can log in with it right away.
+   */
   public RespBodyVo updatePassword(String userIdString, UserUpdatePasswordRequest updatePasswordRequest) {
     String oldPassword = updatePasswordRequest.getOldPassword();
     String newPassword = updatePasswordRequest.getNewPassword();
-    String sql = "select password_salt from app_users where id=?";
-    String salt = Db.queryStr(sql, userIdString);
-    // 生成密码哈希（密码+盐）
-    String passwordHash = DigestUtils.sha256Hex(oldPassword + salt);
-    sql = "select count(1) from app_users where id=? and password_hash=?";
-    boolean exists = Db.existsBySql(sql, userIdString, passwordHash);
-
-    if (exists) {
-      passwordHash = DigestUtils.sha256Hex(newPassword + newPassword);
-      sql = "update app_users set password_hash=? where id=?";
-      int effectd = Db.updateBySql(sql, passwordHash, userIdString);
-      return RespBodyVo.ok(effectd);
-
-    } else {
+    AppUser user = getUserPasswordById(userIdString);
+    if (user == null || !verifyPassword(user, oldPassword)) {
       return RespBodyVo.fail();
     }
+    int effected = setPassword(userIdString, newPassword) ? 1 : 0;
+    return RespBodyVo.ok(effected);
+  }
+
+  /**
+   * Stores a new password for a non-deleted user with a freshly generated salt.
+   *
+   * @return true when exactly one user row was updated
+   */
+  public boolean setPassword(String userIdString, String password) {
+    String salt = createPasswordSalt();
+    String sql = "update app_users set password_salt=?, password_hash=? where id=? and deleted=0";
+    return Db.updateBySql(sql, salt, hashPassword(password, salt), userIdString) == 1;
+  }
+
+  /**
+   * Generates a random 128-bit salt, hex encoded. Verification reads the salt from the row, so any string works;
+   * a random value avoids the predictable timestamp salt used by older registrations.
+   */
+  public static String createPasswordSalt() {
+    byte[] bytes = new byte[16];
+    PASSWORD_SALT_RANDOM.nextBytes(bytes);
+    return HexFormat.of().formatHex(bytes);
+  }
+
+  /**
+   * Hashes a password as {@code sha256(password + salt)}, the rule shared by registration, password change and login.
+   */
+  public static String hashPassword(String password, String salt) {
+    return DigestUtils.sha256Hex(password + salt);
   }
 }
