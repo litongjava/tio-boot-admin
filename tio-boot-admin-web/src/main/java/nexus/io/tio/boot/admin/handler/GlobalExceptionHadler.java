@@ -17,8 +17,9 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
   private boolean sendIfDev = false;
 
   public GlobalExceptionHadler() {
-    
+
   }
+
   public GlobalExceptionHadler(boolean sendIfDev) {
     this.sendIfDev = sendIfDev;
   }
@@ -26,7 +27,7 @@ public class GlobalExceptionHadler implements TioBootExceptionHandler {
   @Override
   public RespBodyVo handler(HttpRequest request, Throwable e) {
 
-    String appGroupName = "tio-boot";
+    String appGroupName = EnvUtils.getStr("app.group.name", "tio-boot-admin");
     String warningName = "GlobalExceptionHadler";
     String level = "LeveL 1";
 
