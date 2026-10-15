@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.aliyun.oss.OSS;
 import com.aliyun.oss.model.PutObjectResult;
 
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import nexus.io.tio.boot.admin.utils.storage.AwsS3Utils;
 import nexus.io.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import nexus.io.tio.boot.admin.utils.storage.TencentCOSUtils;
 import nexus.io.tio.boot.admin.vo.UploadInput;
-import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
 @Slf4j
@@ -39,17 +37,15 @@ public class StorageUploadService {
 
     } else if (StoragePlatformConst.tencent_cos.equals(storagePlatform)) {
 
-      com.qcloud.cos.model.PutObjectResult response = TencentCOSUtils.upload(TencentCOSUtils.bucketName, targetName,
-          new File(localFile));
-      etag = response.getETag();
-      downloadUrl = AliyunOssUtils.getUrl(TencentCOSUtils.bucketName, targetName);
+      etag = TencentCOSUtils.upload(TencentCOSUtils.bucketName, targetName, new File(localFile)).getETag();
+      downloadUrl = TencentCOSUtils.getUrl(TencentCOSUtils.bucketName, targetName);
       uploadResultVo.setEtag(etag).setUrl(downloadUrl);
 
     } else if (StoragePlatformConst.cloudflare_r2.equals(storagePlatform)) {
       PutObjectResponse response = CloudflareR2Utils.upload(CloudflareR2Utils.bucketName, targetName,
           new File(localFile));
       etag = response.eTag();
-      downloadUrl = AliyunOssUtils.getUrl(CloudflareR2Utils.bucketName, targetName);
+      downloadUrl = CloudflareR2Utils.getUrl(CloudflareR2Utils.bucketName, targetName);
       uploadResultVo.setEtag(etag).setUrl(downloadUrl);
 
     }
@@ -63,7 +59,8 @@ public class StorageUploadService {
     String downloadUrl = null;
     String etag = null;
     if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
-      try (S3Client client = AwsS3Utils.buildClient();) {
+      // Upload helpers own the shared client; a batch must not close it.
+      try {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
           PutObjectResponse response = AwsS3Utils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
@@ -78,7 +75,6 @@ public class StorageUploadService {
       }
 
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
-      OSS client = null;
       try {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
@@ -96,8 +92,7 @@ public class StorageUploadService {
         for (int i = 0; i < uploadFiles.size(); i++) {
           UploadInput uploadInput = uploadFiles.get(i);
           
-          com.qcloud.cos.model.PutObjectResult response = TencentCOSUtils.upload(uploadInput.targetName, new File(uploadInput.localFilePath));
-          etag = response.getETag();
+          etag = TencentCOSUtils.upload(uploadInput.targetName, new File(uploadInput.localFilePath)).getETag();
           downloadUrl = TencentCOSUtils.getUrl(uploadInput.targetName);
           UploadResult uploadResultVo = new UploadResult(etag, downloadUrl);
           result.add(uploadResultVo);
