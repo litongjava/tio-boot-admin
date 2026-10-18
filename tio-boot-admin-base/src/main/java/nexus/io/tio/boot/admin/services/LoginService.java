@@ -7,11 +7,17 @@ import nexus.io.tio.utils.digest.Sha256Utils;
 
 public class LoginService {
   public Long getUserIdByUsernameAndPassword(LoginAccountVo loginAccountVo) {
-    // digest
+    if (loginAccountVo == null || loginAccountVo.getUsername() == null
+        || loginAccountVo.getPassword() == null) {
+      return null;
+    }
+    // Only active, non-deleted accounts may establish a new login.
     String password = loginAccountVo.getPassword();
     String hashPassword = Sha256Utils.digestToHex(password);
-    //String hashPassword = DigestUtils.sha256Hex(password2);
-    String sql = "select id from %s where username=? and password=?";
+    String sql = """
+        select id from %s
+        where username=? and password=? and status=0 and deleted=0
+        """;
     sql = String.format(sql, TioBootAdminTableNames.tio_boot_admin_system_users);
     return Db.queryLong(sql, loginAccountVo.getUsername(), hashPassword);
   }
