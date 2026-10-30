@@ -13,6 +13,7 @@ import nexus.io.tio.boot.admin.utils.storage.AliyunOssUtils;
 import nexus.io.tio.boot.admin.utils.storage.AwsS3Utils;
 import nexus.io.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import nexus.io.tio.boot.admin.utils.storage.TencentCOSUtils;
+import nexus.io.tio.boot.admin.utils.storage.MinioUtils;
 import nexus.io.tio.boot.admin.vo.UploadInput;
 import software.amazon.awssdk.services.s3.model.PutObjectResponse;
 
@@ -21,6 +22,10 @@ public class StorageUploadService {
 
   public UploadResult uploadFile(String storagePlatform, String localFile, String targetName) {
     UploadResult uploadResultVo = new UploadResult();
+    if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      PutObjectResponse response = MinioUtils.upload(targetName, new File(localFile));
+      return uploadResultVo.setEtag(response.eTag()).setUrl(MinioUtils.getUrl(targetName));
+    }
     String downloadUrl = null;
     String etag = null;
     if (StoragePlatformConst.aws_s3.equals(storagePlatform)) {
@@ -55,6 +60,13 @@ public class StorageUploadService {
 
   public List<UploadResult> uploadFile(String storagePlatform, List<UploadInput> uploadFiles) {
     List<UploadResult> result = new ArrayList<>(uploadFiles.size());
+    if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      for (UploadInput input : uploadFiles) {
+        result.add(uploadFile(storagePlatform, input.localFilePath, input.targetName));
+      }
+      return result;
+    }
+
 
     String downloadUrl = null;
     String etag = null;

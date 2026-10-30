@@ -14,6 +14,7 @@ import nexus.io.tio.boot.admin.utils.storage.AliyunOssUtils;
 import nexus.io.tio.boot.admin.utils.storage.AwsS3Utils;
 import nexus.io.tio.boot.admin.utils.storage.CloudflareR2Utils;
 import nexus.io.tio.boot.admin.utils.storage.TencentCOSUtils;
+import nexus.io.tio.boot.admin.utils.storage.MinioUtils;
 
 public class SystemUploadFileService {
 
@@ -30,6 +31,8 @@ public class SystemUploadFileService {
     } else if (StoragePlatformConst.cloudflare_r2.equals(platform)) {
       return CloudflareR2Utils.getUrl(bucket_name, targetName);
 
+    } else if (StoragePlatformConst.minio.equals(platform)) {
+      return MinioUtils.getUrl(bucket_name, targetName);
     } else {
       return String.format(AwsS3Utils.urlFormat, AwsS3Utils.bucketName, region_name, targetName);
 
@@ -50,6 +53,8 @@ public class SystemUploadFileService {
     } else if (StoragePlatformConst.cloudflare_r2.equals(platform)) {
       return CloudflareR2Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 
+    } else if (StoragePlatformConst.minio.equals(platform)) {
+      return MinioUtils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
     } else {
       return AwsS3Utils.getPresignedDownloadUrl(region_name, bucket_name, targetName, downloadFilename);
 

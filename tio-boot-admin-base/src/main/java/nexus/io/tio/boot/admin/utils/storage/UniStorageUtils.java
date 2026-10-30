@@ -20,6 +20,8 @@ public class UniStorageUtils {
       etag = TencentCOSUtils.upload(targetName, fileContent, suffix).getETag();
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       etag = AliyunOssUtils.upload(targetName, fileContent, suffix).getETag();
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      etag = MinioUtils.upload(targetName, fileContent, suffix).eTag();
     } else {
       PutObjectResponse response = CloudflareR2Utils.upload(CloudflareR2Utils.bucketName, targetName, fileContent,
           suffix);
@@ -41,6 +43,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getUrl(bucketName, targetName);
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getUrl(bucketName, targetName);
     } else {
       result = CloudflareR2Utils.getUrl(bucketName, targetName);
     }
@@ -60,6 +64,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getUrl(targetName);
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getUrl(targetName);
     } else {
       result = CloudflareR2Utils.getUrl(targetName);
     }
@@ -79,6 +85,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getPresignedDownloadUrl(targetName);
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getPresignedDownloadUrl(targetName);
     } else {
       result = CloudflareR2Utils.getPresignedDownloadUrl(targetName);
     }
@@ -98,6 +106,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getPresignedDownloadUrl(bucket, targetName);
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getPresignedDownloadUrl(bucket, targetName);
     } else {
       result = CloudflareR2Utils.getPresignedDownloadUrl(bucket, targetName);
     }
@@ -117,6 +127,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getPresignedDownloadUrl(region, bucket, targetName);
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getPresignedDownloadUrl(region, bucket, targetName);
     } else {
       result = CloudflareR2Utils.getPresignedDownloadUrl(region, bucket, targetName);
     }
@@ -136,6 +148,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getBucketName();
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getBucketName();
     } else {
       result = CloudflareR2Utils.getBucketName();
     }
@@ -155,6 +169,8 @@ public class UniStorageUtils {
     } else if (StoragePlatformConst.aliyun_oss.equals(storagePlatform)) {
       result = AliyunOssUtils.getRegionName();
 
+    } else if (StoragePlatformConst.minio.equals(storagePlatform)) {
+      result = MinioUtils.getRegionName();
     } else {
       result = CloudflareR2Utils.getRegionName();
     }
