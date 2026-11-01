@@ -1,4 +1,4 @@
-package nexus.io.tio.boot.admin.rocketmq;
+package nexus.io.tio.boot.extension.rocketmq;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

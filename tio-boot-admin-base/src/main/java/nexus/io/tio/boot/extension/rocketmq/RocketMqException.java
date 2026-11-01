@@ -1,4 +1,4 @@
-package nexus.io.tio.boot.admin.rocketmq;
+package nexus.io.tio.boot.extension.rocketmq;
 
 /**
  * Unchecked exception thrown by the RocketMQ integration.

@@ -1,4 +1,4 @@
-package nexus.io.tio.boot.admin.rocketmq;
+package nexus.io.tio.boot.extension.rocketmq;
 
 import org.apache.rocketmq.remoting.protocol.heartbeat.MessageModel;
 

@@ -8,9 +8,9 @@ import org.apache.rocketmq.client.hook.ConsumeMessageHook;
 import org.apache.rocketmq.client.hook.SendMessageHook;
 
 import lombok.extern.slf4j.Slf4j;
-import nexus.io.tio.boot.admin.rocketmq.RocketMq;
-import nexus.io.tio.boot.admin.rocketmq.RocketMqListener;
-import nexus.io.tio.boot.admin.rocketmq.RocketMqProperties;
+import nexus.io.tio.boot.extension.rocketmq.RocketMq;
+import nexus.io.tio.boot.extension.rocketmq.RocketMqListener;
+import nexus.io.tio.boot.extension.rocketmq.RocketMqProperties;
 
 /**
  * Initializes RocketMQ from rocketmq.* settings, registers hooks and listeners and starts the

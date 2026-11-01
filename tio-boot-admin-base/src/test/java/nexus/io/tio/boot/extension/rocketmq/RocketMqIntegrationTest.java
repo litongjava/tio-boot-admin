@@ -1,4 +1,4 @@
-package nexus.io.tio.boot.admin.rocketmq;
+package nexus.io.tio.boot.extension.rocketmq;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

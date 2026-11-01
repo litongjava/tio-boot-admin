@@ -1,4 +1,4 @@
-package nexus.io.tio.boot.admin.rocketmq;
+package nexus.io.tio.boot.extension.rocketmq;
 
 /**
  * Message listener. The generic type decides how the message body is converted:
